@@ -1,6 +1,10 @@
 # Genogram Canvas
 
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
 An open-source, browser-first genogram editor extracted from MyGenogramMaker.
+
+Website: [MyGenogramMaker](https://mygenogrammaker.com/)
 
 The deployed root page is a local project dashboard. Each project opens in the editor and is auto-saved to IndexedDB in the current browser without being uploaded to a server. Users can create multiple local projects, download and import versioned JSON project files, and export watermark-free PNG images.
 
