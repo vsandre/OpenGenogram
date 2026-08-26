@@ -11,6 +11,8 @@ The application depends on the following direct open-source packages. Refer to e
 | `html-to-image` | MIT |
 | `idb` | ISC |
 | `lucide-react` | ISC |
+| `@modelcontextprotocol/server` | MIT |
+| `zod` | MIT |
 | `zustand` | MIT |
 
 Development-only dependencies and all transitive dependencies are recorded in `package-lock.json` after installation.

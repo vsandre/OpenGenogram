@@ -13,6 +13,8 @@ const outputFiles = [
   join(tempDirectory, 'flow-adapter.test.mjs'),
   join(tempDirectory, 'relationship-color.test.mjs'),
   join(tempDirectory, 'local-persistence.test.mjs'),
+  join(tempDirectory, 'generation-spec.test.mjs'),
+  join(tempDirectory, 'mcp-server.test.mjs'),
 ];
 
 try {
@@ -64,6 +66,20 @@ try {
       entryPoints: ['tests/genogram/local-persistence.test.ts'],
       format: 'esm',
       outfile: outputFiles[6],
+      platform: 'node',
+    }),
+    build({
+      bundle: true,
+      entryPoints: ['tests/genogram/generation-spec.test.ts'],
+      format: 'esm',
+      outfile: outputFiles[7],
+      platform: 'node',
+    }),
+    build({
+      bundle: true,
+      entryPoints: ['tests/genogram/mcp-server.test.ts'],
+      format: 'esm',
+      outfile: outputFiles[8],
       platform: 'node',
     }),
   ]);

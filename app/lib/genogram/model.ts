@@ -196,10 +196,12 @@ export const PARTNER_RELATIONSHIP_TYPES = [
   'actual-separation', 'separation', 'divorce', 'annulment', 'widowed',
   'affair', 'affair-separation', 'affair-divorce', 'affair-married', 'one-night-stand', 'rape',
 ] as const;
+export type PartnerRelationshipType = (typeof PARTNER_RELATIONSHIP_TYPES)[number];
 export const CHILD_RELATIONSHIP_TYPES = [
   'biological-child', 'adopted-child', 'foster-child', 'step-child',
   'surrogate-child', 'sperm-donor-child', 'egg-donor-child',
 ] as const;
+export type ChildRelationshipType = (typeof CHILD_RELATIONSHIP_TYPES)[number];
 export const TWIN_RELATIONSHIP_TYPES = ['fraternal-twins', 'identical-twins'] as const;
 export const EMOTIONAL_RELATIONSHIP_TYPES = [
   'connection', 'close', 'fused', 'distant', 'hostile', 'close-hostile',
