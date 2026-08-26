@@ -1,0 +1,4224 @@
+.editorShell {
+  --paper: #fbfdfa;
+  --paper-muted: #f3f8f5;
+  --ink: #1d2f3a;
+  --canvas-ink: #000;
+  --muted: #637775;
+  --line: #c9d8d4;
+  --line-soft: #dce8e4;
+  --accent: #4f857c;
+  --accent-soft: #dcebe5;
+  --danger: #a54f43;
+  --brand-sand: #e9e1d5;
+  --brand-rose: #a96a73;
+  --brand-blue: #47758b;
+  --brand-focus: #b9673a;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 270px;
+  grid-template-rows: minmax(680px, 1fr) auto;
+  min-height: 760px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper-muted);
+  color: var(--ink);
+  box-shadow: 0 16px 38px rgba(29, 47, 58, 0.08);
+}
+
+.toolRail,
+.inspector {
+  min-width: 0;
+  padding: 22px 18px;
+}
+
+.legendRail {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  overflow: auto;
+  border-right: 1px solid var(--line-soft);
+  background: #f4f9f6;
+  padding: 18px 14px;
+}
+
+.toolRail {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  border-right: 1px solid var(--line-soft);
+  background: #f4f9f6;
+}
+
+.inspector {
+  grid-column: 3;
+  grid-row: 1;
+  border-left: 1px solid var(--line-soft);
+  background: #fff;
+}
+
+.kicker {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.railHeading {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: -0.04em;
+}
+
+.railIntro,
+.helpText,
+.privacyNote,
+.emptyInspector p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.addTools,
+.actionGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.toolButton,
+.actionButton,
+.iconButton {
+  font: inherit;
+  cursor: pointer;
+}
+
+.toolButton,
+.actionButton {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--ink);
+  padding: 8px 10px;
+  text-align: left;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.toolButton:hover,
+.toolButton:focus-visible,
+.actionButton:not(:disabled):hover,
+.actionButton:not(:disabled):focus-visible {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.actionButton {
+  justify-content: space-between;
+  min-height: 34px;
+  background: transparent;
+  color: #40565a;
+  font-size: 12px;
+}
+
+.actionButton small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.toolGlyph {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 1.8px solid var(--ink);
+  background: var(--paper);
+}
+
+.toolGlyphFemale {
+  border-radius: 50%;
+}
+
+.toolGlyphNonbinary {
+  width: 15px;
+  height: 15px;
+  margin: 1.5px;
+  transform: rotate(45deg);
+}
+
+.toolGlyphUnspecified {
+  border: 0;
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.canvasPane {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 680px;
+  background: var(--paper);
+}
+
+.previewShell {
+  grid-template-columns: minmax(0, 1fr) 236px;
+  grid-template-rows: minmax(620px, 1fr);
+  min-height: 620px;
+}
+
+.previewShell .canvasPane {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 620px;
+}
+
+.previewLegendRail {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  border-left: 1px solid var(--line-soft);
+  background: var(--paper-muted);
+  padding: 18px 14px;
+}
+
+.previewLegendNote {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.reactFlow {
+  height: 100%;
+  min-height: 680px;
+  background: var(--paper);
+}
+
+.connectionPreview {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.connectionPreview line {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  stroke-linecap: round;
+  opacity: 0.72;
+}
+
+.connectionPreview circle {
+  fill: var(--accent);
+}
+
+.annotationConnectionPreview line {
+  stroke: #3b82f6;
+}
+
+.annotationConnectionPreview circle {
+  fill: #3b82f6;
+}
+
+.childFamilyMovePath {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.childFamilyMovePath {
+  stroke-width: 2.5;
+  stroke-dasharray: 7 6;
+}
+
+.childFamilyMoveLabel {
+  position: absolute;
+  z-index: 10000;
+  border: 1px solid var(--accent-soft);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--accent);
+  padding: 3px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 3px 9px rgba(29, 47, 58, 0.1);
+  transform: translate(-50%, 0);
+}
+
+.reactFlow :global(.react-flow__pane) {
+  cursor: default;
+}
+
+.panTool :global(.react-flow__pane) {
+  cursor: grab;
+}
+
+.panTool :global(.react-flow__pane:active) {
+  cursor: grabbing;
+}
+
+.multiTool :global(.react-flow__pane) {
+  cursor: crosshair;
+}
+
+.reactFlow :global(.react-flow__node) {
+  overflow: visible;
+}
+
+.previewFlow :global(.react-flow__handle) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reactFlow :global(.react-flow__selection) {
+  border: 1px solid var(--accent);
+  background: rgba(79, 133, 124, 0.13);
+}
+
+.reactFlow :global(.react-flow__controls) {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(29, 47, 58, 0.1);
+}
+
+.reactFlow :global(.react-flow__controls-button) {
+  width: 30px;
+  height: 30px;
+  border-bottom-color: var(--line-soft);
+  background: rgba(255, 255, 255, 0.92);
+  fill: var(--ink);
+}
+
+.reactFlow :global(.react-flow__minimap) {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 18px rgba(29, 47, 58, 0.1);
+}
+
+.canvasHint {
+  margin: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--muted);
+  padding: 7px 10px;
+  font-size: 11px;
+  line-height: 1.35;
+  box-shadow: 0 5px 14px rgba(29, 47, 58, 0.06);
+}
+
+.personNode {
+  position: relative;
+  display: grid;
+  width: 132px;
+  grid-template-columns: 132px;
+  justify-items: center;
+  gap: 0;
+  color: var(--canvas-ink);
+  text-align: center;
+}
+
+.personPrimaryDetails {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: fit-content;
+  max-width: 300px;
+  margin-top: -10px;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--canvas-ink);
+  padding: 2px 7px 3px;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.personDetails {
+  max-width: 114px;
+  overflow: hidden;
+  color: var(--canvas-ink);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personMedicalSummary {
+  display: block;
+  width: fit-content;
+  max-width: 286px;
+  overflow: hidden;
+  color: var(--canvas-ink);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personExtraDetails {
+  display: block;
+  width: fit-content;
+  max-width: 286px;
+  overflow: hidden;
+  color: var(--canvas-ink);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personPrimaryDetailsWrap .personMedicalSummary,
+.personPrimaryDetailsWrap .personExtraDetails {
+  display: -webkit-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.personNodeHidden .personSymbol,
+.personNodeHidden .personPrimaryDetails {
+  opacity: 0.16;
+}
+
+.hiddenPersonBadge {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(251, 253, 250, 0.96);
+  color: var(--muted);
+  padding: 4px 7px;
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(29, 47, 58, 0.08);
+  transform: translateX(-50%);
+}
+
+.editShell .reactFlow :global(.genogram-connection-source),
+.editShell .reactFlow :global(.genogram-connection-target),
+.editShell .reactFlow :global(.genogram-connection-target-active) {
+  z-index: 8 !important;
+}
+
+.editShell .reactFlow :global(.genogram-connection-source)::before,
+.editShell .reactFlow :global(.genogram-connection-target)::before,
+.editShell .reactFlow :global(.genogram-connection-target-active)::before {
+  position: absolute;
+  top: 7px;
+  left: 31px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  content: "";
+  pointer-events: none;
+}
+
+.editShell .reactFlow :global(.genogram-connection-source)::before {
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+}
+
+.editShell .reactFlow :global(.genogram-connection-target)::before {
+  border: 2px dashed var(--accent);
+  opacity: 0.72;
+}
+
+.editShell .reactFlow :global(.genogram-connection-target) {
+  cursor: crosshair;
+}
+
+.editShell .reactFlow :global(.genogram-connection-target-active)::before {
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 0 9px var(--accent-soft);
+}
+
+.editShell .reactFlow :global(.genogram-connection-target-active) {
+  cursor: copy;
+}
+
+.editShell .reactFlow :global(.react-flow__node-annotation.genogram-connection-source)::before,
+.editShell .reactFlow :global(.react-flow__node-annotation.genogram-connection-target)::before,
+.editShell .reactFlow :global(.react-flow__node-annotation.genogram-connection-target-active)::before {
+  inset: -6px;
+  width: auto;
+  height: auto;
+  border-radius: 14px;
+}
+
+.connectionTargetCue {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 12;
+  width: 132px;
+  height: 82px;
+  pointer-events: none;
+}
+
+.connectionTargetLabel {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  min-width: 156px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 7px 18px rgba(29, 47, 58, 0.2);
+  transform: translateX(-50%);
+}
+
+.connectionTargetDot {
+  position: absolute;
+  top: 29px;
+  left: 53px;
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft), 0 2px 7px rgba(29, 47, 58, 0.2);
+}
+
+.personQuickActions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  width: 132px;
+  height: 82px;
+  pointer-events: none;
+}
+
+.personQuickActionRing {
+  position: absolute;
+  top: 2px;
+  left: 27px;
+  width: 78px;
+  height: 78px;
+  border: 5px solid rgba(220, 235, 229, 0.9);
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 1px rgba(79, 133, 124, 0.08);
+}
+
+.personQuickAction {
+  position: absolute;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 2px solid rgba(255, 253, 249, 0.98);
+  border-radius: 50%;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0 4px 11px rgba(29, 47, 58, 0.13);
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.personQuickAction::before {
+  position: absolute;
+  inset: -9px;
+  content: "";
+}
+
+.personQuickAction:hover,
+.personQuickAction:focus-visible {
+  z-index: 2;
+  border-color: currentColor;
+  outline: 3px solid rgba(79, 133, 124, 0.2);
+  outline-offset: 2px;
+  box-shadow: 0 6px 15px rgba(29, 47, 58, 0.17);
+}
+
+.quickActionLabel {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  z-index: 12;
+  width: max-content;
+  max-width: 112px;
+  border-radius: 999px;
+  background: #1f3042;
+  color: #fff;
+  padding: 3px 6px;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 5px 12px rgba(29, 47, 58, 0.2);
+  transform: translate(-50%, -2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.personQuickAction:hover .quickActionLabel,
+.personQuickAction:focus-visible .quickActionLabel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.quickActionTop { top: -10px; left: 54px; }
+.quickActionUpperRight { top: 10px; left: 88px; }
+.quickActionLowerRight { top: 49px; left: 88px; }
+.quickActionBottom { top: 68px; left: 54px; }
+.quickActionLowerLeft { top: 49px; left: 20px; }
+.quickActionUpperLeft { top: 10px; left: 20px; }
+.quickActionParents { background: var(--brand-sand); color: #675a49; }
+.quickActionPartner { background: #f3e7e9; color: var(--brand-rose); }
+.quickActionSibling { background: #e8eeeb; color: #506b65; }
+.quickActionChild { background: var(--accent-soft); color: #285653; }
+.quickActionEmotional { background: #f1e7e1; color: var(--brand-focus); }
+.quickActionConnection { background: #e5edef; color: var(--brand-blue); }
+
+.personNodeSelected .personName {
+  color: var(--canvas-ink);
+}
+
+.personSymbol {
+  --symbol-ink: var(--canvas-ink);
+  --symbol-paper: var(--person-symbol-fill, var(--paper));
+  display: block;
+  overflow: visible;
+  margin-top: calc((82px - var(--person-symbol-size)) / 2);
+  margin-bottom: calc((82px - var(--person-symbol-size)) / 2);
+  filter: drop-shadow(0 4px 8px rgba(29, 47, 58, 0.08));
+}
+
+.personNodeSelected .personSymbol {
+  filter: drop-shadow(0 0 0.5px var(--accent)) drop-shadow(0 0 4px var(--accent-soft));
+}
+
+.toolSymbol {
+  --symbol-ink: var(--ink);
+  --symbol-paper: var(--paper);
+  display: block;
+  flex: 0 0 24px;
+  overflow: visible;
+}
+
+.handle {
+  /* Prevent XYFlow's 5px minimum from shifting the invisible edge anchor. */
+  width: 2px;
+  height: 2px;
+  min-width: 2px;
+  min-height: 2px;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+}
+
+.handleGhost {
+  /* Keep ghost and visible handles on the same geometry. */
+  width: 2px;
+  height: 2px;
+  min-width: 2px;
+  min-height: 2px;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+}
+
+.annotationLinkTargetHandle {
+  top: calc(50% + 12px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.personLinkTargetHandle {
+  top: var(--symbol-anchor-center-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.annotationLinkSourceHandle {
+  top: calc(50% - 12px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.symbolTopHandle {
+  top: calc(var(--symbol-anchor-top) + 1px) !important;
+}
+
+.symbolBottomHandle {
+  top: calc(var(--symbol-anchor-bottom) - 1px) !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.symbolLeftHandle {
+  top: 42px !important;
+  left: calc(var(--symbol-anchor-left) + 1px) !important;
+}
+
+.symbolRightHandle {
+  top: 42px !important;
+  right: auto !important;
+  left: calc(var(--symbol-anchor-right) - 1px) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.relationshipDragHandle {
+  position: absolute;
+  z-index: 32;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--accent);
+  padding: 0;
+  font: 800 12px/1 sans-serif;
+  pointer-events: all;
+  cursor: ns-resize;
+  box-shadow: 0 3px 9px rgba(29, 47, 58, 0.16);
+  touch-action: none;
+}
+
+.relationshipDragIcon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.relationshipDragHandle:hover,
+.relationshipDragHandle:focus-visible {
+  background: var(--accent-soft);
+  outline: 3px solid rgba(79, 133, 124, 0.2);
+  outline-offset: 2px;
+}
+
+.familyOriginDragHandle {
+  cursor: ew-resize;
+}
+
+.familyOriginMoveTarget {
+  border-color: var(--paper);
+  background: var(--accent);
+  color: #fff;
+}
+
+.emotionalEndpoint,
+.emotionalControlPoint {
+  position: absolute;
+  z-index: 12;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 2px 7px rgba(79, 133, 124, 0.2);
+}
+
+.emotionalLineHitArea {
+  cursor: copy;
+}
+
+.emotionalEndpoint {
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+}
+
+.emotionalDirectionMarker {
+  position: absolute;
+  z-index: 18;
+  display: block;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.emotionalDirectionMarker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.emotionalDirectionMarkerHalo,
+.emotionalDirectionMarkerArrow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.emotionalDirectionMarkerHalo {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 3;
+}
+
+.emotionalDirectionMarkerArrow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.emotionalControlPoint {
+  padding: 0;
+  pointer-events: all;
+  cursor: grab;
+  touch-action: none;
+}
+
+.emotionalControlPoint:hover,
+.emotionalControlPoint:focus-visible,
+.emotionalControlPointSelected {
+  background: var(--accent);
+  outline: 3px solid rgba(79, 133, 124, 0.2);
+  outline-offset: 2px;
+}
+
+.emotionalControlPoint:active {
+  cursor: grabbing;
+}
+
+.emotionalResetButton {
+  position: absolute;
+  z-index: 12;
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--muted);
+  padding: 0 8px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  pointer-events: all;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(29, 47, 58, 0.11);
+}
+
+.emotionalResetButton:hover,
+.emotionalResetButton:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: 3px solid rgba(79, 133, 124, 0.18);
+  outline-offset: 2px;
+}
+
+.emotionalControlPointDeleteButton {
+  position: absolute;
+  z-index: 14;
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid rgba(160, 70, 70, 0.24);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.98);
+  color: #a04646;
+  padding: 0;
+  pointer-events: all;
+  cursor: pointer;
+  box-shadow: 0 7px 18px rgba(29, 47, 58, 0.14);
+}
+
+.emotionalControlPointDeleteButton:hover,
+.emotionalControlPointDeleteButton:focus-visible {
+  background: #f8ecec;
+  outline: 2px solid rgba(160, 70, 70, 0.18);
+  outline-offset: 1px;
+}
+
+.junctionNode {
+  position: relative;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.junctionHandle {
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.householdNode {
+  position: relative;
+  border: 2px dashed var(--canvas-ink);
+  border-radius: 22px;
+  background: rgba(220, 235, 229, 0.12);
+  color: var(--canvas-ink);
+  pointer-events: none;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.householdNode:hover,
+.householdNodeSelected {
+  border-color: var(--accent);
+  background: rgba(220, 235, 229, 0.24);
+  box-shadow: 0 0 0 3px rgba(79, 133, 124, 0.1);
+}
+
+.householdNode button {
+  position: absolute;
+  top: -11px;
+  left: 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.reactFlow :global(.genogram-household-flow-node) {
+  pointer-events: none;
+}
+
+.annotationNode {
+  position: relative;
+  display: flex;
+  min-width: 120px;
+  max-width: 220px;
+  min-height: 48px;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--canvas-ink);
+  padding: 11px 12px;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: move;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.annotationNodeSelected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 133, 124, 0.14);
+}
+
+.annotationNote {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: #f4efe4;
+  box-shadow: 0 7px 18px rgba(92, 74, 45, 0.1);
+}
+
+.annotationResizeHandle {
+  right: -5px !important;
+  bottom: -5px !important;
+  display: grid;
+  width: 15px !important;
+  height: 15px !important;
+  place-items: center;
+  border: 1px solid var(--accent) !important;
+  border-radius: 4px !important;
+  background: var(--paper) !important;
+  cursor: nwse-resize;
+  box-shadow: 0 2px 6px rgba(29, 47, 58, 0.16);
+}
+
+.annotationResizeHandle span {
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+.annotationLinkActionButton {
+  position: absolute;
+  top: -42px;
+  left: 50%;
+  z-index: 9;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid rgba(255, 253, 249, 0.98);
+  border-radius: 50%;
+  background: #e5edef;
+  color: var(--brand-blue);
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 11px rgba(29, 47, 58, 0.13);
+  transform: translateX(-50%);
+}
+
+.annotationLinkActionButton:hover,
+.annotationLinkActionButton:focus-visible {
+  border-color: currentColor;
+  outline: 3px solid rgba(79, 133, 124, 0.2);
+  outline-offset: 2px;
+}
+
+.annotationLinkActionButton:hover .quickActionLabel,
+.annotationLinkActionButton:focus-visible .quickActionLabel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.annotationNodeInput {
+  align-self: stretch;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  resize: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-decoration: inherit;
+  outline: 0;
+}
+
+.annotationSecret {
+  display: grid;
+  width: 120px;
+  min-height: 96px;
+  place-items: center;
+  gap: 0;
+  border-color: transparent;
+  background: transparent;
+  color: #8c644e;
+  text-align: center;
+}
+
+.annotationSecret.annotationNodeSelected {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.secretQuickActions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  width: 120px;
+  height: 96px;
+  pointer-events: none;
+}
+
+.secretQuickActionRing {
+  position: absolute;
+  top: 2px;
+  left: 14px;
+  width: 92px;
+  height: 92px;
+  border: 7px solid rgba(220, 235, 229, 0.9);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.secretQuickActionButton {
+  position: absolute;
+  top: -15px;
+  left: 43px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid rgba(255, 253, 249, 0.98);
+  border-radius: 50%;
+  background: #e5edef;
+  color: var(--brand-blue);
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0 4px 11px rgba(29, 47, 58, 0.13);
+}
+
+.secretQuickActionButton:hover,
+.secretQuickActionButton:focus-visible {
+  border-color: currentColor;
+  outline: 3px solid rgba(79, 133, 124, 0.2);
+  outline-offset: 2px;
+}
+
+.secretQuickActionButton:hover .quickActionLabel,
+.secretQuickActionButton:focus-visible .quickActionLabel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.secretTriangle {
+  display: grid;
+  height: 42px;
+  place-items: center;
+}
+
+.familySecretIcon {
+  color: #b91c1c;
+  fill: #ef4444;
+}
+
+.annotationText {
+  position: relative;
+  min-width: 180px;
+  min-height: 48px;
+  align-items: center;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  box-shadow: 0 0 0 4px #fff;
+}
+
+.annotationTextMeasure {
+  visibility: hidden;
+}
+
+.annotationTextInput {
+  position: absolute;
+  inset: 11px 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 22px);
+  box-sizing: border-box;
+}
+
+.annotationEditorAnchor {
+  position: absolute;
+  z-index: 29;
+  transform: translateX(-50%);
+}
+
+.annotationFloatingEditor,
+.secretFloatingEditor {
+  display: grid;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  gap: 7px;
+}
+
+.annotationFormatBar {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 5px;
+  box-shadow: 0 10px 28px rgba(29, 47, 58, 0.14);
+  backdrop-filter: blur(12px);
+}
+
+.annotationFormatBar select,
+.annotationFormatBar button {
+  height: 34px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--paper-muted);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.annotationFormatBar select {
+  width: 74px;
+  padding: 0 7px;
+  font-size: 11px;
+}
+
+.annotationFormatBar > button {
+  display: grid;
+  width: 34px;
+  place-items: center;
+  padding: 0;
+}
+
+.annotationFormatBar button:hover,
+.annotationFormatBar button:focus-visible,
+.annotationFormatBar .annotationFormatActive {
+  border-color: rgba(79, 133, 124, 0.45);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.annotationFormatBar output {
+  width: 21px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.annotationFormatDivider {
+  width: 1px;
+  height: 24px;
+  margin: 0 2px;
+  background: var(--line-soft);
+}
+
+.annotationColorMenu {
+  display: flex;
+  gap: 3px;
+  padding: 0 2px;
+}
+
+.annotationColorMenu button {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--annotation-color);
+  padding: 0;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.annotationColorMenu .annotationColorActive {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.annotationFormatBar .annotationDeleteAction,
+.annotationQuickActions .annotationDeleteAction {
+  color: var(--danger);
+}
+
+.secretFloatingEditor {
+  width: 284px;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 12px;
+  box-shadow: 0 12px 30px rgba(29, 47, 58, 0.14);
+  backdrop-filter: blur(12px);
+}
+
+.annotationQuickActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.annotationQuickActions button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--line-soft);
+  border-radius: 50%;
+  background: var(--paper-muted);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.secretFloatingEditor label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.secretFloatingEditor input,
+.secretFloatingEditor textarea {
+  width: 100%;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 8px 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  resize: vertical;
+}
+
+.symbol {
+  position: relative;
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 0 4px 12px rgba(29, 47, 58, 0.08);
+}
+
+.symbolFemale {
+  border-radius: 50%;
+}
+
+.symbolNonbinary {
+  width: 54px;
+  height: 54px;
+  margin: 7px;
+  transform: rotate(45deg);
+}
+
+.symbolUnspecified {
+  border: 0;
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.symbolUnspecified::after {
+  position: absolute;
+  inset: 3px;
+  z-index: 0;
+  background: var(--paper);
+  content: "";
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.personNodeSelected .symbol {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 4px 12px rgba(29, 47, 58, 0.08);
+}
+
+.personNodeSelected .symbolUnspecified {
+  border-color: transparent;
+  background: var(--accent);
+}
+
+.deceasedMark {
+  position: absolute;
+  z-index: 2;
+  inset: 5px;
+  display: block;
+  pointer-events: none;
+}
+
+.deceasedMark span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 76%;
+  border-top: 2.5px solid var(--ink);
+  transform-origin: center;
+}
+
+.deceasedMark span:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.deceasedMark span:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.personName {
+  display: block;
+  max-width: 114px;
+  overflow: hidden;
+  color: var(--canvas-ink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personYears {
+  margin-top: -3px;
+  color: var(--canvas-ink);
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.genderFieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.genderFieldset legend,
+.relationshipTypeGroup > p {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.genderPicker,
+.partnerRelationshipPicker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.genderPicker button,
+.partnerRelationshipPicker button {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.genderPicker button:hover,
+.genderPicker button:focus-visible,
+.genderPicker .genderPickerActive,
+.partnerRelationshipPicker button:hover,
+.partnerRelationshipPicker button:focus-visible,
+.partnerRelationshipPicker .partnerRelationshipActive {
+  border-color: rgba(79, 133, 124, 0.48);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.relationshipTypeGroup {
+  display: grid;
+  gap: 0;
+}
+
+.partnerRelationshipPicker button {
+  display: grid;
+  min-height: 62px;
+  place-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.partnerRelationshipPicker .legendLine {
+  width: 68px;
+  height: 18px;
+}
+
+.childRelationshipPicker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.childRelationshipPicker button {
+  display: grid;
+  min-width: 0;
+  min-height: 58px;
+  place-items: center;
+  gap: 3px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--muted);
+  padding: 7px 6px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.childRelationshipPicker button:hover,
+.childRelationshipPicker button:focus-visible,
+.childRelationshipPicker .childRelationshipActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  outline: none;
+}
+
+.childRelationshipPicker .legendLine {
+  width: 68px;
+  height: 18px;
+}
+
+.childInspectorGroup {
+  display: grid;
+  gap: 7px;
+}
+
+.childInspectorGroup > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.twinSiblingActions,
+.immigrationMarkerPicker {
+  display: grid;
+  gap: 6px;
+}
+
+.twinSiblingActions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.immigrationMarkerPicker {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.twinSiblingActions button,
+.immigrationMarkerPicker button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  padding: 6px;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.twinSiblingActions button:hover,
+.twinSiblingActions button:focus-visible,
+.immigrationMarkerPicker button:hover,
+.immigrationMarkerPicker button:focus-visible,
+.immigrationMarkerPicker .immigrationMarkerActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  outline: none;
+}
+
+.twinSiblingActions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.childLineBadge,
+.childLineLabel {
+  position: absolute;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  background: var(--paper);
+  padding: 2px 5px;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.childLineBadge b {
+  font-size: 8px;
+}
+
+.childLineBadge span {
+  font-size: 12px;
+}
+
+.childLineLabel {
+  border-color: var(--line-soft);
+  color: var(--canvas-ink);
+}
+
+.legend {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 13px 14px;
+  box-shadow: 0 8px 20px rgba(29, 47, 58, 0.1);
+}
+
+.legendHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 7px;
+}
+
+.legendHeading .kicker {
+  margin: 0;
+}
+
+.legendHeading h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: -0.03em;
+}
+
+.legendSection {
+  display: grid;
+  gap: 5px;
+}
+
+.legendSectionTitle {
+  margin: 0 0 1px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.legendRow {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.legendSymbol {
+  position: relative;
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+}
+
+.legendPersonSymbol {
+  --symbol-ink: var(--ink);
+  --symbol-paper: var(--paper);
+  display: block;
+  overflow: visible;
+}
+
+.legendMarkerSwatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+}
+
+.legendBoundary {
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  flex: 0 0 34px;
+  border: 1.6px dashed #6c8983;
+  border-radius: 6px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.legendSymbolFemale {
+  border-radius: 50%;
+}
+
+.legendSymbolNonbinary {
+  width: 15px;
+  height: 15px;
+  margin: 2.5px;
+  transform: rotate(45deg);
+}
+
+.legendSymbolUnspecified {
+  border: 0;
+  background: var(--ink);
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.legendSymbolUnspecified::after {
+  position: absolute;
+  z-index: 0;
+  inset: 2px;
+  background: var(--paper);
+  content: "";
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.legendSymbolDeceased span {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  border-top: 1.8px solid var(--ink);
+}
+
+.legendSymbolDeceased span:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.legendSymbolDeceased span:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.legendLine {
+  display: block;
+  width: 58px;
+  height: 16px;
+  flex: 0 0 58px;
+}
+
+.legendEmpty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.markerEditor {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 11px;
+}
+
+.markerEditorHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #40565a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.markerEditorHelp {
+  margin: -2px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.medicalPresetGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.medicalPresetGrid button {
+  display: flex;
+  min-width: 0;
+  min-height: 31px;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  padding: 5px 6px;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.medicalPresetGrid button > span {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  border-radius: 3px;
+}
+
+.medicalPresetGrid button:hover,
+.medicalPresetGrid button:focus-visible,
+.medicalPresetGrid .medicalPresetActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.medicalPresetGrid button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.smallButton {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-muted);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 5px 7px;
+  font-size: 10px;
+}
+
+.smallButton:hover,
+.smallButton:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.smallButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.markerList {
+  display: grid;
+  gap: 7px;
+}
+
+.markerEditorRow {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  padding: 7px;
+}
+
+.markerColorField {
+  position: relative;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.markerColorField > span {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.markerColorField select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.markerStatusPicker {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.markerStatusPicker button {
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--paper-muted);
+  color: var(--muted);
+  padding: 4px 3px;
+  font: inherit;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.markerStatusPicker button:hover,
+.markerStatusPicker button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.markerStatusPicker .markerStatusActive {
+  background: var(--ink);
+  color: #fff;
+}
+
+.markerField input,
+.markerField select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 6px;
+  font-size: 10px;
+}
+
+.toolBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.85fr) minmax(250px, 1.3fr) minmax(220px, 1.15fr) minmax(180px, 0.8fr);
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  background: rgba(244, 249, 246, 0.98);
+  padding: 12px 14px;
+}
+
+.toolbarIntro {
+  min-width: 0;
+}
+
+.toolbarIntro .kicker {
+  margin-bottom: 3px;
+}
+
+.toolbarHint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.toolBar .addTools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.toolBar .toolButton {
+  min-height: 32px;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.relationshipTools {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.toolbarField {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  color: #40565a;
+  font-size: 11px;
+}
+
+.toolbarField select {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 6px 7px;
+}
+
+.connectModeButton {
+  justify-self: start;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 6px 9px;
+  font-size: 11px;
+}
+
+.connectModeButton:hover,
+.connectModeButton:focus-visible,
+.connectModeButtonActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.connectionStatus {
+  min-height: 16px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.connectionStatusSuccess {
+  color: var(--accent);
+}
+
+.connectionStatusError {
+  color: var(--danger);
+}
+
+.connectionStatusInfo {
+  color: var(--ink);
+}
+
+.toolBar .actionGroup {
+  display: grid;
+  gap: 5px;
+}
+
+.toolBar .actionButton {
+  min-height: 29px;
+  padding: 5px 7px;
+}
+
+.inspectorContent {
+  display: grid;
+  gap: 14px;
+}
+
+.personInspectorSummary {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background: var(--paper-muted);
+  padding: 10px;
+}
+
+.personInspectorSymbol {
+  display: grid;
+  min-height: 68px;
+  place-items: center;
+  border: 1px solid rgba(201, 216, 212, 0.72);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.personInspectorSummaryFields {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.personInspectorCommonFields {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 9px;
+  padding-top: 2px;
+}
+
+.summaryGenderFieldset legend {
+  margin-bottom: 5px;
+}
+
+.summaryGenderPicker {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.summaryGenderPicker button {
+  min-height: 44px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px;
+  font-size: 8px;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.summaryGenderPicker button > span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryNameField {
+  display: grid;
+  gap: 3px;
+}
+
+.summaryNameField span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryNameField input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  padding: 2px 0 4px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.summaryNameField input:hover,
+.summaryNameField input:focus-visible {
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+
+.personInspectorSummaryMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.personInspectorSummaryMeta > :only-child {
+  grid-column: 1 / -1;
+}
+
+.summaryStatusField {
+  gap: 5px;
+}
+
+.summaryStatusField > span,
+.summaryYearField > span:first-child {
+  color: #40565a;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.summaryStatusField .statusTrigger {
+  min-height: 36px;
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 10px;
+}
+
+.summaryYearField {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.summaryYearInput {
+  display: flex;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--muted);
+  padding: 5px 8px;
+}
+
+.summaryYearInput input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+}
+
+.personInspectorSection {
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.personInspectorSectionOpen {
+  overflow: visible;
+}
+
+.personInspectorSectionHeader {
+  display: flex;
+  min-height: 40px;
+  align-items: stretch;
+  background: rgba(243, 248, 245, 0.82);
+}
+
+.personInspectorSectionHeader > button:first-child {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  text-align: left;
+  cursor: pointer;
+}
+
+.personInspectorSectionHeader > button:first-child > svg:first-child {
+  flex: 0 0 auto;
+  color: var(--section-tone);
+}
+
+.personInspectorSectionHeader > button:first-child > span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personInspectorSectionHeader > button:first-child:hover,
+.personInspectorSectionHeader > button:first-child:focus-visible {
+  background: rgba(220, 235, 229, 0.58);
+  outline: none;
+}
+
+.personInspectorSectionHeader > button:first-child > svg:last-child {
+  color: var(--muted);
+  transition: transform 150ms ease;
+}
+
+.sectionChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sectionVisibilityButton {
+  display: inline-flex;
+  min-width: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 0;
+  border-left: 1px solid var(--line-soft);
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sectionVisibilityButton[aria-pressed="true"] {
+  color: var(--accent);
+}
+
+.sectionVisibilityButton:hover,
+.sectionVisibilityButton:focus-visible {
+  background: var(--accent-soft);
+  color: var(--ink);
+  outline: none;
+}
+
+.personInspectorSectionBody {
+  display: grid;
+  gap: 11px;
+  border-top: 1px solid var(--line-soft);
+  background: rgba(251, 253, 250, 0.94);
+  padding: 12px;
+}
+
+.personInspectorSectionBody .markerEditor {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.heritagePresetGrid,
+.religionPresetGrid,
+.educationPresetGrid {
+  display: grid;
+  gap: 6px;
+}
+
+.heritagePresetGrid,
+.religionPresetGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.educationPresetGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.heritagePresetGrid button,
+.religionPresetGrid button,
+.socialClassPresetList button,
+.educationPresetGrid button {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+
+.heritagePresetGrid button:hover,
+.heritagePresetGrid button:focus-visible,
+.religionPresetGrid button:hover,
+.religionPresetGrid button:focus-visible,
+.socialClassPresetList button:hover,
+.socialClassPresetList button:focus-visible,
+.educationPresetGrid button:hover,
+.educationPresetGrid button:focus-visible,
+.heritagePresetGrid .profilePresetActive,
+.religionPresetGrid .profilePresetActive,
+.socialClassPresetList .profilePresetActive,
+.educationPresetGrid .profilePresetActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(79, 133, 124, 0.12);
+}
+
+.heritagePresetGrid button {
+  display: grid;
+  overflow: hidden;
+  padding: 0;
+}
+
+.heritagePresetGrid button > span:last-child {
+  overflow: hidden;
+  padding: 3px 4px 4px;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heritagePatternPreview {
+  display: grid;
+  min-height: 35px;
+  place-items: center;
+  background: var(--paper-muted);
+}
+
+.heritagePatternPreview svg {
+  width: 38px;
+  height: 30px;
+  color: #000;
+  opacity: 1;
+}
+
+.heritageLayerList {
+  display: grid;
+  gap: 7px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 9px;
+}
+
+.heritageLayerList > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heritageLayerRow {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+}
+
+.heritageLayerSwatch {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper-muted);
+  color: var(--ink);
+}
+
+.heritageLayerSwatch svg {
+  width: 22px;
+  height: 22px;
+}
+
+.heritageLayerRow input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  padding: 8px 9px;
+  font: inherit;
+}
+
+.heritageLayerRow input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 1px;
+}
+
+.religionPresetGrid button {
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  gap: 4px;
+  padding: 7px 5px;
+}
+
+.religionPresetGrid button > span {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.socialClassPresetList {
+  display: grid;
+  gap: 6px;
+}
+
+.socialClassPresetList button {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  text-align: left;
+}
+
+.socialClassDot {
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.profilePresetActive .socialClassDot {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: inset 0 0 0 2px var(--accent-soft);
+}
+
+.socialClassPresetList button > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+
+.socialClassPresetList strong {
+  color: inherit;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.socialClassPresetList small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.educationPresetGrid button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 7px;
+  text-align: left;
+}
+
+.educationPresetGrid button > span {
+  border-radius: 5px;
+  background: var(--paper-muted);
+  color: var(--accent);
+  padding: 3px 5px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.educationPresetGrid strong {
+  overflow: hidden;
+  color: inherit;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.personColorPicker {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 7px;
+}
+
+.personColorPicker button {
+  display: grid;
+  aspect-ratio: 1;
+  min-width: 0;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.personColorPicker button span {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(29, 47, 58, 0.08);
+  border-radius: inherit;
+}
+
+.personColorPicker button:hover,
+.personColorPicker button:focus-visible,
+.personColorPicker .personColorActive {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 1px;
+}
+
+.personInspectorFooter {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 12px;
+}
+
+.personSizePicker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  border-radius: 10px;
+  background: var(--paper-muted);
+  padding: 3px;
+}
+
+.personSizePicker button {
+  min-height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.personSizePicker button:hover,
+.personSizePicker button:focus-visible,
+.personSizePicker .personSizeActive {
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  box-shadow: 0 2px 7px rgba(29, 47, 58, 0.08);
+}
+
+.personInspectorActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.personInspectorActions button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  padding: 5px;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.personInspectorActions button:hover,
+.personInspectorActions button:focus-visible,
+.personInspectorActions .personInspectorActionActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  outline: none;
+}
+
+.personInspectorActions .personInspectorDeleteAction {
+  border-color: rgba(165, 79, 67, 0.25);
+  color: var(--danger);
+}
+
+.personInspectorActions .personInspectorDeleteAction:hover,
+.personInspectorActions .personInspectorDeleteAction:focus-visible {
+  border-color: rgba(165, 79, 67, 0.42);
+  background: rgba(165, 79, 67, 0.08);
+  color: var(--danger);
+}
+
+.inspectorHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 14px;
+}
+
+.inspectorHeading h3 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.03em;
+}
+
+.inspectorHeading .kicker {
+  margin-bottom: 4px;
+}
+
+.boundaryVisibilityButton {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-muted);
+  color: var(--muted);
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.boundaryVisibilityButton[aria-pressed='true'] {
+  border-color: rgba(79, 133, 124, 0.36);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.boundaryVisibilityButton:hover,
+.boundaryVisibilityButton:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink);
+  outline: none;
+}
+
+.iconButton {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper-muted);
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.iconButton:hover,
+.iconButton:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.field,
+.checkboxField {
+  display: grid;
+  gap: 6px;
+  color: #40565a;
+  font-size: 12px;
+}
+
+.statusField {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  color: #40565a;
+  font-size: 12px;
+}
+
+.statusTrigger,
+.statusMenu button {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.statusTrigger {
+  min-height: 39px;
+  border-radius: 8px;
+  padding: 6px 9px;
+}
+
+.statusTrigger > span,
+.statusMenu button > span {
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusTrigger:hover,
+.statusTrigger:focus-visible,
+.statusTriggerOpen {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.statusMenu {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 4px;
+  box-shadow: 0 12px 28px rgba(29, 47, 58, 0.16);
+}
+
+.orientationMenu {
+  top: auto;
+  bottom: calc(100% + 5px);
+  max-height: min(360px, 50vh);
+  overflow-y: auto;
+}
+
+.statusMenu button {
+  min-height: 35px;
+  border-color: transparent;
+  border-radius: 7px;
+  padding: 5px 8px;
+}
+
+.statusMenu button:hover,
+.statusMenu button:focus-visible,
+.statusMenu .statusOptionActive {
+  border-color: rgba(79, 133, 124, 0.26);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 8px 9px;
+}
+
+.field textarea {
+  min-height: 106px;
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible,
+.toolButton:focus-visible,
+.actionButton:focus-visible,
+.iconButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fieldGridThree {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.datePartGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+  gap: 5px;
+}
+
+.datePartGrid input {
+  min-width: 0;
+}
+
+.locationCountryPicker {
+  display: grid;
+  gap: 6px;
+}
+
+.locationCountryTrigger {
+  display: flex;
+  min-height: 39px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 7px 9px;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.locationCountryTrigger > span:nth-child(2) {
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.locationCountryTrigger > svg:last-child {
+  color: var(--muted);
+  transition: transform 150ms ease;
+}
+
+.locationCountryTriggerOpen,
+.locationCountryTrigger:hover,
+.locationCountryTrigger:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.locationCountryTriggerOpen > svg:last-child {
+  transform: rotate(180deg);
+}
+
+.locationCountryFlag {
+  display: inline-flex;
+  width: 20px;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.locationCountryMenu {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(29, 47, 58, 0.12);
+}
+
+.locationCountryMenu > input {
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  outline: 0;
+  background: #fff;
+  color: var(--ink);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.locationCountryMenu > input:focus {
+  box-shadow: inset 0 0 0 2px var(--accent-soft);
+}
+
+.locationCountryList {
+  display: grid;
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.locationCountryList button {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.locationCountryList button > span:first-child {
+  width: 20px;
+  flex: 0 0 20px;
+  font-size: 15px;
+}
+
+.locationCountryList button:hover,
+.locationCountryList button:focus-visible,
+.locationCountryList .locationCountryOptionActive {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.locationCountryList p {
+  margin: 0;
+  color: var(--muted);
+  padding: 12px 8px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.locationFieldGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.careerTagsField {
+  display: grid;
+  gap: 6px;
+  color: #40565a;
+  font-size: 12px;
+}
+
+.careerTagEditor {
+  display: flex;
+  min-height: 39px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  padding: 5px 7px;
+}
+
+.careerTagEditor:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.careerTagEditor > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(79, 133, 124, 0.22);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  padding: 3px 7px;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.careerTagEditor > button:hover,
+.careerTagEditor > button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.careerTagEditor input {
+  min-width: 64px;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 3px 2px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkboxField input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+}
+
+.inspectorActions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+}
+
+.inspectorDeleteButton {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  padding: 0 9px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.inspectorDeleteButton:hover,
+.inspectorDeleteButton:focus-visible {
+  border-color: rgba(165, 79, 67, 0.22);
+  background: rgba(165, 79, 67, 0.08);
+  outline: none;
+}
+
+.inspectorDeleteButton:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 133, 124, 0.18);
+}
+
+.lineAppearanceEditor {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 12px;
+}
+
+.lineAppearanceEditor > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.lineColorPicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lineColorPicker button {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--line-color);
+  cursor: pointer;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.lineColorPicker button:hover,
+.lineColorPicker button:focus-visible,
+.lineColorPicker .lineColorActive {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.lineColorPicker .lineColorReset {
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lineActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.lineActionsDirected {
+  grid-template-columns: 1fr 38px 1fr;
+}
+
+.lineActionsTop {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  margin-bottom: 12px;
+  padding-top: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 5px 10px rgba(29, 47, 58, 0.05);
+}
+
+.lineActions button {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lineActions button:hover,
+.lineActions button:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink);
+  outline: none;
+}
+
+.lineActions .lineDeleteButton {
+  border-color: #f0b7b1;
+  color: var(--danger);
+}
+
+.lineActions .lineDeleteButton:hover,
+.lineActions .lineDeleteButton:focus-visible {
+  border-color: var(--danger);
+  background: #fff8f6;
+}
+
+.lineActions .lineDirectionButton {
+  padding: 0;
+  color: var(--accent);
+}
+
+.privacyNote {
+  margin: -3px 0 0;
+  font-size: 11px;
+}
+
+.relationshipSummary {
+  margin: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--paper-muted);
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.emotionalRelationshipPicker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.emotionalRelationshipGroups {
+  display: grid;
+  gap: 14px;
+}
+
+.emotionalRelationshipGroups .relationshipTypeGroup > p {
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line-soft);
+  color: #8392aa;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.emotionalRelationshipPicker button {
+  display: grid;
+  min-width: 0;
+  min-height: 58px;
+  place-items: center;
+  gap: 2px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 6px;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  text-align: center;
+  cursor: pointer;
+}
+
+.emotionalRelationshipPicker button:hover,
+.emotionalRelationshipPicker button:focus-visible,
+.emotionalRelationshipPicker .emotionalRelationshipActive {
+  border-color: rgba(79, 133, 124, 0.45);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.emotionalRelationshipPicker .legendLine {
+  width: 64px;
+  height: 18px;
+}
+
+.emptyInspector {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.emptyInspector strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.editShell {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.persistenceLoading {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  place-items: center;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.editShell .canvasPane {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+
+.editShell .reactFlow {
+  height: 100%;
+  min-height: 0;
+}
+
+.editShell .reactFlow :global(.react-flow__controls) {
+  right: auto;
+  bottom: 16px;
+  left: 16px;
+}
+
+.workspaceHeader {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 24;
+  display: flex;
+  max-width: calc(100% - 32px);
+  flex-wrap: nowrap;
+  min-height: 52px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(201, 216, 212, 0.9);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 7px;
+  box-shadow: 0 8px 24px rgba(29, 47, 58, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.workspaceFileTrigger,
+.workspaceToggle {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.workspaceFileTrigger {
+  flex: 0 0 36px;
+  width: 36px;
+}
+
+.workspaceToggle {
+  flex: 0 0 auto;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.workspaceFile {
+  position: relative;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.workspaceTitle {
+  display: grid;
+  flex: 0 1 160px;
+  min-width: 132px;
+  max-width: 220px;
+  padding-inline: 3px 9px;
+  border-right: 1px solid var(--line-soft);
+}
+
+.workspaceTitle strong,
+.workspaceTitle span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspaceTitle strong {
+  font-size: 13px;
+}
+
+.workspaceTitle span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.fileMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  width: 248px;
+  max-width: calc(100vw - 20px);
+  overflow: hidden;
+  border: 1px solid rgba(201, 216, 212, 0.95);
+  border-radius: 13px;
+  background: #fff;
+  padding: 8px;
+  box-shadow: 0 14px 30px rgba(29, 47, 58, 0.14);
+}
+
+.fileMenuLabel {
+  margin: 4px 8px 6px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+}
+
+.fileMenuNotice {
+  margin: 0 8px 10px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.fileMenuSeparator {
+  height: 1px;
+  margin: 8px 0;
+  background: var(--line-soft);
+}
+
+.fileMenuItem {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fileMenuItem svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+.fileMenuItem:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.fileMenuItem:hover,
+.fileMenuItem:focus-visible {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.workspaceSaveStatus {
+  flex: 0 0 auto;
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.workspaceSaveStatus[data-save-status='saving'] {
+  color: var(--accent);
+}
+
+.workspaceSaveStatus[data-save-status='error'] {
+  color: var(--danger);
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.pngExportFrame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.workspaceFileTrigger:hover,
+.workspaceFileTrigger:focus-visible,
+.workspaceToggle:hover,
+.workspaceToggle:focus-visible,
+.workspaceFileTriggerOpen,
+.workspaceToggleActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.editShell .legendRail {
+  position: absolute;
+  top: 80px;
+  bottom: 92px;
+  left: 16px;
+  z-index: 22;
+  width: 210px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(248, 251, 249, 0.96);
+  padding: 14px;
+  box-shadow: 0 10px 28px rgba(29, 47, 58, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.editShell .inspector {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 22;
+  width: 392px;
+  overflow: auto;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+  background: rgba(251, 253, 250, 0.985);
+  padding: 18px 20px 28px;
+  scrollbar-color: rgba(99, 119, 117, 0.36) transparent;
+  scrollbar-width: thin;
+  box-shadow: -12px 0 32px rgba(29, 47, 58, 0.09);
+  backdrop-filter: blur(12px);
+}
+
+.editShell .inspector::-webkit-scrollbar {
+  width: 6px;
+}
+
+.editShell .inspector::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editShell .inspector::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: rgba(99, 119, 117, 0.32);
+  background-clip: padding-box;
+}
+
+.editShell .inspector::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 133, 124, 0.55);
+  background-clip: padding-box;
+}
+
+.editShell .inspector .inspectorContent {
+  gap: 8px;
+}
+
+.editShell .toolBar {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  z-index: 24;
+  display: flex;
+  width: max-content;
+  max-width: calc(100% - 132px);
+  min-height: 62px;
+  align-items: center;
+  gap: 5px;
+  overflow: visible;
+  border: 1px solid rgba(201, 216, 212, 0.92);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px;
+  box-shadow: 0 10px 28px rgba(29, 47, 58, 0.14);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+.canvasModeTools {
+  display: flex;
+  gap: 4px;
+}
+
+.canvasToolButton {
+  position: relative;
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #536a6e;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.canvasToolButton:hover,
+.canvasToolButton:focus-visible {
+  border-color: var(--line);
+  background: var(--paper-muted);
+  color: var(--ink);
+  outline: none;
+}
+
+.canvasToolButton:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 133, 124, 0.18);
+}
+
+.canvasToolButtonActive {
+  border-color: rgba(79, 133, 124, 0.36);
+  background: var(--accent-soft);
+  color: #285653;
+}
+
+.canvasToolButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.34;
+}
+
+.canvasToolButton[data-tooltip]::before,
+.canvasToolButton[data-tooltip]::after {
+  position: absolute;
+  left: 50%;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+}
+
+.canvasToolButton[data-tooltip]::before {
+  bottom: calc(100% + 5px);
+  border: 5px solid transparent;
+  border-top-color: #1f3042;
+  content: '';
+  transform: translate(-50%, 3px);
+}
+
+.canvasToolButton[data-tooltip]::after {
+  bottom: calc(100% + 15px);
+  width: max-content;
+  max-width: 190px;
+  border-radius: 7px;
+  background: #1f3042;
+  color: #fff;
+  content: attr(data-tooltip);
+  padding: 6px 8px;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  box-shadow: 0 5px 14px rgba(29, 47, 58, 0.18);
+  transform: translate(-50%, 4px);
+}
+
+.canvasToolButton[data-tooltip]:hover::before,
+.canvasToolButton[data-tooltip]:hover::after,
+.canvasToolButton[data-tooltip]:focus-visible::before,
+.canvasToolButton[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.canvasToolButton[aria-expanded='true']::before,
+.canvasToolButton[aria-expanded='true']::after {
+  display: none;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 28px;
+  flex: 0 0 1px;
+  margin: 0 4px;
+  background: var(--line-soft);
+}
+
+.addPersonTool {
+  position: relative;
+  display: flex;
+}
+
+.labelTool {
+  position: relative;
+  display: flex;
+}
+
+.viewTool {
+  position: relative;
+  display: flex;
+}
+
+.viewToolButton {
+  width: 54px;
+  flex-basis: 54px;
+  gap: 4px;
+}
+
+.viewToolCount {
+  min-width: 14px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.viewMenu {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  width: min(180px, calc(100vw - 28px));
+  max-height: min(430px, calc(100vh - 132px));
+  gap: 7px;
+  overflow-y: auto;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 11px;
+  box-shadow: 0 14px 36px rgba(29, 47, 58, 0.16);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+.viewMenuHeading {
+  margin: 0 2px 1px;
+  color: #536a6e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.viewMenuList {
+  display: grid;
+  gap: 5px;
+}
+
+.viewVisibilityOption {
+  display: flex;
+  min-height: 31px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: #fff;
+  color: #40565a;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.viewVisibilityOption:hover,
+.viewVisibilityOption:focus-within {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.viewVisibilityOption:has(input:checked) {
+  border-color: rgba(79, 133, 124, 0.42);
+  background: var(--accent-soft);
+  color: #285653;
+}
+
+.viewVisibilityOption input {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.viewVisibilityOption > svg {
+  flex: 0 0 auto;
+}
+
+.viewVisibilityOption:has(input:not(:checked)) {
+  background: #f5f7f6;
+  color: #829094;
+  opacity: 0.72;
+}
+
+.labelMenu {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  width: min(286px, calc(100vw - 28px));
+  max-height: min(520px, calc(100vh - 132px));
+  gap: 10px;
+  overflow-y: auto;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 14px;
+  box-shadow: 0 14px 36px rgba(29, 47, 58, 0.16);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+.labelMenuHeading {
+  margin: 0 2px 2px;
+  color: #536a6e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.labelMenuGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.labelVisibilityOption,
+.labelWrapOption {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #40565a;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.labelVisibilityOption {
+  min-width: 0;
+  min-height: 34px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  padding: 6px 8px;
+}
+
+.labelVisibilityOption:has(input:checked) {
+  border-color: rgba(79, 133, 124, 0.42);
+  background: var(--accent-soft);
+  color: #285653;
+}
+
+.labelVisibilityOption:hover,
+.labelVisibilityOption:focus-within {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.labelVisibilityOption input,
+.labelWrapOption input {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.labelVisibilityOption span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.labelWrapOption {
+  border-top: 1px solid var(--line-soft);
+  padding: 10px 3px 1px;
+}
+
+.toolChevron {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+
+.personMenu {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  width: 190px;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 11px;
+  box-shadow: 0 14px 36px rgba(29, 47, 58, 0.14);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+  max-height: min(420px, calc(100vh - 132px));
+  overflow-y: auto;
+}
+
+.personMenuHeading {
+  grid-column: 1 / -1;
+  margin: 3px 4px 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.personMenu button {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  padding: 7px 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.personMenu button:hover,
+.personMenu button:focus-visible {
+  border-color: rgba(79, 133, 124, 0.3);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.selectionActionBar {
+  position: absolute;
+  bottom: 92px;
+  left: 50%;
+  z-index: 25;
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(201, 216, 212, 0.94);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 6px;
+  box-shadow: 0 10px 28px rgba(29, 47, 58, 0.14);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+.selectionActionBarAnchored {
+  bottom: auto;
+  transform: translate(-50%, -100%);
+}
+
+.selectionCount {
+  color: var(--muted);
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.selectionActionDivider {
+  width: 1px;
+  height: 24px;
+  background: var(--line-soft);
+}
+
+.selectionActionBar button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 9px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.selectionActionBar button:hover,
+.selectionActionBar button:focus-visible {
+  border-color: var(--line);
+  background: var(--paper-muted);
+  outline: none;
+}
+
+.selectionActionBar button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 133, 124, 0.18);
+}
+
+.selectionActionBar button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.selectionActionBar .selectionDeleteButton {
+  color: var(--danger);
+}
+
+.selectionActionBar .selectionDeleteButton:hover,
+.selectionActionBar .selectionDeleteButton:focus-visible {
+  border-color: rgba(165, 79, 67, 0.22);
+  background: rgba(165, 79, 67, 0.08);
+}
+
+.canvasFeedback {
+  position: absolute;
+  bottom: 92px;
+  left: 50%;
+  z-index: 22;
+  margin: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(29, 47, 58, 0.09);
+  transform: translateX(-50%);
+}
+
+@media (max-width: 1020px) {
+  .editorShell {
+    grid-template-columns: 190px minmax(0, 1fr) 246px;
+  }
+
+  .toolRail,
+  .inspector,
+  .legendRail,
+  .previewLegendRail {
+    padding-inline: 14px;
+  }
+
+  .toolBar {
+    grid-template-columns: minmax(125px, 0.7fr) minmax(220px, 1.2fr) minmax(205px, 1.1fr) minmax(150px, 0.8fr);
+    gap: 9px;
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .editorShell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(620px, 1fr) auto auto;
+    min-height: 0;
+  }
+
+  .toolRail,
+  .inspector,
+  .legendRail,
+  .previewLegendRail,
+  .canvasPane,
+  .previewShell .canvasPane {
+    grid-column: 1;
+    border: 0;
+  }
+
+  .legendRail,
+  .previewLegendRail {
+    grid-row: 1;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .canvasPane,
+  .previewShell .canvasPane {
+    grid-row: 2;
+  }
+
+  .inspector {
+    grid-row: 3;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .toolBar {
+    position: static;
+    grid-column: 1;
+    grid-row: 4;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    padding: 12px;
+  }
+
+  .previewShell {
+    grid-template-rows: minmax(620px, 1fr) auto;
+  }
+
+  .previewShell .previewLegendRail {
+    grid-row: 2;
+  }
+
+  .toolRail,
+  .inspector {
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .addTools {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .canvasPane,
+  .reactFlow {
+    min-height: 620px;
+  }
+
+  .editShell {
+    display: block;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .editShell .canvasPane,
+  .editShell .reactFlow {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+  }
+
+  .workspaceHeader {
+    top: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    gap: 5px;
+  }
+
+  .workspaceTitle {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 160px;
+    padding-inline: 3px 7px;
+  }
+
+  .workspaceTitle strong {
+    font-size: 12px;
+  }
+
+  .workspaceTitle span {
+    font-size: 8px;
+  }
+
+  .workspaceSaveStatus {
+    padding-inline: 2px;
+  }
+
+  .editShell .canvasHint {
+    display: none;
+  }
+
+  .editShell .legendRail {
+    top: 68px;
+    bottom: 86px;
+    left: 10px;
+    width: min(210px, calc(100% - 20px));
+  }
+
+  .editShell .inspector {
+    top: 68px;
+    right: 10px;
+    bottom: 86px;
+    width: min(392px, calc(100% - 20px));
+    border: 1px solid var(--line);
+    border-radius: 13px;
+  }
+
+  .editShell .toolBar {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    width: calc(100% - 20px);
+    max-width: none;
+    align-items: center;
+    gap: 3px;
+    padding: 8px;
+  }
+
+  .canvasToolButton {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .toolbarDivider {
+    margin-inline: 1px;
+  }
+
+  .canvasFeedback {
+    bottom: 76px;
+    max-width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 420px) {
+  .workspaceHeader {
+    gap: 4px;
+  }
+
+  .workspaceFileTrigger {
+    flex-basis: 34px;
+    width: 34px;
+  }
+
+  .workspaceTitle {
+    max-width: 150px;
+    padding-inline: 3px 6px;
+  }
+
+  .workspaceToggle {
+    padding-inline: 8px;
+  }
+}
