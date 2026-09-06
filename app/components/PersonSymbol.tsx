@@ -30,11 +30,16 @@ function isValidYear(value: number | null): value is number {
   return value !== null && Number.isInteger(value);
 }
 
-export function getDerivedAge(person: Person, currentYear = new Date().getFullYear()): number | null {
+export function getDerivedAge( person: Person, currentYear: number  = new Date().getFullYear() ): number | null {
+  // birth year does not exist or is NaN
   if (!isValidYear(person.birthYear)) return null;
+  // A death year exists and is valid
   if (isValidYear(person.deathYear)) {
     return person.deathYear >= person.birthYear ? person.deathYear - person.birthYear : null;
-  }
+  } 
+  // person is dead but has no valid death year
+  if (person.deceased) return null;
+  // no death year exists -> calculate with current date
   return currentYear >= person.birthYear ? currentYear - person.birthYear : null;
 }
 
