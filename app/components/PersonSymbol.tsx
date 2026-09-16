@@ -30,17 +30,171 @@ function isValidYear(value: number | null): value is number {
   return value !== null && Number.isInteger(value);
 }
 
-export function getDerivedAge( person: Person, currentYear: number  = new Date().getFullYear() ): number | null {
-  // birth year does not exist or is NaN
-  if (!isValidYear(person.birthYear)) return null;
-  // A death year exists and is valid
+function isValidMonth(value: number | null): value is number {
+  return value !== null && Number.isInteger(value) && value >= 1 && value <= 12;
+}
+
+function isValidDay(value: number | null): value is number {
+  return value !== null && Number.isInteger(value) && value >= 1 && value <= 31;
+}
+
+/**
+ * Converts String/Number-Wert in number | null.
+ */
+function parseNumericField(
+  value: string | number | null | undefined
+): number | null {
+  if (value === null || value === undefined) return null;
+  const n = typeof value === 'string' ? Number.parseInt(value, 10) : value;
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Trys to build a save date-object.
+ * month and day starts with 1
+ * returns null, if date is invalid or does not exists 30th of feburary
+ */
+function tryMakeDate(year: number, month: number, day?: number): Date | null {
+  const m = month - 1; // JS: 0-based
+  const d = day ?? 1;
+
+  const date = new Date(year, m, d);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== m ||
+    (day !== undefined && date.getDate() !== d)
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+/**
+ * Calculates the age in years between two given dates
+ * birthdate <= referenceDate
+ */
+function calculateAge(birthdate: Date, referenceDate: Date): number {
+  if (!birthdate || !referenceDate) {
+    throw new Error('Invalid dates given to calculateAge()');
+  }
+  let age = referenceDate.getFullYear() - birthdate.getFullYear();
+
+  const birthMonth = birthdate.getMonth();
+  const birthDay = birthdate.getDate();
+
+  const refMonth = referenceDate.getMonth();
+  const refDay = referenceDate.getDate();
+
+  if (refMonth < birthMonth || (refMonth === birthMonth && refDay < birthDay)) {
+    age -= 1;
+  }
+
+  return age;
+}
+
+/**
+ * Calculates a person's age in years based on available birth and death data.
+ *
+ * - Returns null if the birth year is missing or invalid.
+ * - If a valid death year exists:
+ *   - Returns null if deathYear < birthYear.
+ *   - Returns 0 if deathYear === birthYear.
+ *   - Otherwise, computes the age at death using the most specific available
+ *     date information (year + month + day, year + month, or year only).
+ * - If the person is marked as deceased but has no valid death year, returns null.
+ * - If the person is alive (no valid death year and not deceased):
+ *   - Computes the current age using today's date and the most specific
+ *     available birth date information (year + month + day, year + month, or year only).
+ *
+ * Invalid or inconsistent dates (e.g., impossible days like 31.02.) are treated
+ * as missing, causing the function to fall back to less specific calculations
+ * or to return null.
+ */
+export function getDerivedAge(person: Person): number | null {
+  // 1) birth year have to be valid
+  if (!isValidYear(person.birthYear)) {
+    return null;
+  }
+
+  // 2) death year exists an is valid
   if (isValidYear(person.deathYear)) {
-    return person.deathYear >= person.birthYear ? person.deathYear - person.birthYear : null;
-  } 
-  // person is dead but has no valid death year
-  if (person.deceased) return null;
-  // no death year exists -> calculate with current date
-  return currentYear >= person.birthYear ? currentYear - person.birthYear : null;
+    if (person.deathYear < person.birthYear) {
+      return null;
+    }
+    if (person.deathYear === person.birthYear) {
+      return 0;
+    }
+
+    const birthMonth : number = parseNumericField(person.profile.birthMonth);
+    const birthDay : number = parseNumericField(person.profile.birthDay);
+    const deathMonth : number = parseNumericField(person.profile.deathMonth);
+    const deathDay : number = parseNumericField(person.profile.deathDay);
+
+    const bMonthValid : boolean = isValidMonth(birthMonth);
+    const dMonthValid : boolean = isValidMonth(deathMonth);
+    const bDayValid : boolean = isValidDay(birthDay);
+    const dDayValid : boolean = isValidDay(deathDay);
+
+    // 2a) year + month + day for birth and death
+    if (bMonthValid && dMonthValid && bDayValid && dDayValid) {
+      const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
+      const deathdate = tryMakeDate(person.deathYear, deathMonth, deathDay);
+      if (birthdate && deathdate) {
+        return calculateAge(birthdate, deathdate);
+      }
+    }
+
+    // 2b) year + month (no day) for birth and death
+    if (bMonthValid && dMonthValid) {
+      const birthdate = tryMakeDate(person.birthYear, birthMonth);
+      const deathdate = tryMakeDate(person.deathYear, deathMonth);
+      if (birthdate && deathdate) {
+        return calculateAge(birthdate, deathdate);
+      }
+    }
+
+    // 2c) only years
+    return person.deathYear - person.birthYear;
+  }
+
+  // 3) person is marked as dead, but deathyear is unknown -> no age
+  if (person.deceased) {
+    return null;
+  }
+
+  // 4) Living person: age until today
+  const today = new Date();
+
+  const birthMonth = parseNumericField(person.profile.birthMonth);
+  const birthDay = parseNumericField(person.profile.birthDay);
+
+  const bMonthValid = isValidMonth(birthMonth);
+  const bDayValid = isValidDay(birthDay);
+
+  // 4a) year + month + day
+  if (bMonthValid && bDayValid) {
+    const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
+    if (birthdate) {
+      return calculateAge(birthdate, today);
+    }
+  }
+
+  // 4b) year + month
+  if (bMonthValid) {
+    const birthdate = tryMakeDate(person.birthYear, birthMonth);
+    if (birthdate) {
+      return calculateAge(birthdate, today);
+    }
+  }
+
+  // 4c) only year
+  const currentYear = today.getFullYear();
+  if (currentYear < person.birthYear) {
+    return null;
+  }
+  return currentYear - person.birthYear;
 }
 
 function personShapeKind(person: Person): SymbolKind | Gender {
