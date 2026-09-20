@@ -1,6 +1,6 @@
 {
-  "name": "genogram-canvas",
-  "version": "1.0.0",
+  "name": "opengenogram",
+  "version": "1.0.1",
   "private": true,
   "license": "MIT",
   "engines": {
