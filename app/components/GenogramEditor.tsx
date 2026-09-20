@@ -21,7 +21,7 @@ import {
   type Viewport as FlowViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -1141,6 +1141,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
   const fileTriggerRef = useRef<HTMLButtonElement | null>(null);
   const projectFileInputRef = useRef<HTMLInputElement | null>(null);
   const storedProject = useGenogramStore((state) => state.project);
+  const replaceProject = useGenogramStore((state) => state.replaceProject); 
   const ui = useGenogramStore((state) => state.ui);
   const addPerson = useGenogramStore((state) => state.addPerson);
   const addAnnotation = useGenogramStore((state) => state.addAnnotation);
@@ -1379,6 +1380,36 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
       return false;
     }
   }, [project, setSaveStatus, showFeedback]);
+  
+const renameProject = useCallback(async (): Promise<void> => {
+  const nextName = window.prompt('Rename project', project.name);
+  if (nextName === null) return; 
+  const trimmedName = nextName.trim();
+  if (trimmedName === '' || trimmedName === project.name) return;
+  setSaveStatus('saving');
+  try {
+    const renamedProject: Project = {
+      ...project,
+      name: trimmedName,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await saveLocalProject(renamedProject);
+    replaceProject(renamedProject);
+    setSaveStatus('saved');
+
+    showFeedback('success', 'Project renamed.');
+  } catch (error: unknown) {
+    const message = projectOperationError(error, 'The project could not be renamed.');
+    setSaveStatus('error', message);
+    showFeedback('error', message, 5200);
+  }
+}, [
+  project,
+  replaceProject,
+  setSaveStatus,
+  showFeedback,
+]);
 
   const startNewProject = useCallback(async () => {
     try {
@@ -1892,6 +1923,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
             )}
           </div>
           <div className={styles.workspaceTitle}><strong>{project.name}</strong><span>Private local project</span></div>
+          <button className={styles.workspaceRename} type="button" onClick={() => { void renameProject(); }} disabled={ui.saveStatus === 'saving'} aria-label={`Rename ${project.name}`} title="Rename"><Pencil size={16} /></button>
           <span className={styles.workspaceSaveStatus} data-save-status={ui.saveStatus} title={ui.saveError ?? undefined} role="status" aria-live="polite">{ui.saveStatus === 'saving' ? 'Saving on this device…' : ui.saveStatus === 'error' ? 'Error' : 'Saved on this device'}</span>
           <button className={`${styles.workspaceToggle} ${showLegend ? styles.workspaceToggleActive : ''}`} type="button" onClick={() => setShowLegend((visible) => !visible)} aria-expanded={showLegend}><BookOpen size={16} aria-hidden="true" />Legend</button>
           <input ref={projectFileInputRef} className={styles.hiddenFileInput} type="file" accept=".json,application/json" onChange={handleProjectFileChange} aria-label="Open project file" />
