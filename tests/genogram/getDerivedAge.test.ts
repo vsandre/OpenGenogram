@@ -5,28 +5,29 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { createEmptyPersonProfile, createPerson, type Person, type PersonProfile } from '../../app/lib/genogram/model';
 import { getDerivedAge } from '../../app/components/PersonSymbol';
 
 function makePerson(
   birthYear: number | null,
   deathYear: number | null,
   deceased: boolean,
-  profile: {
-    birthMonth?: string | number | null;
-    birthDay?: string | number | null;
-    deathMonth?: string | number | null;
-    deathDay?: string | number | null;
-  } = {}
+  profile: Partial<PersonProfile> = {},
 ): Person {
-  return {
-    id: "person-test",
-    name: "Test Person",
-    gender: "female",
-    birthYear,
-    deathYear,
-    deceased,
-    profile,
-  };
+  return createPerson(
+    'person-test',
+    'Test Person',
+    'female',
+    {
+      birthYear,
+      deathYear,
+      deceased,
+      profile: {
+        ...createEmptyPersonProfile(),
+        ...profile,
+      },
+    },
+  );
 }
 
 test('getDerivedAge: returns null if birthYear is null', () => {
@@ -52,7 +53,7 @@ test('getDerivedAge: living person with only birth year', () => {
 test('getDerivedAge: living person with birth year and month', () => {
   // Born 1990-06, no day
   const p = makePerson(1990, null, false, {
-    birthMonth: 6,
+    birthMonth: '6',
   });
   const age = getDerivedAge(p);
 
@@ -69,8 +70,8 @@ test('getDerivedAge: living person with birth year and month', () => {
 test('getDerivedAge: living person with full birth date', () => {
   // Born 1990-06-15
   const p = makePerson(1990, null, false, {
-    birthMonth: 6,
-    birthDay: 15,
+    birthMonth: '6',
+    birthDay: '15',
   });
   const age = getDerivedAge(p);
 
@@ -103,8 +104,8 @@ test('getDerivedAge: deceased with deathYear < birthYear', () => {
 test('getDerivedAge: deceased with year and month only', () => {
   // Born 1990-06, died 2020-03
   const p = makePerson(1990, 2020, true, {
-    birthMonth: 6,
-    deathMonth: 3,
+    birthMonth: '6',
+    deathMonth: '3',
   });
   // Birthday in June not reached by March → age = 2020 - 1990 - 1 = 29
   assert.strictEqual(getDerivedAge(p), 29);
@@ -113,10 +114,10 @@ test('getDerivedAge: deceased with year and month only', () => {
 test('getDerivedAge: deceased with full dates, birthday already passed', () => {
   // Born 1990-06-15, died 2020-07-01
   const p = makePerson(1990, 2020, true, {
-    birthMonth: 6,
-    birthDay: 15,
-    deathMonth: 7,
-    deathDay: 1,
+    birthMonth: '6',
+    birthDay: '15',
+    deathMonth: '7',
+    deathDay: '1',
   });
   // Birthday in 2020 already passed → age = 30
   assert.strictEqual(getDerivedAge(p), 30);
@@ -125,10 +126,10 @@ test('getDerivedAge: deceased with full dates, birthday already passed', () => {
 test('getDerivedAge: deceased with full dates, birthday not yet passed', () => {
   // Born 1990-06-15, died 2020-05-01
   const p = makePerson(1990, 2020, true, {
-    birthMonth: 6,
-    birthDay: 15,
-    deathMonth: 5,
-    deathDay: 1,
+    birthMonth: '6',
+    birthDay: '15',
+    deathMonth: '5',
+    deathDay: '1',
   });
   // Birthday in 2020 not yet reached → age = 29
   assert.strictEqual(getDerivedAge(p), 29);
@@ -142,36 +143,28 @@ test('getDerivedAge: deceased but no valid death year → null', () => {
 test('getDerivedAge: invalid day (31.02.) leads to fallback', () => {
   // Born 1990-02-31 (invalid), but month is valid
   const p = makePerson(1990, null, false, {
-    birthMonth: 2,
-    birthDay: 31,
+    birthMonth: '2',
+    birthDay: '31',
   });
   // Should fall back to year+month logic, not crash
   const age = getDerivedAge(p);
   assert.ok(typeof age === 'number' && age >= 0);
 });
 
-test('getDerivedAge: string months and days are parsed correctly', () => {
-  // Born 1990-06-15 as strings
+test('getDerivedAge: empty month and day treated as missing', () => {
   const p = makePerson(1990, null, false, {
-    birthMonth: '6',
-    birthDay: '15',
+    birthMonth: '',
+    birthDay: '',
   });
   const age = getDerivedAge(p);
-
-  const today = new Date();
-  const birthdayThisYear = new Date(today.getFullYear(), 5, 15);
-  const expected =
-    today.getFullYear() -
-    1990 -
-    (today < birthdayThisYear ? 1 : 0);
-
-  assert.strictEqual(age, expected);
+  const currentYear = new Date().getFullYear();
+  assert.strictEqual(age, currentYear - 1990);
 });
 
-test('getDerivedAge: null month and day treated as missing', () => {
+test('getDerivedAge: text as month and day treated as missing', () => {
   const p = makePerson(1990, null, false, {
-    birthMonth: null,
-    birthDay: null,
+    birthMonth: 'april',
+    birthDay: 'first',
   });
   const age = getDerivedAge(p);
   const currentYear = new Date().getFullYear();

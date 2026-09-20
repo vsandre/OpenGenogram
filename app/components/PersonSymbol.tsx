@@ -54,7 +54,15 @@ function parseNumericField(
  * month and day starts with 1
  * returns null, if date is invalid or does not exists 30th of feburary
  */
-function tryMakeDate(year: number, month: number, day?: number): Date | null {
+function tryMakeDate(year: number | null, month: number | null, day?: number | null): Date | null {
+  if (!isValidYear(year) || !isValidMonth(month)) {
+    return null;
+  }
+
+  if (day !== undefined && day !== null && !isValidDay(day)) {
+    return null;
+  }
+
   const m = month - 1; // JS: 0-based
   const d = day ?? 1;
 
@@ -63,7 +71,7 @@ function tryMakeDate(year: number, month: number, day?: number): Date | null {
   if (
     date.getFullYear() !== year ||
     date.getMonth() !== m ||
-    (day !== undefined && date.getDate() !== d)
+    (day !== undefined && day !== null && date.getDate() !== d)
   ) {
     return null;
   }
@@ -127,34 +135,37 @@ export function getDerivedAge(person: Person): number | null {
       return 0;
     }
 
-    const birthMonth : number = parseNumericField(person.profile.birthMonth);
-    const birthDay : number = parseNumericField(person.profile.birthDay);
-    const deathMonth : number = parseNumericField(person.profile.deathMonth);
-    const deathDay : number = parseNumericField(person.profile.deathDay);
+    const profile = person.profile;
+    if (!profile) {
 
-    const bMonthValid : boolean = isValidMonth(birthMonth);
-    const dMonthValid : boolean = isValidMonth(deathMonth);
-    const bDayValid : boolean = isValidDay(birthDay);
-    const dDayValid : boolean = isValidDay(deathDay);
+      const birthMonth = parseNumericField(person.profile?.birthMonth);
+      const birthDay   = parseNumericField(person.profile?.birthDay);
+      const deathMonth = parseNumericField(person.profile?.deathMonth);
+      const deathDay   = parseNumericField(person.profile?.deathDay);
 
-    // 2a) year + month + day for birth and death
-    if (bMonthValid && dMonthValid && bDayValid && dDayValid) {
-      const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
-      const deathdate = tryMakeDate(person.deathYear, deathMonth, deathDay);
-      if (birthdate && deathdate) {
-        return calculateAge(birthdate, deathdate);
+      const bMonthValid : boolean = isValidMonth(birthMonth);
+      const dMonthValid : boolean = isValidMonth(deathMonth);
+      const bDayValid   : boolean = isValidDay(birthDay);
+      const dDayValid   : boolean = isValidDay(deathDay);
+
+      // 2a) year + month + day for birth and death
+      if (bMonthValid && dMonthValid && bDayValid && dDayValid) {
+        const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
+        const deathdate = tryMakeDate(person.deathYear, deathMonth, deathDay);
+        if (birthdate && deathdate) {
+          return calculateAge(birthdate, deathdate);
+        }
+      }
+
+      // 2b) year + month (no day) for birth and death
+      if (bMonthValid && dMonthValid) {
+        const birthdate = tryMakeDate(person.birthYear, birthMonth);
+        const deathdate = tryMakeDate(person.deathYear, deathMonth);
+        if (birthdate && deathdate) {
+          return calculateAge(birthdate, deathdate);
+        }
       }
     }
-
-    // 2b) year + month (no day) for birth and death
-    if (bMonthValid && dMonthValid) {
-      const birthdate = tryMakeDate(person.birthYear, birthMonth);
-      const deathdate = tryMakeDate(person.deathYear, deathMonth);
-      if (birthdate && deathdate) {
-        return calculateAge(birthdate, deathdate);
-      }
-    }
-
     // 2c) only years
     return person.deathYear - person.birthYear;
   }
@@ -167,28 +178,30 @@ export function getDerivedAge(person: Person): number | null {
   // 4) Living person: age until today
   const today = new Date();
 
-  const birthMonth = parseNumericField(person.profile.birthMonth);
-  const birthDay = parseNumericField(person.profile.birthDay);
+  const profile = person.profile;
+  if (!profile) {
+    const birthMonth  = parseNumericField(person.profile?.birthMonth);
+    const birthDay    = parseNumericField(person.profile?.birthDay);
 
-  const bMonthValid = isValidMonth(birthMonth);
-  const bDayValid = isValidDay(birthDay);
+    const bMonthValid = isValidMonth(birthMonth);
+    const bDayValid   = isValidDay(birthDay);
 
-  // 4a) year + month + day
-  if (bMonthValid && bDayValid) {
-    const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
-    if (birthdate) {
-      return calculateAge(birthdate, today);
+    // 4a) year + month + day
+    if (bMonthValid && bDayValid) {
+      const birthdate = tryMakeDate(person.birthYear, birthMonth, birthDay);
+      if (birthdate) {
+        return calculateAge(birthdate, today);
+      }
+    }
+
+    // 4b) year + month
+    if (bMonthValid) {
+      const birthdate = tryMakeDate(person.birthYear, birthMonth);
+      if (birthdate) {
+        return calculateAge(birthdate, today);
+      }
     }
   }
-
-  // 4b) year + month
-  if (bMonthValid) {
-    const birthdate = tryMakeDate(person.birthYear, birthMonth);
-    if (birthdate) {
-      return calculateAge(birthdate, today);
-    }
-  }
-
   // 4c) only year
   const currentYear = today.getFullYear();
   if (currentYear < person.birthYear) {
