@@ -3320,7 +3320,8 @@
 }
 
 .workspaceFileTrigger,
-.workspaceToggle {
+.workspaceToggle,
+.workspaceRename {
   display: inline-flex;
   min-height: 36px;
   align-items: center;
@@ -3359,7 +3360,6 @@
   min-width: 132px;
   max-width: 220px;
   padding-inline: 3px 9px;
-  border-right: 1px solid var(--line-soft);
 }
 
 .workspaceTitle strong,
@@ -3461,6 +3461,7 @@
   font-size: 10px;
   font-weight: 750;
   white-space: nowrap;
+  border-left: 1px solid var(--line-soft);
 }
 
 .workspaceSaveStatus[data-save-status='saving'] {
@@ -3492,7 +3493,8 @@
 .workspaceToggle:hover,
 .workspaceToggle:focus-visible,
 .workspaceFileTriggerOpen,
-.workspaceToggleActive {
+.workspaceToggleActive,
+.workspaceRename:hover {
   border-color: var(--accent);
   background: var(--accent-soft);
   outline: none;
