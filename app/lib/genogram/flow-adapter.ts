@@ -157,7 +157,7 @@ export function personSymbolSize(person: Person): number {
 
 function personSymbolOffsets(person: Person, symbolSize: number): PersonSymbolAnchorOffsets {
   let bounds = { left: 28, right: 84, top: 30, bottom: 86 };
-  if (person.symbolKind === 'pregnancy') bounds = { left: 26, right: 86, top: 28, bottom: 88 };
+  if (person.symbolKind === 'pregnancy') bounds = { left: 26, right: 86, top: 35, bottom: 88 };
   if (person.symbolKind === 'miscarriage') bounds = { left: 46, right: 66, top: 48, bottom: 68 };
   if (person.symbolKind === 'termination') bounds = { left: 39, right: 73, top: 24, bottom: 75 };
   if (person.symbolKind === 'stillbirth') bounds = person.isIndexPerson
