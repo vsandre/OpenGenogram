@@ -121,6 +121,10 @@ function calculateAge(birthdate: Date, referenceDate: Date): number {
  * or to return null.
  */
 export function getDerivedAge(person: Person): number | null {
+  if (person.symbolKind === 'pregnancy' || person.symbolKind === 'miscarriage' || person.symbolKind === 'termination' || person.symbolKind === 'stillbirth'){
+    return null;
+  }
+
   // 1) birth year have to be valid
   if (!isValidYear(person.birthYear)) {
     return null;
