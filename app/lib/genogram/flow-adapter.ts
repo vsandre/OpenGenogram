@@ -160,17 +160,29 @@ function personSymbolOffsets(person: Person, symbolSize: number): PersonSymbolAn
   if (person.symbolKind === 'pregnancy') bounds = { left: 26, right: 86, top: 35, bottom: 88 };
   if (person.symbolKind === 'miscarriage') bounds = { left: 46, right: 66, top: 48, bottom: 68 };
   if (person.symbolKind === 'termination') bounds = { left: 39, right: 73, top: 24, bottom: 75 };
-  if (person.symbolKind === 'stillbirth') bounds = person.isIndexPerson
-    ? { left: 23, right: 89, top: 25, bottom: 91 }
-    : { left: 26, right: 86, top: 28, bottom: 88 };
-  if (person.symbolKind === 'person' && (person.gender === 'nonbinary' || person.gender === 'unspecified' || person.gender === 'other')) {
+  if (person.symbolKind === 'stillbirth') 
+    bounds = person.isIndexPerson
+      ? { left: 23, right: 89, top: 29, bottom: 91 }
+      : { left: 26, right: 86, top: 35, bottom: 88 };
+  if (person.symbolKind === 'person' && (person.gender === 'unspecified' || person.gender === 'other')) {
     bounds = person.isIndexPerson
       ? { left: 19, right: 93, top: 21, bottom: 95 }
       : { left: 26, right: 86, top: 28, bottom: 88 };
-  } else if (person.symbolKind === 'person' && person.isIndexPerson) {
-    bounds = person.gender === 'female' || person.gender === 'trans-female' || person.gender === 'intersex'
+  }
+  if (person.symbolKind === 'person' && person.gender === 'nonbinary') {
+    bounds = person.isIndexPerson
+      ? { left: 19, right: 93, top: 23, bottom: 95 }
+      : { left: 26, right: 86, top: 30, bottom: 88 };
+  }
+  if (person.symbolKind === 'person' && (person.gender === 'male' || person.gender === 'trans-male' ) ) {
+    bounds = person.isIndexPerson
+      ? { left: 21, right: 91, top: 22, bottom: 93 }
+      : { left: 22, right: 90, top: 29, bottom: 92 };
+  }
+  if (person.symbolKind === 'person' && (person.gender === 'female' || person.gender === 'trans-female' || person.gender === 'intersex') ) {
+    bounds = person.isIndexPerson
       ? { left: 21, right: 91, top: 23, bottom: 93 }
-      : { left: 22, right: 90, top: 24, bottom: 92 };
+      : { left: 22, right: 90, top: 30, bottom: 92 };
   }
   const symbolLeft = (PERSON_NODE_WIDTH - symbolSize) / 2;
   const symbolTop = (PERSON_SYMBOL_SIZES.medium - symbolSize) / 2;

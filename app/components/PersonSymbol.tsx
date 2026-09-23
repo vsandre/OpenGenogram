@@ -235,21 +235,21 @@ function renderShape(
   }
   if (kind === 'termination') return null;
   if (stillbirth) {
-    if (circularGender) return <circle cx="56" cy="58" r="22" {...props} strokeWidth={strokeWidth} />;
-    if (diamondGender) return <polygon points="56,34 80,58 56,82 32,58" {...props} strokeWidth={strokeWidth} />;
-    if (kind === 'nonbinary') return <path d="M 36 56 A 22 22 0 0 1 58 34 A 22 22 0 0 1 80 56 V 78 H 36 Z" {...props} strokeWidth={strokeWidth} />;
-    return <rect x="34" y="36" width="44" height="44" {...props} strokeWidth={strokeWidth} />;
+    if (circularGender) return <circle cx="56" cy="58" r="21" {...props} strokeWidth={strokeWidth} />;
+    if (diamondGender) return <polygon points="56,35 79,58 56,81 33,58" {...props} strokeWidth={strokeWidth} />;
+    if (kind === 'nonbinary') return <path d="M 35 58 A 21 21 0 0 1 56 37 A 21 21 0 0 1 77 58 V 79 H 35 Z" {...props} strokeWidth={strokeWidth} />;
+    return <rect x="35" y="37" width="42" height="42" {...props} strokeWidth={strokeWidth} />;
   }
   if (circularGender) return <circle cx="56" cy="58" r="28" {...props} strokeWidth={strokeWidth} />;
   if (diamondGender) return <polygon points="56,28 86,58 56,88 26,58" {...props} strokeWidth={strokeWidth} />;
-  if (kind === 'nonbinary') return <path d="M 30 56 A 28 28 0 0 1 58 28 A 28 28 0 0 1 86 56 V 84 H 30 Z" {...props} strokeWidth={strokeWidth} />;
+  if (kind === 'nonbinary') return <path d="M 28,56 A 28,28 0 0 1 56,30 28,28 0 0 1 84,58 V 86 H 28 Z" {...props} strokeWidth={strokeWidth} />;
   return <rect x="28" y="30" width="56" height="56" {...props} strokeWidth={strokeWidth} />;
 }
 
 function renderGenderDetail(kind: SymbolKind | Gender, stillbirth = false) {
   const strokeWidth = 2.4;
   if (stillbirth) {
-    if (kind === 'trans-male') return <circle cx="56" cy="58" r="22" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
+    if (kind === 'trans-male') return <circle cx="56" cy="58" r="21" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
     if (kind === 'trans-female') return <rect x="41" y="43" width="30" height="29" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
     if (kind === 'intersex') return <line x1="56" y1="36" x2="56" y2="80" stroke={INK} strokeWidth={strokeWidth+2} vectorEffect="scaling-stroke" />;
     if (kind === 'other') return <><circle cx="56" cy="58" r="17" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" /><line x1="44" y1="72" x2="68" y2="46" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" /></>;
@@ -266,7 +266,7 @@ function renderSexualOrientationMark(orientation: string) {
   if (!normalizedOrientation || normalizedOrientation === 'heterosexual' || normalizedOrientation === 'prefer not to say') return null;
 
   const markProps = {
-    fill: 'none',
+    fill: '#fff',
     stroke: INK,
     strokeWidth: 1.8,
     strokeLinecap: 'round' as const,
@@ -294,14 +294,14 @@ function renderIndexOutline(kind: SymbolKind | Gender, stillbirth = false) {
     return <circle cx="56" cy="58" r="35" fill="none" stroke={INK} strokeWidth={strokeWidth} strokeDasharray="2 2" vectorEffect="scaling-stroke" />;
   }
   if (stillbirth) {
-    if (circularGender) return <circle cx="56" cy="58" r="30" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
-    if (diamondGender) return <polygon points="56,25 89,58 56,91 23,58" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
-    if (kind === 'nonbinary') return <path d="M 30 56 A 28 28 0 0 1 58 28 A 28 28 0 0 1 86 56 V 84 H 30 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
-    return <rect x="25" y="27" width="62" height="62" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
+    if (circularGender) return <circle cx="56" cy="58" r="27" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
+    if (diamondGender) return <polygon points="56,29 85,58 56,87 27,58" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
+    if (kind === 'nonbinary') return <path d="M 29,58 A 27,27 0 0 1 57,31 27,27 0 0 1 83,58 V 85 H 29 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
+    return <rect x="29" y="31" width="54" height="54" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
   }
-  if (circularGender) return <circle cx="56" cy="58" r="35" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
+  if (circularGender) return <circle cx="56" cy="58" r="34" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
   if (diamondGender) return <polygon points="56,21 93,58 56,95 19,58" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
-  if (kind === 'nonbinary') return <path d="M 24 56 A 32 32 0 0 1 58 22 A 32 32 0 0 1 92 56 V 90 H 24 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
+  if (kind === 'nonbinary') return <path d="M 22,58 A 34,34 0 0 1 56,24 34,34 0 0 1 90,58 V 92 H 22 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
   return <rect x="22" y="24" width="68" height="68" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
 }
 
@@ -447,7 +447,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
           {supportsHeritage && heritageLayers.map((layer, index) => renderHeritagePattern(`${clipId}-heritage-${index}`, layer.pattern))}
         </defs>
       )}
-      {renderShape(kind, { fill: symbolFill, stroke: 'none', strokeWidth: 0 })}
+      {renderShape(kind, { fill: symbolFill, stroke: 'none', strokeWidth: 0 }, isStillbirth)}
       {supportsMarkers && (
         <g clipPath={`url(#${clipId})`} aria-label="Medical markers">
           {person.medicalMarkers.length === 1
@@ -481,7 +481,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
           })}
         </g>
       )}
-      {renderShape(kind, { fill: 'none', stroke: INK })}
+      {renderShape(kind, { fill: 'none', stroke: INK }, isStillbirth)}
       {person.symbolKind === 'person' && renderGenderDetail(kind, isStillbirth)}
       {person.symbolKind === 'person' && sexualOrientationMark && (
         <g aria-label={`Sexual orientation: ${sexualOrientation}`} data-sexual-orientation-mark={sexualOrientation}>
@@ -489,15 +489,21 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
         </g>
       )}
       {person.isIndexPerson && renderIndexOutline(kind, isStillbirth)}
-      {(showDeceasedMark || showStillbirthMark) && (
+      {(showDeceasedMark) && (
         <g aria-label="Deceased mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
           <line x1="26" y1="28" x2="86" y2="88" />
           <line x1="86" y1="28" x2="26" y2="88" />
         </g>
       )}
-      {person.symbolKind === 'termination' && (
+      {(showStillbirthMark) && (
+        <g aria-label="Stillbirth mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
+          <line x1="39" y1="41" x2="73" y2="75" />
+          <line x1="73" y1="41" x2="39" y2="75" />
+        </g>
+      )}      
+      {(person.symbolKind === 'termination') && (
         <g aria-label="Termination mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
-          <line x1="56" y1="24" x2="56" y2="38" />
+          <line x1="56" y1="24" x2="56" y2="45" />
           <line x1="39" y1="41" x2="73" y2="75" />
           <line x1="73" y1="41" x2="39" y2="75" />
         </g>
