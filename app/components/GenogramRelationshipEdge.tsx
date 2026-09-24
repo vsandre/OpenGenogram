@@ -143,6 +143,31 @@ function splitPolyline(points: Point[], progress: number): { before: Point[]; af
   };
 }
 
+function pointAlongPolyline( points: Point[], progress = 0.5, maxDistance = 25): { x: number; y: number } {
+  const { point, source, target } = pointOnPolyline(points, progress);
+  // vector of Polyline segment
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  const length = Math.hypot(dx, dy) || 1;
+  // Calculate slope (0 = horizontal, 1 = vertical)
+  const slope = Math.abs(dy) / length;
+  // Distance along the line based on slope
+  // Horizontal (slope ≈ 0): alongDistance = 0
+  // Vertical (slope ≈ 1): alongDistance = maxDistance
+  const alongDistance = slope * maxDistance;
+  // Determine direction: always upward (smaller Y)
+  // If line goes from top-left to bottom-right, we need to go backward
+  const direction = dy > 0 ? -1 : 1;
+  // Normalized direction vector
+  const dirX = dx / length;
+  const dirY = dy / length;
+  // Move point along the line upward
+  return {
+    x: point.x + dirX * alongDistance * direction,
+    y: point.y + dirY * alongDistance * direction,
+  };
+}
+
 function circleMark(point: Point, source: Point, target: Point, along = 0, radius = 6): string {
   const { dx, dy } = vector(source, target);
   const center = { x: point.x + dx * along, y: point.y + dy * along };
@@ -449,8 +474,13 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
   const stroke = hidden ? (selected ? 'rgba(79, 133, 124, 0.34)' : 'transparent') : (customColor ?? (selected ? SELECTED : (definition.color ?? INK)));
   const strokeWidth = selected ? 2.8 : 2;
   const label = typeof relationship.attributes.label === 'string' ? relationship.attributes.label.trim() : '';
-  const labelX = adjustableLine?.markPoint.x ?? straightLabelX;
-  const labelY = (adjustableLine?.markPoint.y ?? straightLabelY) - 12;
+
+  const labelPoint = definition.category === 'emotional'
+    ? pointAlongPolyline(renderedEmotionalPoints, 0.5, 25)
+    : adjustableLine?.markPoint 
+    ?? { x: straightLabelX, y: straightLabelY};
+  const labelX = labelPoint.x;
+  const labelY = labelPoint.y - 12;
   const childBadge = relationship.type === 'surrogate-child' ? 'S' : relationship.type === 'sperm-donor-child' ? 'SD' : relationship.type === 'egg-donor-child' ? 'ED' : null;
   const adoptionMarker = relationship.type === 'adopted-child';
   const immigrationMarker = relationship.attributes.immigrationMarker === 'single' ? '~' : relationship.attributes.immigrationMarker === 'double' ? '≈' : null;
@@ -584,7 +614,7 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
       </g>
       {label && (
         <EdgeLabelRenderer>
-          <span className="nodrag nopan" style={{ position: 'absolute', transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`, borderRadius: 4, background: '#fbfdfa', color: stroke, padding: '1px 4px', fontSize: 10, fontWeight: 700, pointerEvents: 'none' }}>
+          <span className="nodrag nopan" style={{ position: 'absolute', transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`, color: stroke, padding: '1px 4px', fontSize: 10, fontWeight: 700, pointerEvents: 'none', whiteSpace: 'nowrap', zIndex:3, textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff' }}>
             {label}
           </span>
         </EdgeLabelRenderer>
