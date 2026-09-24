@@ -35,6 +35,9 @@ export interface FamilyChildBranch {
   badge?: 'S' | 'SD' | 'ED';
   immigrationMarker?: 'single' | 'double';
   relationshipIds: string[];
+  relationshipLabel?: string;
+  relationshipColor?: string;
+  hidden?: boolean;
 }
 
 export interface FamilyTwinBranch {
@@ -298,13 +301,22 @@ function childLineDetails(relationships: Relationship[]): Pick<FamilyChildBranch
   const immigrationMarker = relationship?.attributes.immigrationMarker === 'single' || relationship?.attributes.immigrationMarker === 'double'
     ? relationship.attributes.immigrationMarker
     : undefined;
-  if (relationships.some((item) => item.type === 'surrogate-child')) return { lineKind: 'child-surrogate', badge: 'S', immigrationMarker };
-  if (relationships.some((item) => item.type === 'sperm-donor-child')) return { lineKind: 'child-donor', badge: 'SD', immigrationMarker };
-  if (relationships.some((item) => item.type === 'egg-donor-child')) return { lineKind: 'child-donor', badge: 'ED', immigrationMarker };
-  if (relationships.some((item) => item.type === 'step-child')) return { lineKind: 'child-step', immigrationMarker };
-  if (relationships.some((item) => item.type === 'foster-child')) return { lineKind: 'child-dotted', immigrationMarker };
-  if (relationships.some((item) => item.type === 'adopted-child')) return { lineKind: 'child-dashed', immigrationMarker };
-  return { lineKind: 'child-solid', immigrationMarker };
+  const relationshipLabel = typeof relationship?.attributes.label === 'string' ? relationship.attributes.label.trim() : undefined;
+  const relationshipColor = typeof relationship?.attributes.color === 'string' ? relationship.attributes.color : undefined;
+  const relationshipHidden = relationship?.attributes.hidden;
+  const common = {
+    immigrationMarker,
+    relationshipLabel,
+    relationshipColor,
+    relationshipHidden,
+  } as const;
+  if (relationships.some((item) => item.type === 'surrogate-child')) return { lineKind: 'child-surrogate', badge: 'S', ...common };
+  if (relationships.some((item) => item.type === 'sperm-donor-child')) return { lineKind: 'child-donor', badge: 'SD', ...common };
+  if (relationships.some((item) => item.type === 'egg-donor-child')) return { lineKind: 'child-donor', badge: 'ED', ...common };
+  if (relationships.some((item) => item.type === 'step-child')) return { lineKind: 'child-step', ...common };
+  if (relationships.some((item) => item.type === 'foster-child')) return { lineKind: 'child-dotted', ...common };
+  if (relationships.some((item) => item.type === 'adopted-child')) return { lineKind: 'child-dashed', ...common };
+  return { lineKind: 'child-solid', ...common };
 }
 
 function deriveFamilyStructure(project: Project): FamilyStructure {
@@ -461,10 +473,7 @@ function createFamilyEdges(project: Project, structure: FamilyStructure, selecte
     const styledRelationship = relationshipIds
       .map((id) => project.relationships.find((relationship) => relationship.id === id))
       .find((relationship) => relationship && selected.has(relationship.id))
-      ?? project.relationships.find((relationship) => relationshipIds.includes(relationship.id));
-    const color = typeof styledRelationship?.attributes.color === 'string' ? styledRelationship.attributes.color : undefined;
-    const hidden = styledRelationship?.attributes.hidden === true;
-    const relationshipLabel = typeof styledRelationship?.attributes.label === 'string' ? styledRelationship.attributes.label.trim() : undefined;
+      project.relationships.find((relationship) => relationshipIds.includes(relationship.id));
     const storedSiblingOffset = geometryRelationship?.attributes.siblingOffset;
     const siblingOffset = typeof storedSiblingOffset === 'number' && Number.isFinite(storedSiblingOffset) ? storedSiblingOffset : undefined;
     const storedOriginOffset = geometryRelationship?.attributes.familyOriginOffset;
@@ -496,9 +505,6 @@ function createFamilyEdges(project: Project, structure: FamilyStructure, selecte
         singles,
         twins,
         label: 'Children from partner union',
-        relationshipLabel,
-        color,
-        hidden,
       },
       selected: relationshipIds.some((id) => selected.has(id)),
       selectable: false,

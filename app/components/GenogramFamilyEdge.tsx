@@ -34,7 +34,7 @@ function dashFor(kind: FamilyChildBranch['lineKind']): string | undefined {
 
 function BranchAnnotations({ branch, startX, startY, stroke }: { branch: FamilyChildBranch; startX: number; startY: number; stroke: string }) {
   const adoptionMarker = branch.lineKind === 'child-dashed';
-  if (!branch.badge && !branch.immigrationMarker && !adoptionMarker) return null;
+  if (!branch.badge && !branch.immigrationMarker && !adoptionMarker && !branch.relationshipLabel) return null;
   const progress = 0.58;
   const x = startX + (branch.x - startX) * progress;
   const y = startY + (branch.y - startY) * progress;
@@ -48,6 +48,11 @@ function BranchAnnotations({ branch, startX, startY, stroke }: { branch: FamilyC
       <text x={x} y={y + 3} fill={stroke} fontSize="8" fontWeight="800" textAnchor="middle">{branch.badge}</text>
     </>}
     {branch.immigrationMarker && <text x={x} y={y + (branch.badge || adoptionMarker ? 35 : 15)} fill={stroke} fontSize="50" fontWeight="77" textAnchor="middle">{branch.immigrationMarker === 'double' ? '≈' : '~'}</text>}
+    {branch.relationshipLabel && (
+        <EdgeLabelRenderer>
+          <span className={styles.childLineLabel} style={{ transform: `translate(-50%, -100%) translate(${x}px, ${y - (branch.badge || adoptionMarker || branch.immigrationMarker ? 15 : -3)}px)`}}>{branch.relationshipLabel}</span>
+        </EdgeLabelRenderer>
+      )}
   </g>;
 }
 
@@ -78,6 +83,21 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
   if (!data) return null;
   const baseStroke = data.hidden ? 'transparent' : (data.color ?? INK);
   const selectedStroke = data.hidden ? 'rgba(79, 133, 124, 0.34)' : SELECTED;
+
+  function getBranchStroke(branch: FamilyChildBranch, isSelected: boolean): string {
+    const relationshipColor = branch.relationshipIds
+      .map((id) => project.relationships.find((r) => r.id === id))
+      .map((r) => r?.attributes.color)
+      .find((color): color is string => typeof color === 'string');
+    const relationshipHidden = branch.relationshipIds
+      .map((id) => project.relationships.find((r) => r.id === id))
+      .map((r) => r?.attributes.hidden)
+      .find((hidden): hidden is boolean => typeof hidden === 'boolean');
+    if (relationshipHidden) return isSelected ? 'rgba(79, 133, 124, 0.34)' : 'transparent';
+    if (isSelected) return SELECTED;
+    return relationshipColor ?? INK;
+  }
+
   const movingChildIds = selectedFamilyChildIds(data);
   const renderedSingles = familyMoveTarget
     ? data.singles.filter((branch) => !movingChildIds.includes(branch.childId))
@@ -139,10 +159,6 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
   const handleX = (startX + endX) / 2;
   const hasHorizontalBranch = endX - startX > 12;
   const loneTwinGeometry = loneTwin ? twinGeometry(loneTwin, siblingY) : null;
-  const labelX = loneSingle?.x ?? loneTwinGeometry?.midX ?? handleX;
-  const labelY = loneSingle
-    ? (alignedLoneSingle ? connectionStartY + (loneSingle.y - connectionStartY) / 2 : siblingY - 8)
-    : loneTwinGeometry ? siblingY + (loneTwinGeometry.splitY - siblingY) / 2 : siblingY - 8;
   const displayedOriginX = familyMoveTarget?.originX ?? originX;
   const displayedOriginY = familyMoveTarget?.y ?? connectionStartY;
   const movingBranches = [
@@ -354,10 +370,16 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
         )))}
         <g>
           <path d={renderedRootPath} fill="none" stroke={baseStroke} strokeDasharray={renderedLoneSingle ? dashFor(renderedLoneSingle.lineKind) : undefined} strokeLinecap="round" strokeWidth="2" vectorEffect="non-scaling-stroke" pointerEvents="none" />
-          {renderedSingles.map((branch) => <g key={branch.childId}>
-            <path d={renderedAlignedLoneSingle && branch.childId === renderedLoneSingle?.childId ? '' : `M ${f(branch.x)} ${f(siblingY)} L ${f(branch.x)} ${f(branch.y)}`} fill="none" stroke={baseStroke} strokeDasharray={dashFor(branch.lineKind)} strokeLinecap="round" strokeWidth="2" vectorEffect="non-scaling-stroke" pointerEvents="none" />
-            <BranchAnnotations branch={branch} startX={branch.x} startY={renderedAlignedLoneSingle && branch.childId === renderedLoneSingle?.childId ? connectionStartY : siblingY} stroke={familyBranchIsSelected(branch, data.selectedRelationshipIds) ? selectedStroke : baseStroke} />
-          </g>)}
+          {renderedSingles.map((branch) => {
+            const isSelected = familyBranchIsSelected(branch, data.selectedRelationshipIds);
+            const branchStroke = getBranchStroke(branch, isSelected);
+            return (
+              <g key={branch.childId}>
+                <path d={renderedAlignedLoneSingle && branch.childId === renderedLoneSingle?.childId ? '' : `M ${f(branch.x)} ${f(siblingY)} L ${f(branch.x)} ${f(branch.y)}`} fill="none" stroke={branchStroke} strokeDasharray={dashFor(branch.lineKind)} strokeLinecap="round" strokeWidth={2} vectorEffect="non-scaling-stroke" pointerEvents="none" />
+                <BranchAnnotations branch={branch} startX={branch.x} startY={renderedAlignedLoneSingle && branch.childId === renderedLoneSingle?.childId ? connectionStartY : siblingY} stroke={branchStroke} />
+              </g>
+            );
+          })}
           {renderedTwins.map((twin) => {
             const trunkStartY = siblingY;
             const { midX, splitY } = twinGeometry(twin, trunkStartY);
@@ -438,10 +460,6 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
           })}
         </g>
       </g>
-      {data.relationshipLabel && !familyMoveTarget && <EdgeLabelRenderer><span
-        className={`nodrag nopan ${styles.childLineLabel}`}
-        style={{ transform: `translate(-50%, -100%) translate(${labelX}px, ${labelY}px)` }}
-      >{data.relationshipLabel}</span></EdgeLabelRenderer>}
       {familyMoveTarget && <EdgeLabelRenderer><span
         className={`nodrag nopan ${styles.childFamilyMoveLabel}`}
         style={{ transform: `translate(-50%, -100%) translate(${familyMoveTarget.originX}px, ${familyMoveTarget.y - 18}px)` }}
