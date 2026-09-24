@@ -90,16 +90,16 @@ function jsonRecord(value: unknown): Record<string, unknown> {
 
 export function createGenogramMcpServer(): McpServer {
   const server = new McpServer({
-    name: 'genogram-canvas',
+    name: 'opengenogram',
     version: '1.0.0',
-    description: 'Generate and validate Genogram Canvas projects without calling an external model or API.',
+    description: 'Generate and validate OpenGenogram projects without calling an external model or API.',
   });
 
   server.registerTool(
     'generate_genogram',
     {
       title: 'Generate a genogram project',
-      description: 'Create a validated Genogram Canvas v3 project from people, families, and relationships. Use families for parent-child groups and relationships for twins, siblings, partner details, or emotional connections. Returns importable JSON and does not save or upload data.',
+      description: 'Create a validated OpenGenogram v3 project from people, families, and relationships. Use families for parent-child groups and relationships for twins, siblings, partner details, or emotional connections. Returns importable JSON and does not save or upload data.',
       inputSchema: generationSpecSchema,
       outputSchema: generationOutputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: false },
@@ -124,7 +124,7 @@ export function createGenogramMcpServer(): McpServer {
     'validate_genogram',
     {
       title: 'Validate a genogram project',
-      description: 'Validate an existing Genogram Canvas project before it is saved or imported.',
+      description: 'Validate an existing OpenGenogram project before it is saved or imported.',
       inputSchema: z.object({ project: z.unknown() }).strict(),
       outputSchema: validationOutputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },

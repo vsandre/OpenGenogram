@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧬 Genogram Canvas
+# 🧬 OpenGenogram
 
 **面向心理咨询师、社会工作者、教育者和学生的现代开源、浏览器优先、McGoldrick 风格家系图编辑器。**
 
@@ -9,25 +9,19 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![MCP Supported](https://img.shields.io/badge/MCP-Supported-7c3aed.svg)](https://modelcontextprotocol.io/)
 [![Static Export](https://img.shields.io/badge/Deploy-Static_Export-0ea5e9.svg)](#部署)
-[![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/Brewnut-98/genogram-canvas/issues)
-
-### 只想直接画家系图，不想安装？
-
-### 👉 [打开 MyGenogramMaker](https://mygenogrammaker.com/)
-
-在线网站与这个独立开源版本提供的功能可能不同。如需完全本地、无水印的工作流，请运行本仓库。
+[![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/vsandre/OpenGenogram/issues)
 
 </div>
 
 ---
 
-## 为什么选择 Genogram Canvas？
+## 为什么选择 OpenGenogram？
 
 绘制家庭结构图不应该依赖通用绘图工具，也不应该把时间浪费在反复对齐人物和关系线上。
 
 Genogram Canvas 提供专门用于结构化家系图的编辑器，同时让开源版本保持本地运行、代码可检查。
 
-| 常见方式 | Genogram Canvas |
+| 常见方式 | OpenGenogram |
 |---|---|
 | 通用绘图或幻灯片工具 | 提供专门的人物、家庭和情感关系元素 |
 | 只能安装在桌面端的软件 | 使用浏览器界面，也可部署为纯静态网站 |
@@ -65,8 +59,8 @@ MCP Server 本身不会调用模型或发起网络请求，但你选择的 AI �
 请使用仍在维护的 Node.js LTS 版本：20.19+、22.13+ 或 24+。
 
 ```bash
-git clone https://github.com/Brewnut-98/genogram-canvas.git
-cd genogram-canvas
+git clone https://github.com/vsandre/OpenGenogram.git
+cd OpenGenogram
 npm install
 npm run dev
 ```
@@ -84,7 +78,7 @@ npm run mcp:build
 添加到 Codex。请把示例路径替换成仓库在你电脑上的绝对路径：
 
 ```bash
-codex mcp add genogram-canvas -- node /absolute/path/to/genogram-canvas/dist/genogram-mcp.mjs
+codex mcp add OpenGenogram -- node /absolute/path/to/OpenGenogram/dist/genogram-mcp.mjs
 ```
 
 Claude Desktop、Cursor 和其他支持 stdio 的 MCP 客户端可以使用对应配置：
@@ -92,9 +86,9 @@ Claude Desktop、Cursor 和其他支持 stdio 的 MCP 客户端可以使用对�
 ```json
 {
   "mcpServers": {
-    "genogram-canvas": {
+    "OpenGenogram": {
       "command": "node",
-      "args": ["/absolute/path/to/genogram-canvas/dist/genogram-mcp.mjs"]
+      "args": ["/absolute/path/to/OpenGenogram/dist/genogram-mcp.mjs"]
     }
   }
 }
@@ -137,9 +131,9 @@ npm run build
 
 欢迎开发者和家系图领域的实践者参与贡献。
 
-- 缺少某种符号或关系类型？请附上参考资料和使用场景，[提交 Issue](https://github.com/Brewnut-98/genogram-canvas/issues)。
+- 缺少某种符号或关系类型？请附上参考资料和使用场景，[提交 Issue](https://github.com/vsandre/OpenGenogram/issues)。
 - 发现 Bug 或有改进建议？欢迎提交范围清晰的 Pull Request。
 
 ## 开源协议
 
-Genogram Canvas 使用 [MIT License](./LICENSE)。第三方依赖声明请查看 [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md)。
+OpenGenogram 使用 [MIT License](./LICENSE)。This product is derived from [Genogram Canvas](https://github.com/Brewnut-98/genogram-canvas) version 1.0.0. 第三方依赖声明请查看 [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md)。

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧬 Genogram Canvas
+# 🧬 OpenGenogram
 
 **A modern, open-source, browser-first McGoldrick-style genogram editor for therapists, social workers, educators, and students.**
 
@@ -9,25 +9,19 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![MCP Supported](https://img.shields.io/badge/MCP-Supported-7c3aed.svg)](https://modelcontextprotocol.io/)
 [![Static Export](https://img.shields.io/badge/Deploy-Static_Export-0ea5e9.svg)](#deploy)
-[![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/Brewnut-98/genogram-canvas/issues)
-
-### Want to draw a genogram without installing anything?
-
-### 👉 [Open MyGenogramMaker](https://mygenogrammaker.com/)
-
-The hosted website and this standalone open-source edition may offer different features. Run this repository for a fully local, watermark-free workflow.
+[![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/vsandre/OpenGenogram/issues)
 
 </div>
 
 ---
 
-## Why Genogram Canvas?
+## Why OpenGenogram?
 
 Family diagrams should not require fighting a general-purpose drawing tool or manually aligning every relationship.
 
-Genogram Canvas provides a focused editor for structured family diagrams while keeping the open-source edition local and inspectable.
+OpenGenogram provides a focused editor for structured family diagrams while keeping the open-source edition local and inspectable.
 
-| Common approach | With Genogram Canvas |
+| Common approach | With OpenGenogram |
 |---|---|
 | General drawing or slide tools | Purpose-built people, family, and emotional relationship elements |
 | Desktop-only software | Browser-based interface that can be deployed as a static site |
@@ -52,11 +46,11 @@ The optional local MCP server lets Codex, Claude Desktop, Cursor, and other MCP-
 1. Remove identifying or unnecessary sensitive information from the case notes.
 2. Ask an MCP-enabled AI client to call `generate_genogram`.
 3. Save the returned project with its suggested JSON filename.
-4. Import the JSON file from the Genogram Canvas dashboard.
+4. Import the JSON file from the OpenGenogram dashboard.
 
 Example prompt:
 
-> Use `generate_genogram` to create a genogram for Alex and Jordan, who are married, and their child Sam. Alex was born in 1988, Jordan in 1990, and Sam in 2016. Return an importable Genogram Canvas project.
+> Use `generate_genogram` to create a genogram for Alex and Jordan, who are married, and their child Sam. Alex was born in 1988, Jordan in 1990, and Sam in 2016. Return an importable OpenGenogram project.
 
 The MCP server itself does not call a model or make network requests. Your chosen AI client or model provider may still process the text you submit. Review the [privacy boundary](#privacy-boundary) before using sensitive information.
 
@@ -65,8 +59,8 @@ The MCP server itself does not call a model or make network requests. Your chose
 Use an active LTS Node.js release: 20.19+, 22.13+, or 24+.
 
 ```bash
-git clone https://github.com/Brewnut-98/genogram-canvas.git
-cd genogram-canvas
+git clone https://github.com/vsandre/OpenGenogram.git
+cd OpenGenogram
 npm install
 npm run dev
 ```
@@ -84,7 +78,7 @@ npm run mcp:build
 Add it to Codex, replacing the example with the absolute path to your clone:
 
 ```bash
-codex mcp add genogram-canvas -- node /absolute/path/to/genogram-canvas/dist/genogram-mcp.mjs
+codex mcp add OpenGenogram -- node /absolute/path/to/OpenGenogram/dist/genogram-mcp.mjs
 ```
 
 Claude Desktop, Cursor, and other stdio MCP clients can use an equivalent configuration:
@@ -92,9 +86,9 @@ Claude Desktop, Cursor, and other stdio MCP clients can use an equivalent config
 ```json
 {
   "mcpServers": {
-    "genogram-canvas": {
+    "OpenGenogram": {
       "command": "node",
-      "args": ["/absolute/path/to/genogram-canvas/dist/genogram-mcp.mjs"]
+      "args": ["/absolute/path/to/OpenGenogram/dist/genogram-mcp.mjs"]
     }
   }
 }
@@ -123,6 +117,8 @@ npm run build
 
 Run `npm run build`, then upload the contents of `out/` to the root of any static host. The open-source app does not require environment variables or backend services.
 
+If you want to run OpenGenogram under a subdirectory uncomment and change `basepath` und `assetPrefix` in `next.config.ts`.
+
 ## Privacy Boundary
 
 In this standalone open-source edition, genogram data stays in the current browser unless the user explicitly downloads a JSON or PNG file. No patient identifiers, names, or diagrams are sent to a project backend.
@@ -137,9 +133,9 @@ Local-first architecture alone does not establish HIPAA or other regulatory comp
 
 Contributions from developers and genogram practitioners are welcome.
 
-- Missing a symbol or relationship type? [Open an issue](https://github.com/Brewnut-98/genogram-canvas/issues) with a reference and use case.
+- Missing a symbol or relationship type? [Open an issue](https://github.com/vsandre/OpenGenogram/issues) with a reference and use case.
 - Found a bug or have an improvement? Submit a focused pull request.
 
 ## License
 
-Genogram Canvas is available under the [MIT License](./LICENSE). See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for dependency notices.
+OpenGenogram is available under the [MIT License](./LICENSE). This product is derived from [Genogram Canvas](https://github.com/Brewnut-98/genogram-canvas) version 1.0.0. See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for dependency notices.

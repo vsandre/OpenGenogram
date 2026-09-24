@@ -1983,7 +1983,7 @@ const renameProject = useCallback(async (): Promise<void> => {
           onPaneClick={() => { if (mode === 'edit' && canvasToolMode !== 'pan') { setRelationshipSourceId(null); setRelationshipTargetId(null); setAnnotationConnectionSourceId(null); setAnnotationConnectionTargetId(null); setSelectedAnnotationLink(null); setConnectionCursor(null); setRelationshipMode(false); setEditingAnnotationId(null); setSelection([]); setActivePanel(null); } }}
           selectionOnDrag={mode === 'edit' && canvasToolMode === 'multi' && !connectionModeActive} selectionMode={SelectionMode.Partial} selectNodesOnDrag={mode === 'edit' && canvasToolMode === 'multi' && !connectionModeActive}
           nodesDraggable={mode === 'edit' && canvasToolMode !== 'pan' && !connectionModeActive} nodesConnectable elementsSelectable={mode === 'edit' && canvasToolMode !== 'pan' && !connectionModeActive} panOnDrag={mode === 'edit' ? (canvasToolMode === 'pan' ? [0, 1] : [1]) : false}
-          panActivationKeyCode="Space" zoomOnScroll zoomOnPinch zoomOnDoubleClick deleteKeyCode={null} snapToGrid={mode === 'edit'} snapGrid={CANVAS_SNAP_GRID} defaultViewport={project.canvas.viewport} minZoom={0.35} maxZoom={2.2} aria-label={mode === 'preview' ? 'Read-only genogram preview' : 'Genogram canvas'}
+          panActivationKeyCode="Space" zoomOnScroll zoomOnPinch zoomOnDoubleClick deleteKeyCode={null} snapToGrid={mode === 'edit'} snapGrid={CANVAS_SNAP_GRID} defaultViewport={project.canvas.viewport} minZoom={0.35} maxZoom={2.2} aria-label={mode === 'preview' ? 'Read-only genogram preview' : 'OpenGenogram'}
         >
           <Background gap={22} size={1.2} color="#cad8d4" />
           {mode === 'edit' && <Controls showInteractive={false} />}

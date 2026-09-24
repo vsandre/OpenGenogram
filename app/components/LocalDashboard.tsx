@@ -142,7 +142,7 @@ export default function LocalDashboard() {
       <header className={styles.header}>
         <div className={styles.brand}>
           <span className={styles.brandIcon} aria-hidden="true"><GitBranch size={22} /></span>
-          <div><strong>Genogram Canvas</strong><span>Local workspace</span></div>
+          <div><strong>OpenGenogram</strong><span>Local workspace</span></div>
         </div>
         <div className={styles.headerActions}>
           <button className={styles.secondaryButton} type="button" onClick={() => importInputRef.current?.click()} disabled={busyId !== null}>
