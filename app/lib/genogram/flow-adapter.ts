@@ -470,10 +470,6 @@ function createFamilyEdges(project: Project, structure: FamilyStructure, selecte
     const geometryRelationship = defaultBranch?.relationshipIds
       .map((id) => project.relationships.find((relationship) => relationship.id === id))
       .find((relationship) => relationship && isChildRelationship(relationship.type));
-    const styledRelationship = relationshipIds
-      .map((id) => project.relationships.find((relationship) => relationship.id === id))
-      .find((relationship) => relationship && selected.has(relationship.id))
-      project.relationships.find((relationship) => relationshipIds.includes(relationship.id));
     const storedSiblingOffset = geometryRelationship?.attributes.siblingOffset;
     const siblingOffset = typeof storedSiblingOffset === 'number' && Number.isFinite(storedSiblingOffset) ? storedSiblingOffset : undefined;
     const storedOriginOffset = geometryRelationship?.attributes.familyOriginOffset;

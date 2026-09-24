@@ -121,7 +121,6 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
   const originX = clampFamilyOriginX(data.parentLeftX, data.parentRightX, requestedOriginX);
   const originOffset = originX - parentCenterX;
   const loneSingle = data.singles.length === 1 && data.twins.length === 0 ? data.singles[0] : null;
-  const loneTwin = data.singles.length === 0 && data.twins.length === 1 ? data.twins[0] : null;
   const singleAnchors = data.singles.map((branch) => branch.x);
   const twinAnchors = data.twins.map((twin) => (twin.first.x + twin.second.x) / 2);
   const anchors = [...singleAnchors, ...twinAnchors];
@@ -158,7 +157,6 @@ export function GenogramFamilyEdge({ id, data, selected, interactionWidth }: Edg
       : renderedRootGeometry?.segments.map(segmentPath).join(' ') ?? '';
   const handleX = (startX + endX) / 2;
   const hasHorizontalBranch = endX - startX > 12;
-  const loneTwinGeometry = loneTwin ? twinGeometry(loneTwin, siblingY) : null;
   const displayedOriginX = familyMoveTarget?.originX ?? originX;
   const displayedOriginY = familyMoveTarget?.y ?? connectionStartY;
   const movingBranches = [
