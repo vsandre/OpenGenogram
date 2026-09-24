@@ -47,7 +47,7 @@ function BranchAnnotations({ branch, startX, startY, stroke }: { branch: FamilyC
       <rect x={x - 12} y={y - 8} width="24" height="16" rx="4" fill="#fbfdfa" stroke={stroke} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
       <text x={x} y={y + 3} fill={stroke} fontSize="8" fontWeight="800" textAnchor="middle">{branch.badge}</text>
     </>}
-    {branch.immigrationMarker && <text x={x + (branch.badge || adoptionMarker ? 20 : 10)} y={y + 4} fill={stroke} fontSize="13" fontWeight="800" textAnchor="middle">{branch.immigrationMarker === 'double' ? '~~' : '~'}</text>}
+    {branch.immigrationMarker && <text x={x} y={y + (branch.badge || adoptionMarker ? 35 : 15)} fill={stroke} fontSize="50" fontWeight="77" textAnchor="middle">{branch.immigrationMarker === 'double' ? '≈' : '~'}</text>}
   </g>;
 }
 

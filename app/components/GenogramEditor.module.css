@@ -82,6 +82,13 @@
   line-height: 1.55;
 }
 
+.helpImigration {
+  margin: 0 10px 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
 .addTools,
 .actionGroup {
   display: grid;
@@ -3118,8 +3125,14 @@
   place-items: center;
   background: #fff;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 25px;
   line-height: 1;
+}
+
+.lineColorPicker .lineColorReset div {
+  position:relative;
+  left:-5px;
+  top:-7px;  
 }
 
 .lineActions {

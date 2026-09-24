@@ -453,7 +453,7 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
   const labelY = (adjustableLine?.markPoint.y ?? straightLabelY) - 12;
   const childBadge = relationship.type === 'surrogate-child' ? 'S' : relationship.type === 'sperm-donor-child' ? 'SD' : relationship.type === 'egg-donor-child' ? 'ED' : null;
   const adoptionMarker = relationship.type === 'adopted-child';
-  const immigrationMarker = relationship.attributes.immigrationMarker === 'single' ? '~' : relationship.attributes.immigrationMarker === 'double' ? '~~' : null;
+  const immigrationMarker = relationship.attributes.immigrationMarker === 'single' ? '~' : relationship.attributes.immigrationMarker === 'double' ? '≈' : null;
   const arrowColor = customColor ?? (selected ? SELECTED : (relationship.type === 'abuse' ? '#2563eb' : (definition.color ?? INK)));
   const onDragStart = (event: ReactPointerEvent<HTMLButtonElement>) => {
     event.preventDefault();

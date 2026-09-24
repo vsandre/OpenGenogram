@@ -228,22 +228,22 @@ function renderShape(
   const circularGender = kind === 'female' || kind === 'trans-female' || kind === 'intersex';
   const diamondGender = kind === 'unspecified' || kind === 'other';
   if (kind === 'pregnancy') {
-    return <polygon points="56,36 78,80 34,80" {...props} strokeWidth={strokeWidth} />;
+    return <polygon points="56,36 78,80 34,80" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
   }
   if (kind === 'miscarriage') {
-    return <circle cx="56" cy="58" r="10" {...props} fill={INK} stroke={INK} strokeWidth={strokeWidth} />;
+    return <circle cx="56" cy="58" r="10" {...props} fill={INK} stroke={INK} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
   }
   if (kind === 'termination') return null;
   if (stillbirth) {
-    if (circularGender) return <circle cx="56" cy="58" r="21" {...props} strokeWidth={strokeWidth} />;
-    if (diamondGender) return <polygon points="56,35 79,58 56,81 33,58" {...props} strokeWidth={strokeWidth} />;
-    if (kind === 'nonbinary') return <path d="M 35 58 A 21 21 0 0 1 56 37 A 21 21 0 0 1 77 58 V 79 H 35 Z" {...props} strokeWidth={strokeWidth} />;
-    return <rect x="35" y="37" width="42" height="42" {...props} strokeWidth={strokeWidth} />;
+    if (circularGender) return <circle cx="56" cy="58" r="21" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+    if (diamondGender) return <polygon points="56,35 79,58 56,81 33,58" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+    if (kind === 'nonbinary') return <path d="M 35 58 A 21 21 0 0 1 56 37 A 21 21 0 0 1 77 58 V 79 H 35 Z" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+    return <rect x="35" y="37" width="42" height="42" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
   }
-  if (circularGender) return <circle cx="56" cy="58" r="28" {...props} strokeWidth={strokeWidth} />;
-  if (diamondGender) return <polygon points="56,28 86,58 56,88 26,58" {...props} strokeWidth={strokeWidth} />;
-  if (kind === 'nonbinary') return <path d="M 28,56 A 28,28 0 0 1 56,30 28,28 0 0 1 84,58 V 86 H 28 Z" {...props} strokeWidth={strokeWidth} />;
-  return <rect x="28" y="30" width="56" height="56" {...props} strokeWidth={strokeWidth} />;
+  if (circularGender) return <circle cx="56" cy="58" r="28" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+  if (diamondGender) return <polygon points="56,28 86,58 56,88 26,58" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+  if (kind === 'nonbinary') return <path d="M 28,56 A 28,28 0 0 1 56,30 28,28 0 0 1 84,58 V 86 H 28 Z" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
+  return <rect x="28" y="30" width="56" height="56" {...props} strokeWidth={strokeWidth}  vectorEffect="scaling-stroke" />;
 }
 
 function renderGenderDetail(kind: SymbolKind | Gender, stillbirth = false) {
@@ -296,12 +296,12 @@ function renderIndexOutline(kind: SymbolKind | Gender, stillbirth = false) {
   if (stillbirth) {
     if (circularGender) return <circle cx="56" cy="58" r="27" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
     if (diamondGender) return <polygon points="56,29 85,58 56,87 27,58" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
-    if (kind === 'nonbinary') return <path d="M 29,58 A 27,27 0 0 1 57,31 27,27 0 0 1 83,58 V 85 H 29 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
+    if (kind === 'nonbinary') return <path d="M 29,58 A 27,27 0 0 1 57,31 27,27 0 0 1 83,58 V 85 H 29 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
     return <rect x="29" y="31" width="54" height="54" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
   }
   if (circularGender) return <circle cx="56" cy="58" r="34" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
   if (diamondGender) return <polygon points="56,21 93,58 56,95 19,58" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
-  if (kind === 'nonbinary') return <path d="M 22,58 A 34,34 0 0 1 56,24 34,34 0 0 1 90,58 V 92 H 22 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} />;
+  if (kind === 'nonbinary') return <path d="M 22,58 A 34,34 0 0 1 56,24 34,34 0 0 1 90,58 V 92 H 22 Z" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
   return <rect x="22" y="24" width="68" height="68" fill="none" stroke={INK} strokeWidth={strokeWidth} vectorEffect="scaling-stroke" />;
 }
 
@@ -367,7 +367,7 @@ export function ReligionIcon({ religion, size = 18, x, y, color = 'currentColor'
 function ProfileBadge({ x, y, label, Icon }: { x: number; y: number; label: string; Icon: LucideIcon }) {
   return (
     <g aria-label={label} data-profile-badge={label}>
-      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
       <Icon x={x - 7.15} y={y - 7.15} width="14.3" height="14.3" color={BADGE_INK} strokeWidth={2.1} aria-hidden="true" />
     </g>
   );
@@ -376,7 +376,7 @@ function ProfileBadge({ x, y, label, Icon }: { x: number; y: number; label: stri
 function ReligionBadge({ x, y, religion }: { x: number; y: number; religion: string }) {
   return (
     <g aria-label={`Religion: ${religion}`} data-profile-badge={`Religion: ${religion}`}>
-      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
       <ReligionIcon religion={religion} x={x - 7.15} y={y - 7.15} size={14.3} color={BADGE_INK} />
     </g>
   );
@@ -385,7 +385,7 @@ function ReligionBadge({ x, y, religion }: { x: number; y: number; religion: str
 function CountryFlagBadge({ x, y, label, countryCode }: { x: number; y: number; label: string; countryCode: string }) {
   return (
     <g aria-label={label} data-profile-badge={label}>
-      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
       <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="central" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', sans-serif" fontSize="14.3" aria-hidden="true">{countryFlag(countryCode)}</text>
     </g>
   );
@@ -474,7 +474,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
                 stroke={HERITAGE_INK}
                 strokeWidth="1.6"
                 strokeLinecap="square"
-                vectorEffect="non-scaling-stroke"
+                vectorEffect="scaling-stroke"
                 data-heritage-divider="true"
               />
             );
@@ -490,19 +490,19 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
       )}
       {person.isIndexPerson && renderIndexOutline(kind, isStillbirth)}
       {(showDeceasedMark) && (
-        <g aria-label="Deceased mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
+        <g aria-label="Deceased mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
           <line x1="26" y1="28" x2="86" y2="88" />
           <line x1="86" y1="28" x2="26" y2="88" />
         </g>
       )}
       {(showStillbirthMark) && (
-        <g aria-label="Stillbirth mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
+        <g aria-label="Stillbirth mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
           <line x1="39" y1="41" x2="73" y2="75" />
           <line x1="73" y1="41" x2="39" y2="75" />
         </g>
       )}      
       {(person.symbolKind === 'termination') && (
-        <g aria-label="Termination mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="non-scaling-stroke">
+        <g aria-label="Termination mark" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
           <line x1="56" y1="24" x2="56" y2="45" />
           <line x1="39" y1="41" x2="73" y2="75" />
           <line x1="73" y1="41" x2="39" y2="75" />
