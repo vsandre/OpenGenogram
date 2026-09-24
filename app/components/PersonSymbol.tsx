@@ -140,7 +140,7 @@ export function getDerivedAge(person: Person): number | null {
     }
 
     const profile = person.profile;
-    if (!profile) {
+    if (profile) {
 
       const birthMonth = parseNumericField(person.profile?.birthMonth);
       const birthDay   = parseNumericField(person.profile?.birthDay);
@@ -183,7 +183,7 @@ export function getDerivedAge(person: Person): number | null {
   const today = new Date();
 
   const profile = person.profile;
-  if (!profile) {
+  if (profile) {
     const birthMonth  = parseNumericField(person.profile?.birthMonth);
     const birthDay    = parseNumericField(person.profile?.birthDay);
 

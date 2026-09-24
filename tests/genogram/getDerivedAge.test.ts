@@ -101,7 +101,7 @@ test('getDerivedAge: deceased with deathYear < birthYear', () => {
   assert.strictEqual(getDerivedAge(p), null);
 });
 
-test('getDerivedAge: deceased with year and month only', () => {
+test('getDerivedAge: deceased with year and month only but not yet passed', () => {
   // Born 1990-06, died 2020-03
   const p = makePerson(1990, 2020, true, {
     birthMonth: '6',
