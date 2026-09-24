@@ -916,7 +916,7 @@ function RelationshipInspector({ relationship }: { relationship: Relationship | 
           const option = RELATIONSHIP_DEFINITIONS[type];
           return <button className={relationship.type === type ? styles.partnerRelationshipActive : ''} type="button" key={type} onClick={() => updateRelationship(relationship.id, { type })}><LegendLine kind={option.lineKind} label={option.label} /><span>{option.label}</span></button>;
         })}</div></div>)}
-      </> : <>
+      </> : childRelationshipIds.length > 0 ? ( <>
         <div className={styles.relationshipTypeGroup}><p>Connection type</p><div className={styles.childRelationshipPicker}>{CHILD_RELATIONSHIP_TYPES.map((type) => {
           const option = RELATIONSHIP_DEFINITIONS[type];
           return <button className={relationship.type === type ? styles.childRelationshipActive : ''} type="button" key={type} onClick={() => updateChildType(type)}><LegendLine kind={option.lineKind} label={option.label} /><span>{option.label.replace(' child', '')}</span></button>;
@@ -928,7 +928,11 @@ function RelationshipInspector({ relationship }: { relationship: Relationship | 
         </div></div>
         <div className={styles.childInspectorGroup}><p>Immigration marker</p><div className={styles.immigrationMarkerPicker}>{(['none', 'single', 'double'] as const).map((marker) => <button className={immigrationMarker === marker ? styles.immigrationMarkerActive : ''} type="button" key={marker} onClick={() => updateChildAttributes({ immigrationMarker: marker === 'none' ? null : marker })}>{marker === 'none' ? 'None' : marker === 'single' ? 'Single (~)' : 'Double (≈)'}</button>)}</div>
         <div><p className={styles.helpImigration}>Single - person lived in two or more cultures</p><p className={styles.helpImigration}>Double - person imigrated from another country</p></div></div>
-      </>}
+      </>) : (
+        <p className={styles.helpText}>
+          Add a parent to one of the siblings to turn this into a standard parent-child relationship.
+        </p>
+      )}
       <p className={styles.helpText}>{definition.category === 'child' ? 'Create one child line from each parent. When the parents have a partner relationship, both lines merge at the union point.' : 'The line geometry carries the meaning in black-and-white exports.'}</p>
       <div className={styles.lineAppearanceEditor}>
         <span>Line color</span>
