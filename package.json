@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npm run cleanup",
+    "cleanup": "node scripts/cleanup-export.mjs",
+    "cleanup:verbose": "node scripts/cleanup-export.mjs --verbose",
     "mcp:build": "esbuild mcp/server.ts --bundle --platform=node --format=esm --outfile=dist/genogram-mcp.mjs --banner:js=\"#!/usr/bin/env node\"",
     "mcp:serve": "node dist/genogram-mcp.mjs",
     "test:mcp": "npm run mcp:build --silent && node --test tests/genogram/mcp-stdio.test.mjs",
@@ -42,6 +44,7 @@
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true,
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true
   }
 }

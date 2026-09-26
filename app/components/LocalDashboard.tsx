@@ -1,9 +1,12 @@
 'use client';
 
-import { Download, FileUp, FolderOpen, GitBranch, Pencil, Plus, ShieldCheck, Trash2, Users } from 'lucide-react';
+import { Download, FileUp, FolderOpen, Pencil, Plus, ShieldCheck, Trash2, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+
+import packageJson from '../../package.json';
+const APP_VERSION = packageJson.version;
 
 import {
   deleteLocalProject,
@@ -141,7 +144,7 @@ export default function LocalDashboard() {
     <main className={styles.dashboardPage}>
       <header className={styles.header}>
         <div className={styles.brand}>
-          <span className={styles.brandIcon} aria-hidden="true"><GitBranch size={22} /></span>
+          <span className={styles.brandIcon} aria-hidden="true"><img src="../icon.svg" alt="OpenGenogram" /></span>
           <div><strong>OpenGenogram</strong><span>Local workspace</span></div>
         </div>
         <div className={styles.headerActions}>
@@ -219,8 +222,18 @@ export default function LocalDashboard() {
 
       <aside className={styles.privacyNote}>
         <ShieldCheck size={22} aria-hidden="true" />
-        <div><strong>Stored only on this device</strong><p>Projects stay in this browser&apos;s IndexedDB. Download JSON backups before clearing browser data or moving to another device.</p></div>
+        <div>
+          <strong>Stored only on this device</strong>
+          <p>Projects stay in this browser&apos;s IndexedDB. Download JSON backups before clearing browser data or moving to another device.</p>
+          <p>Please note that the data is not encrypted or password protected. Any user of this browser can view the genogram.</p>
+        </div>
       </aside>
+
+      <section className={styles.copyright} aria-labelledby="dashboard-copyright">
+        <div>
+          <p><strong><a href="https://github.com/vsandre/OpenGenogram"><img src="../icon.svg" alt="Logo" />OpenGenogram {APP_VERSION}</a></strong> is available under the <a href="https://github.com/vsandre/OpenGenogram/blob/dev/LICENSE">MIT License</a>. Used libaries can be found <a href="https://github.com/vsandre/OpenGenogram/blob/dev/THIRD_PARTY_LICENSES.md">here</a>. This product is derived from <a href="https://github.com/Brewnut-98/genogram-canvas">Genogram Canvas</a>.</p>
+        </div>
+      </section>
     </main>
   );
 }

@@ -42,6 +42,11 @@
   color: #285653;
 }
 
+.brandIcon img {
+  height: 30;
+  width: 30;
+}
+
 .brand > div {
   display: grid;
 }
@@ -63,7 +68,8 @@
 .primaryButton,
 .secondaryButton,
 .openButton,
-.cardActions > button {
+.cardActions > button,
+.copyright strong a  {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
@@ -76,6 +82,13 @@
   font-weight: 750;
   text-decoration: none;
   cursor: pointer;
+}
+
+.copyright strong a {
+  min-height: 20px;
+  padding: 0 7px;
+  border: 1px solid #9cbdb5;
+  gap: 2px;
 }
 
 .primaryButton,
@@ -97,7 +110,8 @@
 }
 
 .secondaryButton:hover,
-.cardActions > button:hover {
+.cardActions > button:hover,
+.copyright strong a:hover {
   border-color: #9cbdb5;
   background: #edf6f2;
 }
@@ -105,7 +119,8 @@
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
 .openButton:focus-visible,
-.cardActions > button:focus-visible {
+.cardActions > button:focus-visible,
+.copyright strong a:focus-visible {
   outline: 3px solid rgba(185, 103, 58, 0.28);
   outline-offset: 2px;
 }
@@ -124,7 +139,8 @@
 .hero,
 .projectsSection,
 .privacyNote,
-.error {
+.error,
+.copyright {
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
 }
@@ -134,7 +150,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 32px;
-  padding: 66px 0 42px;
+  padding: 36px 0 24px;
 }
 
 .eyebrow {
@@ -163,6 +179,23 @@
   margin: 18px 0 0;
   color: #637775;
   font-size: 15px;
+}
+
+.copyright {
+  color: #637775;
+  font-size: 11px;
+  text-align: center;
+  border-top: 1px solid #dce8e4;
+  margin-top: 10px;
+  padding-bottom: 10px;
+}
+
+.copyright a {
+  color: #285653;
+}
+
+.copyright strong img {
+  height: 12px;
 }
 
 .projectCount {
@@ -367,7 +400,6 @@
 
 .privacyNote {
   gap: 13px;
-  margin-bottom: 42px;
   border: 1px solid #c9d8d4;
   border-radius: 14px;
   background: #edf6f2;

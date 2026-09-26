@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   // basePath: "/OpenGenogram",
   // assetPrefix: "/OpenGenogram/",
   allowedDevOrigins: ["127.0.0.1"],
+  productionBrowserSourceMaps: false,
   turbopack: { root: process.cwd() },
 };
 

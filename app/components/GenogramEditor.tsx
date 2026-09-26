@@ -1909,7 +1909,7 @@ const renameProject = useCallback(async (): Promise<void> => {
               aria-controls={fileMenuId}
               onClick={() => setFileMenuOpen((open) => !open)}
             >
-              <GitBranch size={17} aria-hidden="true" />
+              <img src="../icon.svg" alt="OpenGenogram" />
             </button>
             {fileMenuOpen && (
               <div ref={fileMenuRef} className={styles.fileMenu} id={fileMenuId} role="menu" aria-label="File actions" aria-describedby={`${fileMenuId}-local-storage-note`}>
