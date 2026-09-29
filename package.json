@@ -15,6 +15,7 @@
     "mcp:serve": "node dist/genogram-mcp.mjs",
     "test:mcp": "npm run mcp:build --silent && node --test tests/genogram/mcp-stdio.test.mjs",
     "lint": "eslint",
+    "lint:fix": "eslint . --fix",
     "test:genogram": "node tests/genogram/run-tests.mjs"
   },
   "dependencies": {
@@ -35,12 +36,15 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
     "esbuild": "^0.25.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.1",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.7",
     "fake-indexeddb": "^6.2.5",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.71.0"
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true,
