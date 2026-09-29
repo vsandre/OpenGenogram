@@ -1,5 +1,5 @@
 // scripts/cleanup-export.mjs
-import { readdirSync, statSync, unlinkSync, rmdirSync, lstatSync, existsSync } from 'node:fs';
+import { readdirSync, unlinkSync, rmdirSync, lstatSync, existsSync } from 'node:fs';
 import { join, extname, resolve, relative } from 'node:path';
 
 const OUT_DIR = 'out';
