@@ -21,6 +21,12 @@ import { createEmptyProject } from '../lib/genogram/model';
 import { getProjectFileName, MAX_PROJECT_FILE_BYTES, parseProjectFile, serializeProject } from '../lib/genogram/project-file';
 import styles from './LocalDashboard.module.css';
 
+interface ThumbnailRecord {
+  type: 'webp' | 'png';
+  dataUrl: string;
+  generatedAt?: string;
+}
+
 function formatUpdatedAt(value: string): string {
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: 'medium',
@@ -30,6 +36,55 @@ function formatUpdatedAt(value: string): string {
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error && error.message ? error.message : fallback;
+}
+
+function readThumbnail(projectId: string): ThumbnailRecord | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(`thumbnail-${projectId}`);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed: unknown = JSON.parse(raw);
+
+    if (
+      typeof parsed !== 'object' ||
+      parsed === null ||
+      !('type' in parsed) ||
+      !('dataUrl' in parsed)
+    ) {
+      return null;
+    }
+
+    const record = parsed as {
+      type?: unknown;
+      dataUrl?: unknown;
+      generatedAt?: unknown;
+    };
+
+    if (
+      (record.type !== 'webp' && record.type !== 'png') ||
+      typeof record.dataUrl !== 'string' ||
+      !record.dataUrl.startsWith('data:image/')
+    ) {
+      return null;
+    }
+
+    return {
+      type: record.type,
+      dataUrl: record.dataUrl,
+      generatedAt:
+        typeof record.generatedAt === 'string'
+          ? record.generatedAt
+          : undefined,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export default function LocalDashboard() {
@@ -140,11 +195,53 @@ export default function LocalDashboard() {
     }
   }
 
+  function ProjectThumbnail({ projectId }: { projectId: string }) {
+    const [thumbnail, setThumbnail] = useState<ThumbnailRecord | null>(null);
+
+    useEffect(() => {
+      const load = () => {
+        setThumbnail(readThumbnail(projectId));
+      };
+
+      load();
+
+      const handleStorage = (event: StorageEvent) => {
+        if (event.key === `thumbnail-${projectId}`) {
+          load();
+        }
+      };
+
+      window.addEventListener('storage', handleStorage);
+
+      return () => {
+        window.removeEventListener('storage', handleStorage);
+      };
+    }, [projectId]);
+
+    return (
+      <div className={styles.projectPreview}>
+        {thumbnail ? (
+          <img
+            src={thumbnail.dataUrl}
+            alt=""
+            className={styles.thumbnailImage}
+            loading="lazy"
+          />
+        ) : (
+          <div className={styles.placeholderPreview}>
+            <span className={styles.previewSquare} />
+            <span className={styles.previewCircle} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <main className={styles.dashboardPage}>
       <header className={styles.header}>
         <div className={styles.brand}>
-          <span className={styles.brandIcon} aria-hidden="true"><img src="../icon.svg" alt="OpenGenogram" /></span>
+          <span className={styles.brandIcon} aria-hidden="true"><img src="../icon.svg" alt="OpenGenogram"/></span>
           <div><strong>OpenGenogram</strong><span>Local workspace</span></div>
         </div>
         <div className={styles.headerActions}>
@@ -197,11 +294,7 @@ export default function LocalDashboard() {
           <div className={styles.projectGrid}>
             {projects.map((project) => (
               <article className={styles.projectCard} key={project.id}>
-                <div className={styles.projectPreview} aria-hidden="true">
-                  <span className={styles.previewSquare} />
-                  <span className={styles.previewCircle} />
-                  <i />
-                </div>
+                <ProjectThumbnail projectId={project.id} />
                 <div className={styles.projectCopy}>
                   <p className={styles.eyebrow}>LOCAL PROJECT</p>
                   <h3>{project.name}</h3>

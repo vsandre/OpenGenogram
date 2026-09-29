@@ -273,6 +273,12 @@
   background-color: #fbfdfc;
   background-image: radial-gradient(circle, #d5e4df 1px, transparent 1.2px);
   background-size: 18px 18px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .previewSquare,
@@ -301,19 +307,46 @@
   left: calc(50% - 40px);
   width: 80px;
   height: 38px;
-  border-top: 2px solid #1d2f3a;
+  border-bottom: 2px solid #1d2f3a;
   border-left: 2px solid #1d2f3a;
   border-right: 2px solid #1d2f3a;
 }
 
 .projectPreview i::after {
   position: absolute;
-  top: 0;
+  top: 37px;
   left: 50%;
   width: 2px;
   height: 30px;
   background: #1d2f3a;
   content: '';
+}
+
+.thumbnailImage {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 200ms ease;
+}
+
+.projectPreview:hover .thumbnailImage {
+  transform: scale(1.05);
+}
+
+.thumbnailContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectPreview > span,
+.projectPreview > i {
+  position: absolute;
 }
 
 .projectCopy {

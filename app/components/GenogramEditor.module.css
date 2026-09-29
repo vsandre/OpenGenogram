@@ -3353,6 +3353,10 @@
   width: 36px;
 }
 
+.workspaceFileTrigger img {
+  widht: 30px;
+}
+
 .workspaceToggle {
   flex: 0 0 auto;
   gap: 6px;

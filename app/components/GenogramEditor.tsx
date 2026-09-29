@@ -22,7 +22,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
-import { toPng } from 'html-to-image';
+import { toCanvas } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
@@ -1131,7 +1131,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
   const [connectionCursor, setConnectionCursor] = useState<{ x: number; y: number } | null>(null);
   const [showLegend, setShowLegend] = useState(false);
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
-  const [exportingPng, setExportingPng] = useState(false);
+  const [exportingImage, setExportingImage] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const annotationActionContext = useMemo<AnnotationActionContextValue>(() => ({
     editingId: editingAnnotationId,
@@ -1146,7 +1146,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
   const fileTriggerRef = useRef<HTMLButtonElement | null>(null);
   const projectFileInputRef = useRef<HTMLInputElement | null>(null);
   const storedProject = useGenogramStore((state) => state.project);
-  const replaceProject = useGenogramStore((state) => state.replaceProject); 
+  const replaceProject = useGenogramStore((state) => state.replaceProject);
   const ui = useGenogramStore((state) => state.ui);
   const addPerson = useGenogramStore((state) => state.addPerson);
   const addAnnotation = useGenogramStore((state) => state.addAnnotation);
@@ -1428,12 +1428,13 @@ const renameProject = useCallback(async (): Promise<void> => {
     }
   }, [router, setSaveStatus, showFeedback]);
 
-  const exportPng = useCallback(async (): Promise<boolean> => {
-    if (exportingPng) return false;
+  const exportImage = useCallback(async (mode: 'png' | 'thumbnail' = 'png'): Promise<boolean | string | null> => {
+    if (exportingImage) return mode === 'png' ? false : null;
+
     const bounds = getProjectExportBounds(project);
     if (!bounds) {
       showFeedback('error', 'Add a person or annotation before exporting.', 5200);
-      return false;
+      return mode === 'png' ? false : null;;
     }
 
     const selection = {
@@ -1444,7 +1445,7 @@ const renameProject = useCallback(async (): Promise<void> => {
       activePanel: ui.activePanel,
     };
     let frame: HTMLDivElement | null = null;
-    setExportingPng(true);
+    setExportingImage(true);
     setSelection([]);
     setActivePanel(null);
 
@@ -1471,6 +1472,10 @@ const renameProject = useCallback(async (): Promise<void> => {
         svg.style.height = `${plan.height}px`;
         svg.style.overflow = 'visible';
       });
+      if (mode === 'thumbnail') {
+        const backgrounds = clone.querySelectorAll('.react-flow__background');
+        backgrounds.forEach(bg => bg.remove());
+      }
       const excludedSelectors = [
         '.react-flow__handle',
         '.react-flow__selection',
@@ -1504,7 +1509,7 @@ const renameProject = useCallback(async (): Promise<void> => {
       frame.appendChild(clone);
       document.body.appendChild(frame);
 
-      const dataUrl = await toPng(frame, {
+      const canvas = await toCanvas(frame, {
         width: plan.width,
         height: plan.height,
         pixelRatio: plan.pixelRatio,
@@ -1513,24 +1518,52 @@ const renameProject = useCallback(async (): Promise<void> => {
         skipAutoScale: true,
         style: { position: 'relative', top: '0', left: '0' },
       });
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = getPngExportFileName(project);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      showFeedback('success', 'PNG downloaded.');
-      return true;
+
+      if (mode === 'png') {
+        // PNG Download
+        const pngDataUrl = canvas.toDataURL('image/png');
+        
+        const link = document.createElement('a');
+        link.href = pngDataUrl;
+        link.download = getPngExportFileName(project);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        
+        showFeedback('success', 'PNG downloaded.');
+        return true;
+        
+      } else {
+        // WebP Thumbnail
+        // Set alpha channel for white pixels
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            if (r > 240 && g > 240 && b > 240) {
+              data[i + 3] = 0;
+            }
+          }
+          ctx.putImageData(imageData, 0, 0);
+        }
+
+        const webpDataUrl = canvas.toDataURL('image/webp', 0.92);
+        return webpDataUrl;
+      }
     } catch (error: unknown) {
-      showFeedback('error', projectOperationError(error, 'PNG could not be exported.'), 5200);
-      return false;
+      showFeedback('error', projectOperationError(error, 'Image export failed.'), 5200);
+      return mode === 'png' ? false : null;;
     } finally {
       frame?.remove();
       setSelection(selection.people, selection.relationships, selection.households, selection.annotations);
       setActivePanel(selection.activePanel);
-      setExportingPng(false);
+      setExportingImage(false);
     }
-  }, [exportingPng, project, setActivePanel, setSelection, showFeedback, ui.activePanel, ui.selectedAnnotationIds, ui.selectedHouseholdIds, ui.selectedPersonIds, ui.selectedRelationshipIds]);
+  }, [exportingImage, project, setActivePanel, setSelection, showFeedback, ui.activePanel, ui.selectedAnnotationIds, ui.selectedHouseholdIds, ui.selectedPersonIds, ui.selectedRelationshipIds]);
 
   const handleProjectFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.currentTarget;
@@ -1894,6 +1927,40 @@ const renameProject = useCallback(async (): Promise<void> => {
     showFeedback('success', `${selectedItemCount} selected ${selectedItemCount === 1 ? 'item' : 'items'} deleted.`);
   };
 
+  useEffect(() => {
+    return () => {
+      const generateAndSaveThumbnail = async () => {
+        const THUMBNAIL_MAX_AGE_MS = 5 * 60 * 1000;    
+        try {
+          const stored = localStorage.getItem(`thumbnail-${project.id}`);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            const generatedAt = new Date(parsed.generatedAt).getTime();
+            const now = Date.now();
+            
+            if (now - generatedAt < THUMBNAIL_MAX_AGE_MS) return;
+          } 
+          const webpDataUrl = await exportImage('thumbnail');
+          if (webpDataUrl) {
+            localStorage.setItem(
+              `thumbnail-${project.id}`,
+              JSON.stringify({
+                type: 'webp',
+                dataUrl: webpDataUrl,
+                generatedAt: new Date().toISOString(),
+              })
+            );
+          }
+          sessionStorage.setItem('thumbnail-refreshed', 'true');
+          sessionStorage.setItem('last-edited-project', project.id);
+        } catch (error) {
+          console.warn('Thumbnail generation failed:', error);
+        }
+      };
+      setTimeout(generateAndSaveThumbnail, 300);
+    };
+  }, [project.id, exportImage]);
+
   return (
     <div className={`${styles.editorShell} ${mode === 'preview' ? styles.previewShell : styles.editShell}`} data-mode={mode} data-testid="genogram-editor">
       {mode === 'edit' && (
@@ -1923,7 +1990,7 @@ const renameProject = useCallback(async (): Promise<void> => {
                 <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); projectFileInputRef.current?.click(); }}><FolderOpen size={16} aria-hidden="true" /><span>Import JSON as new project</span></button>
                 <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); downloadProjectFile(); }}><Download size={16} aria-hidden="true" /><span>Save local copy</span></button>
                 <div className={styles.fileMenuSeparator} role="separator" />
-                <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); void exportPng(); }} disabled={exportingPng}><ImageDown size={16} aria-hidden="true" /><span>{exportingPng ? 'Exporting…' : 'Export PNG (no watermark)'}</span></button>
+                <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); void exportImage('png'); }} disabled={exportingImage}><ImageDown size={16} aria-hidden="true" /><span>{exportingImage ? 'Exporting…' : 'Export PNG (no watermark)'}</span></button>
               </div>
             )}
           </div>
