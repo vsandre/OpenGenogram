@@ -1,15 +1,20 @@
 import type { NextConfig } from "next";
 
+
+export let basePath = '';
+// for use in a subdirectory domain.com/OpenGenogram uncomment the following line
+// basePath = '/OpenGenogram';
+
 const nextConfig: NextConfig = {
-  output: "export",
+  output: 'export',
   distDir: 'out',
   trailingSlash: true,
-  // for use in a subdirectory domain.com/OpenGenogram uncomment the following lines
-  // basePath: "/OpenGenogram",
-  // assetPrefix: "/OpenGenogram/",
+  basePath: basePath,
+  assetPrefix: `${basePath}/`,
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
   poweredByHeader: false,
   reactStrictMode: true,
-  allowedDevOrigins: ["127.0.0.1"],
+  allowedDevOrigins: ['127.0.0.1'],
   productionBrowserSourceMaps: false,
   turbopack: { root: process.cwd() },
   images: {

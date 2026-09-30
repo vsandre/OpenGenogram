@@ -95,6 +95,8 @@ import { GenogramRelationshipEdge } from './GenogramRelationshipEdge';
 import styles from './GenogramEditor.module.css';
 import { PersonSymbol, ReligionIcon } from './PersonSymbol';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export type GenogramEditorMode = 'preview' | 'edit';
 export interface GenogramEditorProps { mode?: GenogramEditorMode; initialProject?: Project; projectId?: string | null }
 
@@ -1976,7 +1978,7 @@ const renameProject = useCallback(async (): Promise<void> => {
               aria-controls={fileMenuId}
               onClick={() => setFileMenuOpen((open) => !open)}
             >
-              <img src="../icon.svg" alt="OpenGenogram" />
+              <img src={basePath+"/icon.svg"} alt="OpenGenogram" />
             </button>
             {fileMenuOpen && (
               <div ref={fileMenuRef} className={styles.fileMenu} id={fileMenuId} role="menu" aria-label="File actions" aria-describedby={`${fileMenuId}-local-storage-note`}>

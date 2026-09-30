@@ -21,6 +21,8 @@ import { createEmptyProject } from '../lib/genogram/model';
 import { getProjectFileName, MAX_PROJECT_FILE_BYTES, parseProjectFile, serializeProject } from '../lib/genogram/project-file';
 import styles from './LocalDashboard.module.css';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 interface ThumbnailRecord {
   type: 'webp' | 'png';
   dataUrl: string;
@@ -231,6 +233,7 @@ export default function LocalDashboard() {
           <div className={styles.placeholderPreview}>
             <span className={styles.previewSquare} />
             <span className={styles.previewCircle} />
+            <i />
           </div>
         )}
       </div>
@@ -241,7 +244,7 @@ export default function LocalDashboard() {
     <main className={styles.dashboardPage}>
       <header className={styles.header}>
         <div className={styles.brand}>
-          <span className={styles.brandIcon} aria-hidden="true"><img src="../icon.svg" alt="OpenGenogram"/></span>
+          <span className={styles.brandIcon} aria-hidden="true"><img src={basePath+"/icon.svg"} alt="OpenGenogram" /></span>
           <div><strong>OpenGenogram</strong><span>Local workspace</span></div>
         </div>
         <div className={styles.headerActions}>
@@ -324,7 +327,7 @@ export default function LocalDashboard() {
 
       <section className={styles.copyright} aria-labelledby="dashboard-copyright">
         <div>
-          <p><strong><a href="https://github.com/vsandre/OpenGenogram"><img src="../icon.svg" alt="Logo" />OpenGenogram {APP_VERSION}</a></strong> is available under the <a href="https://github.com/vsandre/OpenGenogram/blob/dev/LICENSE">MIT License</a>. Used libaries can be found <a href="https://github.com/vsandre/OpenGenogram/blob/dev/THIRD_PARTY_LICENSES.md">here</a>. This product is derived from <a href="https://github.com/Brewnut-98/genogram-canvas">Genogram Canvas</a>.</p>
+          <p><strong><a href="https://github.com/vsandre/OpenGenogram"><img src={basePath+"/icon.svg"} alt="Logo" />OpenGenogram {APP_VERSION}</a></strong> is available under the <a href="https://github.com/vsandre/OpenGenogram/blob/dev/LICENSE">MIT License</a>. Used libaries can be found <a href="https://github.com/vsandre/OpenGenogram/blob/dev/THIRD_PARTY_LICENSES.md">here</a>. This product is derived from <a href="https://github.com/Brewnut-98/genogram-canvas">Genogram Canvas</a>.</p>
         </div>
       </section>
     </main>
