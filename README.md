@@ -11,6 +11,10 @@
 [![Static Export](https://img.shields.io/badge/Deploy-Static_Export-0ea5e9.svg)](#deploy)
 [![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/vsandre/OpenGenogram/issues)
 
+### Want to draw a genogram without installing anything?
+
+### 👉 [OpenGenogram](https://vsandre.github.io/OpenGenogram/)
+
 </div>
 
 ---

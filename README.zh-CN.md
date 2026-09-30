@@ -11,6 +11,9 @@
 [![Static Export](https://img.shields.io/badge/Deploy-Static_Export-0ea5e9.svg)](#部署)
 [![Issues Welcome](https://img.shields.io/badge/Issues-welcome-brightgreen.svg)](https://github.com/vsandre/OpenGenogram/issues)
 
+### 只想直接画家系图，不想安装？
+
+### 👉 [OpenGenogram](https://vsandre.github.io/OpenGenogram/)
 </div>
 
 ---
