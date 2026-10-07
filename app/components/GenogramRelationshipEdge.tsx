@@ -595,7 +595,7 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
           style={{ stroke, strokeWidth, strokeDasharray: dash, strokeLinecap: 'round', vectorEffect: 'non-scaling-stroke' }}
         />
         {extras.map((path, index) => (
-          <path key={`${id}-extra-${index}`} d={path} fill="none" stroke={stroke} strokeLinecap="round" strokeWidth={strokeWidth} vectorEffect="non-scaling-stroke" pointerEvents="none" />
+          <path key={`${id}-extra-${index}`} d={path} fill="white" stroke={stroke} strokeLinecap="round" strokeWidth={strokeWidth} vectorEffect="non-scaling-stroke" pointerEvents="none" />
         ))}
         {patternExtras.map((extra, index) => (
           <path

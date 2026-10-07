@@ -494,7 +494,7 @@ function LegendLine({ kind, label, color = '#203432', type }: { kind: Relationsh
     case 'emotional-neglect': emotionalSample = <><line {...p} strokeDasharray="2 5" x1="4" y1="9" x2="43" y2="9" /><path {...p} d="M43 4 L52 9 L43 14" /></>; break;
     case 'manipulation': emotionalSample = <><line {...p} strokeDasharray="6 4" x1="4" y1="9" x2="43" y2="9" /><path {...p} d="M24 4 L32 14 M32 4 L24 14 M43 4 L52 9 L43 14" /></>; break;
     case 'control': emotionalSample = <><line {...p} x1="4" y1="9" x2="43" y2="9" /><rect x="21" y="2" width="14" height="14" fill="#fff" stroke={color} strokeWidth="1.5" /><path {...p} d="M23 4 L33 14 M33 4 L23 14 M43 4 L52 9 L43 14" /></>; break;
-    case 'jealousy': emotionalSample = <><line {...p} x1="4" y1="9" x2="43" y2="9" /><path {...p} d="M28 2 L35 9 L28 16 L21 9 Z M43 4 L52 9 L43 14" /></>; break;
+    case 'jealousy': emotionalSample = <><line {...p} x1="4" y1="9" x2="43" y2="9" /><path {...p} d="M28 2 L35 9 L28 16 L21 9 Z" fill="#fff"/><path {...p} d="M43 4 L52 9 L43 14" /></>; break;
     case 'admirer': emotionalSample = <><line {...p} x1="4" y1="9" x2="43" y2="9" /><circle cx="28" cy="9" r="5" fill="#fff" stroke={color} strokeWidth="1.8" /><path {...p} d="M43 4 L52 9 L43 14" /></>; break;
     default: break;
   }
@@ -513,7 +513,7 @@ function LegendLine({ kind, label, color = '#203432', type }: { kind: Relationsh
       {kind === 'child-dashed' && <><path {...p} d="M23 3 Q18 9 23 15" /><path {...p} d="M33 3 Q38 9 33 15" /></>}
       {(kind === 'dotted' || kind === 'child-dotted') && <line {...p} strokeDasharray="2 5" x1="4" y1="9" x2="52" y2="9" />}
       {kind === 'child-step' && <line {...p} strokeDasharray="10 5 2 5" x1="4" y1="9" x2="52" y2="9" />}
-      {(kind === 'child-surrogate' || kind === 'child-donor') && <><line {...p} strokeDasharray={kind === 'child-surrogate' ? '5 5' : '3 3'} x1="4" y1="9" x2="52" y2="9" /><rect x="22" y="2" width="12" height="14" rx="3" fill="#fff" stroke="currentColor" strokeWidth="1" /><text x="28" y="12" fill="currentColor" fontSize="7" fontWeight="800" textAnchor="middle">{kind === 'child-surrogate' ? 'S' : 'D'}</text></>}
+      {(kind === 'child-surrogate' || kind === 'child-donor') && <><line {...p} strokeDasharray={kind === 'child-surrogate' ? '5 5' : '3 3'} x1="4" y1="9" x2="52" y2="9" /><rect x="22" y="2" width="12" height="14" rx="3" fill="#fff" stroke="currentColor" strokeWidth="1" /><text x="28" y="12" fill="currentColor" fontSize="7" fontWeight="800" textAnchor="middle">{kind === 'child-surrogate' ? 'S' : type === 'sperm-donor-child' ? 'SD' : type === 'egg-donor-child' ? 'ED' : 'D'}</text></>}
       {kind === 'unknown' && <><line {...p} strokeDasharray="2 5" x1="4" y1="9" x2="52" y2="9" /><circle cx="28" cy="9" r="4" fill="white" stroke="#203432" strokeWidth="1.2" /></>}
       {kind === 'sparse-dotted' && <line {...p} strokeDasharray="1 8" x1="4" y1="9" x2="52" y2="9" />}
       {kind === 'affair-separation' && <><line {...p} strokeDasharray="4 4" x1="4" y1="9" x2="52" y2="9" /><line {...p} x1="25" y1="3" x2="32" y2="15" /></>}
@@ -525,7 +525,7 @@ function LegendLine({ kind, label, color = '#203432', type }: { kind: Relationsh
       {kind === 'cutoff' && <><line {...p} x1="4" y1="9" x2="52" y2="9" /><line {...p} x1="25" y1="2" x2="25" y2="16" /><line {...p} x1="32" y1="2" x2="32" y2="16" /></>}
       {kind === 'focused' && <line {...p} markerEnd={`url(#${markerId})`} x1="4" y1="9" x2="52" y2="9" />}
       {(kind === 'twin-fraternal' || kind === 'twin-identical') && <><path {...p} d="M28 2 L10 16 M28 2 L46 16" />{kind === 'twin-identical' && <line {...p} x1="17" y1="11" x2="39" y2="11" />}</>}
-      {(kind === 'single' || kind === 'child-solid') && <line {...p} x1="4" y1="9" x2="52" y2="9" />}
+      {(kind === 'single' || kind === 'child-solid' || kind === 'sibling') && <line {...p} x1="4" y1="9" x2="52" y2="9" />}
     </svg>
   );
 }
@@ -923,7 +923,7 @@ function RelationshipInspector({ relationship }: { relationship: Relationship | 
           const option = RELATIONSHIP_DEFINITIONS[type];
           return <button className={relationship.type === type ? styles.childRelationshipActive : ''} type="button" key={type} onClick={() => updateChildType(type)}><LegendLine kind={option.lineKind} label={option.label} /><span>{option.label.replace(' child', '')}</span></button>;
         })}</div></div>
-        <label className={styles.field}><span>Label / note</span><input placeholder="e.g. b. 1990" value={label} onChange={(event) => updateChildAttributes({ label: event.target.value || null })} /></label>
+        <label className={styles.field}><span>Label / notes</span><input placeholder="e.g. b. 1990" value={label} onChange={(event) => updateChildAttributes({ label: event.target.value || null })} /></label>
         <div className={styles.childInspectorGroup}><p>Add twin sibling</p><div className={styles.twinSiblingActions}>
           <button type="button" disabled={childRelationshipIds.length === 0} onClick={() => addTwinSibling(relationship.id, 'fraternal-twins')}><Users size={14} aria-hidden="true" />Fraternal</button>
           <button type="button" disabled={childRelationshipIds.length === 0} onClick={() => addTwinSibling(relationship.id, 'identical-twins')}><Copy size={14} aria-hidden="true" />Identical</button>
@@ -976,6 +976,7 @@ function AnnotationFloatingEditor({ annotation }: { annotation: CanvasAnnotation
   if (annotation.kind === 'secret') return <div className={styles.secretFloatingEditor} aria-label="Secret properties">
     <label><span>Label</span><input value={annotation.text} onChange={(event) => updateAnnotation(annotation.id, { text: event.target.value })} /></label>
     <label><span>Notes</span><textarea rows={3} value={annotation.notes ?? ''} onChange={(event) => updateAnnotation(annotation.id, { notes: event.target.value })} /></label>
+    <button className={styles.annotationDeleteAction} type="button" aria-label={`Delete ${annotation.kind}`} onClick={() => deleteAnnotations([annotation.id])}><Trash2 size={15} /></button>
   </div>;
   return <div className={styles.annotationFloatingEditor} aria-label={`${annotation.kind === 'note' ? 'Note' : 'Text'} properties`}>
     <div className={styles.annotationFormatBar} role="toolbar" aria-label="Text formatting">
@@ -1006,10 +1007,10 @@ function AnnotationLinkInspector({ sourceId, targetId, onClose }: { sourceId: st
   };
   return <section className={styles.inspectorContent} aria-label="Selected annotation link">
     <div className={styles.inspectorHeading}><div><p className={styles.kicker}>Selected link</p><h3>Annotation link</h3></div><button className={styles.iconButton} type="button" onClick={onClose} aria-label="Close link editor">×</button></div>
-    <label className={styles.field}><span>Label / note</span><input placeholder="e.g. Roommate, Mentor, Caregiver" value={attributes.label ?? ''} onChange={(event) => updateAnnotationLink(sourceId, targetId, { label: event.target.value })} /></label>
+    <label className={styles.field}><span>Label / notes</span><input placeholder="e.g. Roommate, Mentor, Caregiver" value={attributes.label ?? ''} onChange={(event) => updateAnnotationLink(sourceId, targetId, { label: event.target.value })} /></label>
     <div className={styles.lineAppearanceEditor}>
       <span>Line color</span>
-      <div className={styles.lineColorPicker} aria-label="Annotation link color">{relationshipLineColors.map((color) => <button className={lineColor === color ? styles.lineColorActive : ''} type="button" key={color} aria-label={`Set line color ${color}`} aria-pressed={lineColor === color} style={{ '--line-color': color } as CSSProperties} onClick={() => updateAnnotationLink(sourceId, targetId, { color })} />)}<button className={`${styles.lineColorReset} ${lineColor === null ? styles.lineColorActive : ''}`} type="button" aria-label="Use default gray" aria-pressed={lineColor === null} onClick={() => updateAnnotationLink(sourceId, targetId, { color: undefined })}>×</button></div>
+      <div className={styles.lineColorPicker} aria-label="Annotation link color">{relationshipLineColors.map((color) => <button className={lineColor === color ? styles.lineColorActive : ''} type="button" key={color} aria-label={`Set line color ${color}`} aria-pressed={lineColor === color} style={{ '--line-color': color } as CSSProperties} onClick={() => updateAnnotationLink(sourceId, targetId, { color })} />)}<button className={`${styles.lineColorReset} ${lineColor === null ? styles.lineColorActive : ''}`} type="button" aria-label="Use default gray" aria-pressed={lineColor === null} onClick={() => updateAnnotationLink(sourceId, targetId, { color: undefined })}><div>×</div></button></div>
     </div>
     <div className={styles.lineActions}>
       <button type="button" onClick={() => updateAnnotationLink(sourceId, targetId, { hidden: !hidden })}>{hidden ? <Eye size={15} /> : <EyeOff size={15} />}{hidden ? 'Show' : 'Hide'}</button>

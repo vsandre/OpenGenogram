@@ -1179,7 +1179,8 @@
 }
 
 .annotationFormatBar select,
-.annotationFormatBar button {
+.annotationFormatBar button,
+.secretFloatingEditor button {
   height: 34px;
   border: 1px solid var(--line-soft);
   border-radius: 8px;
@@ -1195,7 +1196,8 @@
   font-size: 11px;
 }
 
-.annotationFormatBar > button {
+.annotationFormatBar > button,
+.secretFloatingEditor > button {
   display: grid;
   width: 34px;
   place-items: center;
@@ -1204,7 +1206,8 @@
 
 .annotationFormatBar button:hover,
 .annotationFormatBar button:focus-visible,
-.annotationFormatBar .annotationFormatActive {
+.annotationFormatBar .annotationFormatActive,
+.secretFloatingEditor button:hover {
   border-color: rgba(79, 133, 124, 0.45);
   background: var(--accent-soft);
   outline: none;
@@ -1245,7 +1248,8 @@
 }
 
 .annotationFormatBar .annotationDeleteAction,
-.annotationQuickActions .annotationDeleteAction {
+.annotationQuickActions .annotationDeleteAction,
+.secretFloatingEditor .annotationDeleteAction {
   color: var(--danger);
 }
 
@@ -3154,7 +3158,6 @@
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
   background: var(--paper);
-  box-shadow: 0 5px 10px rgba(29, 47, 58, 0.05);
 }
 
 .lineActions button {
