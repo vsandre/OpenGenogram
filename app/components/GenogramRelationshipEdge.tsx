@@ -329,7 +329,8 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
   if (kind === 'child-solid' || kind === 'child-dashed' || kind === 'child-dotted' || kind === 'child-step' || kind === 'child-surrogate' || kind === 'child-donor') main = childPath(source, target);
   if (sibling) main = sibling.path;
   if (kind === 'child-dashed' || kind === 'long-dashed') dash = '8 6';
-  if (kind === 'child-dotted' || kind === 'dotted' || kind === 'affair-separation' || kind === 'affair-divorce' || kind === 'affair-married' || kind === 'unknown') dash = '2 6';
+  if (kind === 'child-dotted' || kind === 'dotted' || kind === 'affair-separation' || kind === 'affair-divorce' || kind === 'affair-married') dash = '2 6';
+  if (kind === 'unknown') {dash = '2 5'; extras = [circleMark(midpoint, { x: sourceX, y: midpoint.y }, { x: targetX, y: midpoint.y }, 0, 4)];}
   if (kind === 'child-step') dash = '10 5 2 5';
   if (kind === 'child-surrogate') dash = '5 5';
   if (kind === 'child-donor') dash = '3 3';
