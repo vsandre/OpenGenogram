@@ -583,6 +583,8 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
     x: (sourceX + targetX) / 2,
     y: Math.max(...emotionalPoints.map((point) => point.y)) + 38,
   };
+  const childX = targetX;
+  const childY = targetY - 30;
 
   return (
     <>
@@ -612,17 +614,27 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
         ))}
         {selected && definition.category === 'emotional' && <path className={styles.emotionalLineHitArea} d={main} fill="none" stroke="transparent" strokeWidth="28" pointerEvents="stroke" onClick={addControlPoint} />}
       </g>
-      {label && (
+      {label && definition.category !== 'child' &&  (
         <EdgeLabelRenderer>
           <span className="nodrag nopan" style={{ position: 'absolute', transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`, color: stroke, padding: '1px 4px', fontSize: 10, fontWeight: 700, pointerEvents: 'none', whiteSpace: 'nowrap', zIndex:3, textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff' }}>
             {label}
           </span>
         </EdgeLabelRenderer>
       )}
-      {definition.category === 'child' && (childBadge || adoptionMarker || immigrationMarker) && <EdgeLabelRenderer><span
-        className={`nodrag nopan ${styles.childLineBadge}`}
-        style={{ transform: `translate(-50%, -50%) translate(${straightLabelX}px, ${straightLabelY}px)`, color: stroke }}
-      >{childBadge && <b>{childBadge}</b>}{adoptionMarker && <b aria-hidden="true">)(</b>}{immigrationMarker && <span>{immigrationMarker}</span>}</span></EdgeLabelRenderer>}
+      {definition.category === 'child' && adoptionMarker && <>
+        <path d={`M ${f(childX - 4)} ${f(childY - 7)} Q ${f(childX - 10)} ${f(childY)} ${f(childX - 4)} ${f(childY + 7)}`} fill="none" stroke={stroke} strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+        <path d={`M ${f(childX + 4)} ${f(childY - 7)} Q ${f(childX + 10)} ${f(childY)} ${f(childX + 4)} ${f(childY + 7)}`} fill="none" stroke={stroke} strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+      </>}
+      {definition.category === 'child' && childBadge && <>
+        <rect x={childX - 12} y={childY - 8} width="24" height="16" rx="4" fill="#fbfdfa" stroke={stroke} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+        <text x={childX} y={childY + 3} fill={stroke} fontSize="8" fontWeight="800" textAnchor="middle">{childBadge}</text>
+      </>}
+      {definition.category === 'child' && immigrationMarker && <text x={childX} y={childY + (childBadge || adoptionMarker ? 35 : 15)} fill={stroke} fontSize="50" fontWeight="77" textAnchor="middle">{immigrationMarker}</text>}
+      {definition.category === 'child' && label && (
+          <EdgeLabelRenderer>
+            <span className={styles.childLineLabel} style={{ transform: `translate(-50%, -100%) translate(${childX}px, ${childY - (childBadge || adoptionMarker || immigrationMarker ? 15 : -3)}px)`}}>{label}</span>
+          </EdgeLabelRenderer>
+        )}
       {usesArrow && !hidden && (
         <ViewportPortal>
           <span
