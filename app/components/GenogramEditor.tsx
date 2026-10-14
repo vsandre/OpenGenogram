@@ -596,7 +596,8 @@ function PersonInspector({ person }: { person: Person | undefined }) {
   const setActivePanel = useGenogramStore((state) => state.setActivePanel);
   const [statusOpen, setStatusOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
-  const [openSections, setOpenSections] = useState<string[]>(['medical']);
+  // Define which sections opens at selection of a person: Medical view would be -> useState<string[]>(['medical']);
+  const [openSections, setOpenSections] = useState<string[]>([]);
   const [careerTagDraft, setCareerTagDraft] = useState({ personId: '', value: '' });
   const [locationCountryOpen, setLocationCountryOpen] = useState(false);
   const [locationSearchDraft, setLocationSearchDraft] = useState({ personId: '', value: '' });
