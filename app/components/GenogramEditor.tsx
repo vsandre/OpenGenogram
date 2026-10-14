@@ -312,7 +312,7 @@ function PersonNode({ id, data, selected }: NodeProps<PersonFlowNode>) {
       <PersonSymbol person={person} size={symbolSize} showAnnotations={labelSettings.visibility.age} showProfileBadges viewVisibility={viewSettings.visibility} className={styles.personSymbol} />
       {data.connectionCue && <div className={styles.connectionTargetCue} aria-hidden="true"><span className={styles.connectionTargetLabel}>{data.connectionLabel}</span><span className={styles.connectionTargetDot} /></div>}
       {visualSettings.hidden && <span className={styles.hiddenPersonBadge}><EyeOff size={11} aria-hidden="true" />Hidden</span>}
-      {showPrimaryDetails && <div className={`${styles.personPrimaryDetails} ${labelSettings.wrapLongText ? styles.personPrimaryDetailsWrap : ''}`}>
+      {showPrimaryDetails && <div className={`${styles.personPrimaryDetails} ${labelSettings.wrapLongText ? styles.personPrimaryDetailsWrap : ''} ${person.explicitlyChildless ? styles.personPrimaryDetailsChildless : ''}`}>
         {labelSettings.visibility.name && <strong className={styles.personName}>{person.name || symbolLabel}</strong>}
         {showGender && <span className={styles.personDetails}>{genderLabels[person.gender]}</span>}
         {showMedical && <span className={styles.personMedicalSummary} title={medicalSummary}>{medicalSummary}</span>}

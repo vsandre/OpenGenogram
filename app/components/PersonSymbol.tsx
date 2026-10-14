@@ -491,10 +491,10 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
       {person.isIndexPerson && renderIndexOutline(kind, isStillbirth)}
       {person.symbolKind === 'person' && person.explicitlyChildless && (
         <g aria-label="Explicitly childless marker" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
-          <line x1="56" y1={person.isIndexPerson? (person.gender === 'unspecified' || person.gender === 'other')? 94  : 92 : 88} x2="56" y2="175" />
-          <line x1="26" y1="177.5" x2="86" y2="177.5" stroke={PAPER}/>
-          <line x1="26" y1="175" x2="86" y2="175" />
-          <line x1="36" y1="180" x2="76" y2="180" />
+          <line x1="56" y1={person.isIndexPerson? (person.gender === 'unspecified' || person.gender === 'other')? 94  : 92 : 88} x2="56" y2="100" />
+          <line x1="36" y1="102.5" x2="76" y2="102.5" stroke={PAPER}/>
+          <line x1="26" y1="100" x2="86" y2="100" />
+          <line x1="36" y1="105" x2="76" y2="105" />
         </g>
       )}
       {(showDeceasedMark) && (
