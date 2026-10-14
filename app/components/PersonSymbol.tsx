@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { Coins, GraduationCap, MapPin, type LucideIcon } from 'lucide-react';
+import { DynamicFlag } from "@sankyu/react-circle-flags";
 
 import {
   createDefaultCanvasViewVisibility,
@@ -10,7 +11,6 @@ import {
   type Person,
   type SymbolKind,
 } from '../lib/genogram/model';
-import { countryFlag } from '../lib/countries';
 
 export interface PersonSymbolProps {
   person: Person;
@@ -386,7 +386,7 @@ function CountryFlagBadge({ x, y, label, countryCode }: { x: number; y: number; 
   return (
     <g aria-label={label} data-profile-badge={label}>
       <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
-      <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="central" fontFamily="'Apple Color Emoji', 'Segoe UI Emoji', sans-serif" fontSize="14.3" aria-hidden="true">{countryFlag(countryCode)}</text>
+      <DynamicFlag x={x-19/2} y={y-19/2} code={countryCode} height={19} width={19} />
     </g>
   );
 }

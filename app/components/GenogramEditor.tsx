@@ -26,6 +26,7 @@ import { toCanvas } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { DynamicFlag } from "@sankyu/react-circle-flags";
 
 import {
   createEmptyProject,
@@ -89,7 +90,7 @@ import {
   type PersonFlowNode,
 } from '../lib/genogram/flow-adapter';
 import { useGenogramStore, type QuickRelativeKind } from '../lib/genogram/store';
-import { COUNTRY_OPTIONS, countryFlag } from '../lib/countries';
+import { COUNTRY_OPTIONS } from '../lib/countries';
 import { GenogramFamilyEdge } from './GenogramFamilyEdge';
 import { GenogramRelationshipEdge } from './GenogramRelationshipEdge';
 import styles from './GenogramEditor.module.css';
@@ -630,6 +631,11 @@ function PersonInspector({ person }: { person: Person | undefined }) {
     setLocationSearchDraft({ personId: person.id, value: '' });
     setLocationCountryOpen(false);
   };
+  const clearCountry = () => {
+    updateLocation({ country: '', countryCode: '' });
+    setLocationSearchDraft({ personId: person.id, value: '' });
+    setLocationCountryOpen(false);
+  };
   const updateVisualSettings = (patch: Partial<PersonVisualSettings>) => updatePerson(person.id, { visualSettings: { ...visualSettings, ...patch } });
   const toggleHeritagePattern = (pattern: CulturalHeritagePattern) => {
     const existing = heritageLayers.find((layer) => layer.pattern === pattern);
@@ -830,11 +836,12 @@ function PersonInspector({ person }: { person: Person | undefined }) {
       </PersonInspectorSection>
       <PersonInspectorSection {...sectionProps('location')} title="Location" icon={MapPin} tone="#b9673a" visible={viewSettings.visibility.location} onVisibleChange={(visible) => setCanvasViewVisibility('location', visible)}>
         <div className={styles.locationCountryPicker}>
-          <button className={`${styles.locationCountryTrigger} ${locationCountryOpen ? styles.locationCountryTriggerOpen : ''}`} type="button" aria-haspopup="listbox" aria-expanded={locationCountryOpen} onClick={() => setLocationCountryOpen((open) => !open)}><span className={styles.locationCountryFlag} aria-hidden="true">{profile.countryCode ? countryFlag(profile.countryCode) : <Globe2 size={14} />}</span><span>{profile.country || 'Country'}</span><ChevronDown size={14} aria-hidden="true" /></button>
+          <button className={`${styles.locationCountryTrigger} ${locationCountryOpen ? styles.locationCountryTriggerOpen : ''}`} type="button" aria-haspopup="listbox" aria-expanded={locationCountryOpen} onClick={() => setLocationCountryOpen((open) => !open)}><span className={styles.locationCountryFlag} aria-hidden="true">{profile.countryCode ? <DynamicFlag code={profile.countryCode} height={16} width={16} /> : <Globe2 size={14} />}</span><span>{profile.country || 'Country'}</span><ChevronDown size={14} aria-hidden="true" /></button>
           {locationCountryOpen && <div className={styles.locationCountryMenu}>
             <input autoFocus aria-label="Search country" placeholder="Search country..." value={locationCountrySearch} onChange={(event) => setLocationSearchDraft({ personId: person.id, value: event.target.value })} onKeyDown={(event) => { if (event.key === 'Escape') setLocationCountryOpen(false); }} />
             <div className={styles.locationCountryList} role="listbox" aria-label="Countries">
-              {filteredCountries.length > 0 ? filteredCountries.map((country) => <button className={profile.countryCode === country.code ? styles.locationCountryOptionActive : ''} type="button" role="option" aria-selected={profile.countryCode === country.code} key={country.code} onClick={() => selectCountry(country)}><span aria-hidden="true">{countryFlag(country.code)}</span><span>{country.name}</span></button>) : <p>No countries found</p>}
+              <button className={`${styles.locationCountryOption} ${!profile.countryCode ? styles.locationCountryOptionActive : '' }`} type="button" role="option" aria-selected={!profile.countryCode} onClick={() => clearCountry() }><span aria-hidden="true"><Globe2 size={14} /></span><span>Clear country selection</span></button>
+              {filteredCountries.length > 0 ? filteredCountries.map((country) => <button className={profile.countryCode === country.code ? styles.locationCountryOptionActive : ''} type="button" role="option" aria-selected={profile.countryCode === country.code} key={country.code} onClick={() => selectCountry(country)}><span aria-hidden="true"><DynamicFlag code={country.code} height={16} width={16} /></span><span>{country.name}</span></button>) : <p>No countries found</p>}
             </div>
           </div>}
         </div>

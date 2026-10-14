@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
+    "@sankyu/react-circle-flags": "^1.6.8",
     "@modelcontextprotocol/server": "^2.0.0",
     "@xyflow/react": "^12.11.3",
     "html-to-image": "^1.11.13",
@@ -40,7 +41,7 @@
     "@typescript-eslint/parser": "^8.71.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.3.7",
+    "eslint-config-next": "^16.4.0",
     "fake-indexeddb": "^6.2.5",
     "tsx": "^4.23.13",
     "typescript": "^5",

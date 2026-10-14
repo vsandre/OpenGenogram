@@ -2908,6 +2908,31 @@
   line-height: 1;
 }
 
+.locationCountryFlag svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.locationCountryOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.locationCountryOption svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
 .locationCountryMenu {
   display: grid;
   overflow: hidden;
