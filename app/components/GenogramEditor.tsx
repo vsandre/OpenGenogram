@@ -1689,6 +1689,8 @@ const renameProject = useCallback(async (): Promise<void> => {
   }, [mode, quickAddRelative, setActivePanel, setSelection, showFeedback]);
 
   const isPersonQuickActionDisabled = useCallback((personId: string, action: PersonQuickAction) => {
+    const person = project.people.find((candidate) => candidate.id === personId);
+    if (action === 'child' && person?.explicitlyChildless) return true;
     if (action !== 'parents') return false;
     const parentIds = new Set(project.relationships
       .filter((relationship) => isChildRelationship(relationship.type) && relationship.target === personId)
