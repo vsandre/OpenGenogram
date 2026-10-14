@@ -33,7 +33,7 @@ jobs:
 
       - name: Activate basePath/assetPrefix in next.config.ts
         run: |
-          sed -i 's/^[[:space:]]*\/\/[[:space:]]*basePath =/  basePath =/g' next.config.ts
+          sed -i -e 's/^export const /\/\/\/ &/' -e 's/^[[:space:]]*\/\/[[:space:]]*export const basePath =/export const basePath =/g' next.config.ts
 
       - name: Build project
         run: npm run build

@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
-
-export let basePath = '';
-// for use in a subdirectory domain.com/OpenGenogram uncomment the following line
-// basePath = '/OpenGenogram';
+export const basePath = '';
+// for use in a subdirectory domain.com/OpenGenogram change it to the following line
+// export const basePath = '/OpenGenogram';
 
 const nextConfig: NextConfig = {
   output: 'export',

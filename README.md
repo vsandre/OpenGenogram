@@ -121,7 +121,7 @@ npm run build
 
 Run `npm run build`, then upload the contents of `out/` to the root of any static host. The open-source app does not require environment variables or backend services.
 
-If you want to run OpenGenogram under a subdirectory uncomment and change `basepath` und `assetPrefix` in `next.config.ts`.
+If you want to run OpenGenogram under a subdirectory change the const `basepath` in `next.config.ts`.
 
 ## Privacy Boundary
 
