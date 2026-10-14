@@ -13,7 +13,7 @@
 
 ### 只想直接画家系图，不想安装？
 
-### 👉 [OpenGenogram](https://vsandre.github.io/OpenGenogram/)
+### 👉 [打开 OpenGenogram](https://vsandre.github.io/OpenGenogram/)
 </div>
 
 ---
