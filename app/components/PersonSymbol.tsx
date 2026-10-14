@@ -492,7 +492,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
       {person.symbolKind === 'person' && person.explicitlyChildless && (
         <g aria-label="Explicitly childless marker" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
           <line x1="56" y1={person.isIndexPerson? (person.gender === 'unspecified' || person.gender === 'other')? 94  : 92 : 88} x2="56" y2="175" />
-          <line x1="26" y1="177.5" x2="86" y2="177.5" stroke="white"/>
+          <line x1="26" y1="177.5" x2="86" y2="177.5" stroke={PAPER}/>
           <line x1="26" y1="175" x2="86" y2="175" />
           <line x1="36" y1="180" x2="76" y2="180" />
         </g>
@@ -519,6 +519,8 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
       {showAnnotations && (
         <g className="person-symbol-annotations" fill={INK} fontFamily="inherit" fontWeight="500">
           {age !== null && <text x="56" y="66" textAnchor="middle" fontSize="25" fontWeight="800" fill={hasVisualFill ? PAPER : INK} stroke={hasVisualFill ? INK : PAPER} strokeWidth="3" paintOrder="stroke">{age}</text>}
+          {person.birthYear !== null && <text x="26" y="15" textAnchor="middle" fontSize="15" fontWeight="10" stroke={INK} strokeWidth="1.4" paintOrder="stroke">{person.birthYear}</text>}
+          {person.deathYear !== null && <text x="86" y="15" textAnchor="middle" fontSize="15" fontWeight="10" stroke={INK} strokeWidth="1.4" paintOrder="stroke">{person.deathYear}</text>}
         </g>
       )}
       {person.symbolKind === 'person' && religion && <ReligionBadge x={24} y={28} religion={religion} />}

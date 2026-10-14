@@ -278,10 +278,9 @@ function PersonNode({ id, data, selected }: NodeProps<PersonFlowNode>) {
     labelSettings.visibility.custom && viewSettings.visibility.custom && profile.attributes,
     labelSettings.visibility.notes && person.notes,
   ].filter((value): value is string => Boolean(value));
-  const showBirthYear = person.symbolKind === 'person' && labelSettings.visibility.birthYear && person.birthYear !== null;
   const showGender = person.symbolKind === 'person' && labelSettings.visibility.gender;
   const showMedical = person.symbolKind === 'person' && labelSettings.visibility.medical && viewSettings.visibility.medical && medicalSummary.length > 0;
-  const showPrimaryDetails = labelSettings.visibility.name || showBirthYear || showGender || showMedical || extraDetails.length > 0;
+  const showPrimaryDetails = labelSettings.visibility.name || showGender || showMedical || extraDetails.length > 0;
   return (
     <div className={`${styles.personNode} ${selected ? styles.personNodeSelected : ''} ${visualSettings.hidden ? styles.personNodeHidden : ''}`} style={anchorStyle} aria-label={`${person.name || symbolLabel}, ${person.symbolKind === 'person' ? genderLabels[person.gender] : symbolLabel}`} data-person-id={person.id}>
       {selected && person.symbolKind === 'person' && personActions?.enabled && (
@@ -314,7 +313,6 @@ function PersonNode({ id, data, selected }: NodeProps<PersonFlowNode>) {
       {visualSettings.hidden && <span className={styles.hiddenPersonBadge}><EyeOff size={11} aria-hidden="true" />Hidden</span>}
       {showPrimaryDetails && <div className={`${styles.personPrimaryDetails} ${labelSettings.wrapLongText ? styles.personPrimaryDetailsWrap : ''}`}>
         {labelSettings.visibility.name && <strong className={styles.personName}>{person.name || symbolLabel}</strong>}
-        {showBirthYear && <span className={styles.personYears}>{person.birthYear}</span>}
         {showGender && <span className={styles.personDetails}>{genderLabels[person.gender]}</span>}
         {showMedical && <span className={styles.personMedicalSummary} title={medicalSummary}>{medicalSummary}</span>}
         {person.symbolKind === 'person' && extraDetails.length > 0 && <span className={styles.personExtraDetails}>{extraDetails.join(' · ')}</span>}
