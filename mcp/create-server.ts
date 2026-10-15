@@ -104,7 +104,7 @@ export function createGenogramMcpServer(): McpServer {
       outputSchema: generationOutputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: false },
     },
-    async (input) => {
+    (input) => {
       const { project, warnings } = generateGenogramProject(input as GenogramGenerationSpec);
       const output = {
         fileName: getProjectFileName(project),
@@ -129,7 +129,7 @@ export function createGenogramMcpServer(): McpServer {
       outputSchema: validationOutputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    async ({ project: inputProject }) => {
+    ({ project: inputProject }) => {
       try {
         const project = validateProject(inputProject);
         const output = { valid: true, fileName: getProjectFileName(project), project: jsonRecord(project) };
@@ -157,7 +157,7 @@ export function createGenogramMcpServer(): McpServer {
       outputSchema: notationOutputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    async () => {
+    () => {
       const output = {
         schemaVersion: CURRENT_SCHEMA_VERSION,
         genders: [...GENDERS],

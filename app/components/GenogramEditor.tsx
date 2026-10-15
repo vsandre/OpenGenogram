@@ -26,6 +26,7 @@ import { toCanvas } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { z } from "zod";
 import { DynamicFlag } from "@sankyu/react-circle-flags";
 
 import {
@@ -1574,27 +1575,29 @@ const renameProject = useCallback(async (): Promise<void> => {
     }
   }, [exportingImage, project, setActivePanel, setSelection, showFeedback, ui.activePanel, ui.selectedAnnotationIds, ui.selectedHouseholdIds, ui.selectedPersonIds, ui.selectedRelationshipIds]);
 
-  const handleProjectFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const input = event.currentTarget;
-    const file = input.files?.[0];
-    input.value = '';
-    if (!file) return;
+  const handleProjectFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    void (async () => {
+      const input = event.currentTarget;
+      const file = input.files?.[0];
+      input.value = '';
+      if (!file) return;
 
-    if (file.size > MAX_PROJECT_FILE_BYTES) {
-      const message = `Project file is larger than ${MAX_PROJECT_FILE_BYTES / (1024 * 1024)} MB.`;
-      setSaveStatus('error', message);
-      showFeedback('error', message, 5200);
-      return;
-    }
+      if (file.size > MAX_PROJECT_FILE_BYTES) {
+        const message = `Project file is larger than ${MAX_PROJECT_FILE_BYTES / (1024 * 1024)} MB.`;
+        setSaveStatus('error', message);
+        showFeedback('error', message, 5200);
+        return;
+      }
 
-    try {
-      const importedProject = await importLocalProject(parseProjectFile(await file.text()));
-      router.push(`/edit?project=${encodeURIComponent(importedProject.id)}`);
-    } catch (error: unknown) {
-      const message = projectOperationError(error, 'Project file could not be opened.');
-      setSaveStatus('error', message);
-      showFeedback('error', message, 5200);
-    }
+      try {
+        const importedProject = await importLocalProject(parseProjectFile(await file.text()));
+        router.push(`/edit?project=${encodeURIComponent(importedProject.id)}`);
+      } catch (error: unknown) {
+        const message = projectOperationError(error, 'Project file could not be opened.');
+        setSaveStatus('error', message);
+        showFeedback('error', message, 5200);
+      }
+    })();
   }, [router, setSaveStatus, showFeedback]);
 
   const canvasCenterPosition = useCallback((width: number, height: number) => {
@@ -1702,7 +1705,7 @@ const renameProject = useCallback(async (): Promise<void> => {
       .filter((relationship) => isChildRelationship(relationship.type) && relationship.target === personId)
       .map((relationship) => relationship.source));
     return parentIds.size >= 2;
-  }, [project.relationships]);
+  }, [project.people, project.relationships]);
 
   const beginAnnotationConnection = useCallback((annotationId: string) => {
     if (mode !== 'edit') return;
@@ -1938,15 +1941,17 @@ const renameProject = useCallback(async (): Promise<void> => {
     showFeedback('success', `${selectedItemCount} selected ${selectedItemCount === 1 ? 'item' : 'items'} deleted.`);
   };
 
+  const thumbnailCacheSchema = z.object({generatedAt: z.coerce.date()});
+  const THUMBNAIL_MAX_AGE_MS = 5 * 60 * 1000; 
+
   useEffect(() => {
     return () => {
-      const generateAndSaveThumbnail = async () => {
-        const THUMBNAIL_MAX_AGE_MS = 5 * 60 * 1000;    
+      const generateAndSaveThumbnail = async () => {   
         try {
           const stored = localStorage.getItem(`thumbnail-${project.id}`);
           if (stored) {
-            const parsed = JSON.parse(stored);
-            const generatedAt = new Date(parsed.generatedAt).getTime();
+            const parsed = thumbnailCacheSchema.safeParse(JSON.parse(stored));
+            const generatedAt = parsed.data.generatedAt.getTime();
             const now = Date.now();
             
             if (now - generatedAt < THUMBNAIL_MAX_AGE_MS) return;
@@ -1968,9 +1973,9 @@ const renameProject = useCallback(async (): Promise<void> => {
           console.warn('Thumbnail generation failed:', error);
         }
       };
-      setTimeout(generateAndSaveThumbnail, 300);
+      setTimeout(() => {void generateAndSaveThumbnail();}, 300);
     };
-  }, [project.id, exportImage]);
+  }, [project.id, exportImage, thumbnailCacheSchema, THUMBNAIL_MAX_AGE_MS]);
 
   return (
     <div className={`${styles.editorShell} ${mode === 'preview' ? styles.previewShell : styles.editShell}`} data-mode={mode} data-testid="genogram-editor">

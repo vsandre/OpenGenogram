@@ -22,7 +22,7 @@ test('a project file round-trips the current project schema', () => {
   const contents = serializeProject(project);
   const parsed = parseProjectFile(contents);
 
-  assert.equal(JSON.parse(contents).schemaVersion, CURRENT_SCHEMA_VERSION);
+  assert.equal(((): unknown => { const parsed: unknown = JSON.parse(contents); assert.ok(typeof parsed === "object" && parsed !== null && "schemaVersion" in parsed && typeof (parsed as Record<string, unknown>).schemaVersion === "number"); return (parsed as { schemaVersion: number }).schemaVersion; })(), CURRENT_SCHEMA_VERSION);
   assert.deepEqual(parsed, project);
 });
 

@@ -141,6 +141,7 @@ export default function LocalDashboard() {
       router.push(`/edit?project=${encodeURIComponent(project.id)}`);
     } catch (caught) {
       setError(errorMessage(caught, 'The project file could not be imported.'));
+    } finally {
       setBusyId(null);
     }
   }
@@ -254,7 +255,7 @@ export default function LocalDashboard() {
           <button className={styles.primaryButton} type="button" onClick={() => { void createProject(); }} disabled={busyId !== null}>
             <Plus size={17} aria-hidden="true" /> {busyId === 'create' ? 'Creating…' : 'New project'}
           </button>
-          <input ref={importInputRef} className={styles.hiddenInput} type="file" accept=".json,application/json" onChange={importProject} aria-label="Import project JSON" />
+          <input ref={importInputRef} className={styles.hiddenInput} type="file" accept=".json,application/json" onChange={void importProject(event)} aria-label="Import project JSON" />
         </div>
       </header>
 

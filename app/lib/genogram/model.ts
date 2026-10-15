@@ -650,7 +650,7 @@ export function validateProject(value: unknown): Project {
     annotationIds.add(entry.id);
     if (!CANVAS_ANNOTATION_KINDS.includes(entry.kind as CanvasAnnotationKind) || typeof entry.text !== 'string') throw new ProjectValidationError(`annotations[${index}] has invalid core fields`);
     if (entry.notes !== undefined && typeof entry.notes !== 'string') throw new ProjectValidationError(`annotations[${index}].notes must be a string`);
-    if (entry.fontFamily !== undefined && !['sans', 'serif', 'mono'].includes(String(entry.fontFamily))) throw new ProjectValidationError(`annotations[${index}].fontFamily is invalid`);
+    if (entry.fontFamily != null && (typeof entry.fontFamily !== "string" || !["sans", "serif", "mono"].includes(entry.fontFamily))) throw new ProjectValidationError(`annotations[${index}].fontFamily is invalid`);
     if (entry.fontSize !== undefined && (typeof entry.fontSize !== 'number' || !Number.isFinite(entry.fontSize))) throw new ProjectValidationError(`annotations[${index}].fontSize is invalid`);
     for (const field of ['bold', 'italic', 'underline', 'hidden']) {
       if (entry[field] !== undefined && typeof entry[field] !== 'boolean') throw new ProjectValidationError(`annotations[${index}].${field} must be a boolean`);
