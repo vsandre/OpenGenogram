@@ -6,7 +6,6 @@ export const basePath = '';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  distDir: 'out',
   trailingSlash: true,
   basePath: basePath,
   assetPrefix: `${basePath}/`,
