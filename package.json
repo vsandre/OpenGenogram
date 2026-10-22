@@ -1,6 +1,6 @@
 {
   "name": "opengenogram",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": true,
   "license": "MIT",
   "engines": {
@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^8.71.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.4.0",
+    "eslint-config-next": "^16.4.2",
     "fake-indexeddb": "^6.2.5",
     "tsx": "^4.23.13",
     "typescript": "^5",
