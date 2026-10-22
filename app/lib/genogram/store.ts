@@ -52,9 +52,15 @@ export interface UIState {
   dragSnapshot: ProjectSnapshot | null;
 }
 
+export interface HistoryEntry {
+  snapshot: ProjectSnapshot;
+  label: string;
+  timestamp: string;
+}
+
 export interface HistoryState {
-  past: ProjectSnapshot[];
-  future: ProjectSnapshot[];
+  past: HistoryEntry[];
+  future: HistoryEntry[];
 }
 
 export type PersonPatch = Partial<Omit<Person, 'id'>>;
@@ -154,6 +160,7 @@ function commit(
   state: GenogramStore,
   mutate: (project: Project) => void,
   uiPatch: Partial<UIState> = {},
+  historyLabel = 'Change',
 ): GenogramStore | Partial<GenogramStore> {
   const before = snapshotProject(state.project);
   const project = structuredClone(state.project);
@@ -166,7 +173,12 @@ function commit(
     project,
     ui: { ...state.ui, ...uiPatch },
     history: {
-      past: [...state.history.past, before].slice(-MAX_HISTORY),
+      past: [...state.history.past,{
+          snapshot: before,
+          label: historyLabel,
+          timestamp: project.updatedAt,
+        },
+      ].slice(-MAX_HISTORY),
       future: [],
     },
   };
@@ -262,6 +274,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
           selectedAnnotationIds: [],
           activePanel: 'person',
         },
+        `Add person ${input.name ? `"${input.name}"` : ''}`
       );
     });
     return createdId;
@@ -402,6 +415,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
           selectedAnnotationIds: [],
           activePanel: 'person',
         },
+        `Add ${kind ? `${kind}` : 'relative'}${anchor.name ? ` to "${anchor.name}"` : ''}`
       );
     });
     if (created.length > 0) {
@@ -411,11 +425,18 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
   },
 
   updatePerson: (id, patch) => {
-    set((state) => commit(state, (project) => {
-      const person = project.people.find((item) => item.id === id);
-      if (person) Object.assign(person, patch, { id });
-    }));
-  },
+    set((state) => {
+      const person = state.project.people.find((item) => item.id === id);
+      const personName = person?.name;
+      return commit( state, (project) => {
+          const current = project.people.find((item) => item.id === id);
+          if (current) Object.assign(current, patch, { id });
+        },
+        {},
+        `Update person${personName ? ` "${personName}"` : ''}`,
+      );
+    });
+  },  
 
   deletePeople: (ids) => {
     const chosen = new Set(ids);
@@ -447,6 +468,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
           selectedHouseholdIds: selectedHouseholdsIn({ ...state.project, people: nextPeople, households: state.project.households.filter((household) => household.memberIds.some((id) => !chosen.has(id))) }, state.ui.selectedHouseholdIds),
           activePanel: null,
         },
+        `Delete ${chosen.size === 1 ? 'person' : `${chosen.size} persons`}`,
       );
     });
   },
@@ -493,13 +515,14 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         selectedAnnotationIds: [],
         activePanel: created.length > 0 ? 'person' : null,
       },
+      `Duplicate person${source.name ? ` ${source.name}` : ''}`,
     ));
     return created;
   },
 
   addAnnotation: (kind, position) => {
     const id = createId('annotation');
-    const defaultText = kind === 'note' ? 'Note' : kind === 'secret' ? 'Family secret' : 'Text';
+    const defaultText = kind === 'note' ? 'note' : kind === 'secret' ? 'family secret' : 'text';
     set((state) => commit(
       state,
       (project) => {
@@ -529,15 +552,26 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         selectedAnnotationIds: [id],
         activePanel: 'annotation',
       },
+      `Add ${defaultText}`,    
     ));
     return id;
   },
 
   updateAnnotation: (id, patch) => {
-    set((state) => commit(state, (project) => {
-      const annotation = project.annotations.find((item) => item.id === id);
-      if (annotation) Object.assign(annotation, patch, { id, kind: annotation.kind });
-    }));
+    set((state) => {
+      const annotation = state.project.annotations.find((item) => item.id === id);
+      if (!annotation) return state;
+      const kindLabel = annotation.kind === 'note' ? 'note' : annotation.kind === 'secret' ? 'family secret' : 'text';
+      return commit(
+        state,
+        (project) => {
+          const current = project.annotations.find((item) => item.id === id);
+          if (current) Object.assign(current, patch, { id, kind: current.kind });
+        },
+        {},
+        `Change ${kindLabel}`,
+      );
+    });
   },
 
   addAnnotationLink: (sourceId, targetId) => {
@@ -549,32 +583,41 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
       if (!source || !targetExists || sourceId === targetId || source.linkedIds?.includes(targetId)) return state;
       linked = true;
       return commit(state, (project) => {
-        const annotation = project.annotations.find((item) => item.id === sourceId);
-        if (annotation) annotation.linkedIds = [...(annotation.linkedIds ?? []), targetId];
-      });
+          const annotation = project.annotations.find((item) => item.id === sourceId);
+          if (annotation) annotation.linkedIds = [...(annotation.linkedIds ?? []), targetId];
+        },
+        {},
+        `Add annotation link`,
+      );
     });
     return linked;
   },
 
   updateAnnotationLink: (sourceId, targetId, patch) => {
     set((state) => commit(state, (project) => {
-      const annotation = project.annotations.find((item) => item.id === sourceId && item.linkedIds?.includes(targetId));
-      if (!annotation) return;
-      const current = annotation.linkAttributes?.[targetId] ?? {};
-      annotation.linkAttributes = { ...(annotation.linkAttributes ?? {}), [targetId]: { ...current, ...patch } };
-    }));
+        const annotation = project.annotations.find((item) => item.id === sourceId && item.linkedIds?.includes(targetId));
+        if (!annotation) return;
+        const current = annotation.linkAttributes?.[targetId] ?? {};
+        annotation.linkAttributes = { ...(annotation.linkAttributes ?? {}), [targetId]: { ...current, ...patch } };
+      },
+      {},
+      `Change annotation link`,    
+    ));
   },
 
   deleteAnnotationLink: (sourceId, targetId) => {
     set((state) => commit(state, (project) => {
-      const annotation = project.annotations.find((item) => item.id === sourceId);
-      if (!annotation?.linkedIds?.includes(targetId)) return;
-      annotation.linkedIds = annotation.linkedIds.filter((id) => id !== targetId);
-      if (annotation.linkAttributes) {
-        delete annotation.linkAttributes[targetId];
-        if (Object.keys(annotation.linkAttributes).length === 0) delete annotation.linkAttributes;
-      }
-    }));
+        const annotation = project.annotations.find((item) => item.id === sourceId);
+        if (!annotation?.linkedIds?.includes(targetId)) return;
+        annotation.linkedIds = annotation.linkedIds.filter((id) => id !== targetId);
+        if (annotation.linkAttributes) {
+          delete annotation.linkAttributes[targetId];
+          if (Object.keys(annotation.linkAttributes).length === 0) delete annotation.linkAttributes;
+        }
+      },
+      {},
+      `Delete annotation link`,    
+    ));
   },
 
   deleteAnnotations: (ids) => {
@@ -597,6 +640,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         selectedAnnotationIds: state.ui.selectedAnnotationIds.filter((id) => !chosen.has(id)),
         activePanel: null,
       },
+      `Delete ${chosen.size === 1 ? 'annotation' : `${chosen.size} annotations`}`,
     ));
   },
 
@@ -612,6 +656,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
           project.relationships.push({ id, type, source, target, attributes: structuredClone(attributes) });
         },
         { selectedPersonIds: [], selectedRelationshipIds: [id], selectedHouseholdIds: [], selectedAnnotationIds: [] },
+        `Add connection${type ? ` "${type}"` : ''}`,   
       );
     });
     return createdId;
@@ -629,11 +674,14 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         relationship.id,
       )) return state;
       return commit(state, (project) => {
-        const current = project.relationships.find((item) => item.id === id);
-        if (!current) return;
-        if (patch.type) current.type = patch.type;
-        if (patch.attributes) current.attributes = structuredClone(patch.attributes);
-      });
+          const current = project.relationships.find((item) => item.id === id);
+          if (!current) return;
+          if (patch.type) current.type = patch.type;
+          if (patch.attributes) current.attributes = structuredClone(patch.attributes);
+        },
+        {},
+        `Update connection${patch.type ? ` "${patch.type}"` : ''}`,  
+      );
     });
   },
 
@@ -648,6 +696,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
       {
         selectedRelationshipIds: state.ui.selectedRelationshipIds.filter((id) => !chosen.has(id)),
       },
+      `Delete ${chosen.size === 1 ? 'connection' : `${chosen.size} connections`}`,
     ));
   },
 
@@ -689,12 +738,14 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         createdIds.push(twinRelationshipId);
       };
       return commit(state, mutate, {
-        selectedPersonIds: [twinId],
-        selectedRelationshipIds: [],
-        selectedHouseholdIds: [],
-        selectedAnnotationIds: [],
-        activePanel: 'person',
-      });
+          selectedPersonIds: [twinId],
+          selectedRelationshipIds: [],
+          selectedHouseholdIds: [],
+          selectedAnnotationIds: [],
+          activePanel: 'person',
+        },
+        `Add twin${child.name ? ` to "${child.name}"` : ''}`
+      );
     });
     return createdIds;
   },
@@ -731,12 +782,14 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
 
       if (!state.ui.dragSnapshot) {
         return commit(state, mutate, {
-          selectedPersonIds: [childId],
-          selectedRelationshipIds: [],
-          selectedHouseholdIds: [],
-          selectedAnnotationIds: [],
-          activePanel: 'person',
-        });
+            selectedPersonIds: [childId],
+            selectedRelationshipIds: [],
+            selectedHouseholdIds: [],
+            selectedAnnotationIds: [],
+            activePanel: 'person',
+          },
+          `Move child`
+        );
       }
 
       const project = structuredClone(state.project);
@@ -771,6 +824,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
           project.households.push({ id: createdId as string, label, memberIds: members });
         },
         { selectedPersonIds: [], selectedRelationshipIds: [], selectedHouseholdIds: [createdId], selectedAnnotationIds: [], activePanel: 'household' },
+        `Add household${label ? ` "${label}"` : ''}`        
       );
     });
     return createdId;
@@ -778,25 +832,27 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
 
   updateHousehold: (id, patch) => {
     set((state) => commit(state, (project) => {
-      const household = project.households.find((item) => item.id === id);
-      if (!household) return;
-      if (typeof patch.label === 'string') household.label = patch.label;
-      if (patch.memberIds) {
-        const people = personIdsIn(project);
-        household.memberIds = [...new Set(patch.memberIds)].filter((memberId) => people.has(memberId));
-      }
-    }));
+        const household = project.households.find((item) => item.id === id);
+        if (!household) return;
+        if (typeof patch.label === 'string') household.label = patch.label;
+        if (patch.memberIds) {
+          const people = personIdsIn(project);
+          household.memberIds = [...new Set(patch.memberIds)].filter((memberId) => people.has(memberId));
+        }
+      },
+      {},
+      `Update household${patch.label ? ` "${patch.label}"` : ''}`
+    ));
   },
 
   deleteHouseholds: (ids) => {
     const chosen = new Set(ids);
     if (chosen.size === 0) return;
-    set((state) => commit(
-      state,
-      (project) => {
+    set((state) => commit(state, (project) => {
         project.households = project.households.filter((household) => !chosen.has(household.id));
       },
       { selectedHouseholdIds: [], activePanel: null },
+      `Delete ${chosen.size === 1 ? `household` : `${chosen.size} households`}`,
     ));
   },
 
@@ -871,7 +927,13 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
       ...state,
       project: { ...state.project, updatedAt: new Date().toISOString() },
       ui: { ...state.ui, dragSnapshot: null },
-      history: { past: [...state.history.past, before].slice(-MAX_HISTORY), future: [] },
+      history: {
+        past: [...state.history.past, {
+            snapshot: before,
+            label: 'Move',
+            timestamp: new Date().toISOString(),
+          },].slice(-MAX_HISTORY),
+        future: [] },
     };
   }),
 
@@ -909,9 +971,10 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
   })),
 
   undo: () => set((state) => {
-    const previous = state.history.past.at(-1);
-    if (!previous) return state;
-      const previousProject = {
+    const previousEntry = state.history.past.at(-1);
+    if (!previousEntry) return state;
+    const previous = previousEntry.snapshot;
+    const previousProject = {
       ...state.project,
       people: previous.people,
       relationships: previous.relationships,
@@ -931,14 +994,22 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
       },
       history: {
         past: state.history.past.slice(0, -1),
-        future: [snapshotProject(state.project), ...state.history.future].slice(0, MAX_HISTORY),
+        future: [
+          {
+            snapshot: snapshotProject(state.project),
+            label: previousEntry.label,
+            timestamp: previousEntry.timestamp,
+          },
+          ...state.history.future,
+        ].slice(0, MAX_HISTORY),
       },
     };
   }),
 
   redo: () => set((state) => {
-    const next = state.history.future[0];
-    if (!next) return state;
+    const nextEntry = state.history.future[0];
+    if (!nextEntry) return state;
+    const next = nextEntry.snapshot;
     return {
       ...state,
       project: projectWithSnapshot(state.project, next),
@@ -951,7 +1022,14 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         selectedAnnotationIds: selectedAnnotationsIn({ ...state.project, annotations: next.annotations }, state.ui.selectedAnnotationIds),
       },
       history: {
-        past: [...state.history.past, snapshotProject(state.project)].slice(-MAX_HISTORY),
+        past: [
+          ...state.history.past,
+          {
+            snapshot: snapshotProject(state.project),
+            label: nextEntry.label,
+            timestamp: nextEntry.timestamp,
+          },
+        ].slice(-MAX_HISTORY),
         future: state.history.future.slice(1),
       },
     };

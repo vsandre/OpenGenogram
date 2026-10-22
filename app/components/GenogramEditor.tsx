@@ -21,7 +21,7 @@ import {
   type Viewport as FlowViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Redo2, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, Undo2, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { toCanvas } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -1180,8 +1180,11 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
   const setPersonLabelVisibility = useGenogramStore((state) => state.setPersonLabelVisibility);
   const setWrapPersonLabels = useGenogramStore((state) => state.setWrapPersonLabels);
   const setCanvasViewVisibility = useGenogramStore((state) => state.setCanvasViewVisibility);
+  const history = useGenogramStore((state) => state.history);
   const undo = useGenogramStore((state) => state.undo);
   const redo = useGenogramStore((state) => state.redo);
+  const canUndo = useGenogramStore((state) => state.history.past.length > 0);
+  const canRedo = useGenogramStore((state) => state.history.future.length > 0);
   const project = mode === 'preview' ? (initialProject ?? previewFallbackProject) : storedProject;
   const personLabelContext = useMemo<PersonLabelContextValue>(() => ({
     visibility: {
@@ -1396,35 +1399,35 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
     }
   }, [project, setSaveStatus, showFeedback]);
   
-const renameProject = useCallback(async (): Promise<void> => {
-  const nextName = window.prompt('Rename project', project.name);
-  if (nextName === null) return; 
-  const trimmedName = nextName.trim();
-  if (trimmedName === '' || trimmedName === project.name) return;
-  setSaveStatus('saving');
-  try {
-    const renamedProject: Project = {
-      ...project,
-      name: trimmedName,
-      updatedAt: new Date().toISOString(),
-    };
+  const renameProject = useCallback(async (): Promise<void> => {
+    const nextName = window.prompt('Rename project', project.name);
+    if (nextName === null) return; 
+    const trimmedName = nextName.trim();
+    if (trimmedName === '' || trimmedName === project.name) return;
+    setSaveStatus('saving');
+    try {
+      const renamedProject: Project = {
+        ...project,
+        name: trimmedName,
+        updatedAt: new Date().toISOString(),
+      };
 
-    await saveLocalProject(renamedProject);
-    replaceProject(renamedProject);
-    setSaveStatus('saved');
+      await saveLocalProject(renamedProject);
+      replaceProject(renamedProject);
+      setSaveStatus('saved');
 
-    showFeedback('success', 'Project renamed.');
-  } catch (error: unknown) {
-    const message = projectOperationError(error, 'The project could not be renamed.');
-    setSaveStatus('error', message);
-    showFeedback('error', message, 5200);
-  }
-}, [
-  project,
-  replaceProject,
-  setSaveStatus,
-  showFeedback,
-]);
+      showFeedback('success', 'Project renamed.');
+    } catch (error: unknown) {
+      const message = projectOperationError(error, 'The project could not be renamed.');
+      setSaveStatus('error', message);
+      showFeedback('error', message, 5200);
+    }
+  }, [
+    project,
+    replaceProject,
+    setSaveStatus,
+    showFeedback,
+  ]);
 
   const startNewProject = useCallback(async () => {
     try {
@@ -1599,6 +1602,32 @@ const renameProject = useCallback(async (): Promise<void> => {
       }
     })();
   }, [router, setSaveStatus, showFeedback]);
+
+  const [openHistoryMenu, setOpenHistoryMenu] = useState<'undo' | 'redo' | null>(null);
+  const historyMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openHistoryMenu) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!historyMenuRef.current?.contains(event.target as Node)) {
+        setOpenHistoryMenu(null);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [openHistoryMenu]);
+
+  const jumpInHistory = (direction: 'undo' | 'redo', steps: number) => {
+    if (direction === 'undo') {
+      for (let index = 0; index < steps; index += 1) undo();
+    } else {
+      for (let index = 0; index < steps; index += 1) redo();
+    }
+
+    setOpenHistoryMenu(null);
+  };
 
   const canvasCenterPosition = useCallback((width: number, height: number) => {
     const bounds = canvasPaneRef.current?.getBoundingClientRect();
@@ -2010,11 +2039,67 @@ const renameProject = useCallback(async (): Promise<void> => {
               </div>
             )}
           </div>
-          <div className={styles.workspaceTitle}><strong>{project.name}</strong><span>Private local project</span></div>
+          <div className={styles.workspaceTitle}>
+            <strong>{project.name}</strong>
+            <span className={styles.workspaceSaveStatus} data-save-status={ui.saveStatus} title={ui.saveError ?? undefined} role="status" aria-live="polite">{ui.saveStatus === 'saving' ? 'Saving on this device…' : ui.saveStatus === 'error' ? 'Error' : 'Saved on this device'}</span></div>
           <button className={styles.workspaceRename} type="button" onClick={() => { void renameProject(); }} disabled={ui.saveStatus === 'saving'} aria-label={`Rename ${project.name}`} title="Rename"><Pencil size={16} /></button>
-          <span className={styles.workspaceSaveStatus} data-save-status={ui.saveStatus} title={ui.saveError ?? undefined} role="status" aria-live="polite">{ui.saveStatus === 'saving' ? 'Saving on this device…' : ui.saveStatus === 'error' ? 'Error' : 'Saved on this device'}</span>
-          <button className={`${styles.workspaceToggle} ${showLegend ? styles.workspaceToggleActive : ''}`} type="button" onClick={() => setShowLegend((visible) => !visible)} aria-expanded={showLegend}><BookOpen size={16} aria-hidden="true" />Legend</button>
+          <span className={styles.toolbarDivider} aria-hidden="true" />
+          <button className={`${styles.workspaceLegendToggle} ${showLegend ? styles.workspaceLegendToggleActive : ''}`} type="button" onClick={() => setShowLegend((visible) => !visible)} aria-expanded={showLegend}><BookOpen size={16} aria-hidden="true" /><span className={styles.workspaceToggleLabel}>Legend</span></button>
           <input ref={projectFileInputRef} className={styles.hiddenFileInput} type="file" accept=".json,application/json" onChange={handleProjectFileChange} aria-label="Open project file" />
+          <span className={styles.toolbarDivider} aria-hidden="true" />
+          <div className={styles.workspaceUndoRedo} ref={historyMenuRef}>
+            <button type="button" className={styles.workspaceUndo} onClick={undo} disabled={!canUndo} aria-label="Undo" title="Undo (Ctrl+Z)">
+              <Undo2 aria-hidden="true" size={16} />
+            </button>
+            <div className={styles.historyWrapper}>
+              <button type="button" className={styles.workspaceUndoMenu} onClick={() => setOpenHistoryMenu(openHistoryMenu === 'undo' ? null : 'undo')} aria-expanded={openHistoryMenu === 'undo'} aria-haspopup="menu" aria-label="Show undo history" title="Undo history" disabled={!canUndo}>
+                <ChevronDown aria-hidden="true" size={16} />
+              </button>
+              {openHistoryMenu === 'undo' && (
+                <div className={styles.historyMenu} role="menu">
+                  {history.past.length === 0 && (
+                    <div className={styles.historyMenuEmpty}>No changes to undo</div>
+                  )}
+                  {[...history.past].reverse().map((entry, index) => {
+                    const steps = index + 1;
+                    return (
+                      <button key={`undo-${steps}`} type="button" className={styles.historyMenuItem} role="menuitem" onClick={() => jumpInHistory('undo', steps)}>
+                        <span className={styles.historyMenuDirection}>←</span>
+                        <span className={styles.historyMenuLabel}>{entry.label}</span>
+                        <span className={styles.historyMenuTime}>{new Date(entry.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <button type="button" className={styles.workspaceRedo} onClick={redo} disabled={!canRedo} aria-label="Redo" title="Redo (Ctrl+Y)">
+              <Redo2 aria-hidden="true" size={16} />
+            </button>
+            <div className={styles.historyWrapper}>
+              <button type="button" className={styles.workspaceUndoMenu} onClick={() => setOpenHistoryMenu(openHistoryMenu === 'redo' ? null : 'redo')} aria-expanded={openHistoryMenu === 'redo'} aria-haspopup="menu" aria-label="Show redo history" title="Redo history" disabled={!canRedo}>
+                <ChevronDown aria-hidden="true" size={16} />
+              </button>
+              {openHistoryMenu === 'redo' && (
+                <div className={styles.historyMenu} role="menu">
+                  {history.future.length === 0 && (
+                    <div className={styles.historyMenuEmpty}>No changes to redo</div>
+                  )}
+                  {history.future.map((entry, index) => {
+                    const steps = index + 1;
+                    return (
+                      <button key={`redo-${steps}`} type="button" className={styles.historyMenuItem} role="menuitem" onClick={() => jumpInHistory('redo', steps)}>
+                        <span className={styles.historyMenuDirection}>→</span>
+                        <span className={styles.historyMenuLabel}>{entry.label}</span>
+                        <span className={styles.historyMenuTime}>{new Date(entry.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
         </header>
       )}
       {mode === 'edit' && showLegend && <aside className={styles.legendRail} aria-label="Genogram legend area"><Legend project={project} /></aside>}

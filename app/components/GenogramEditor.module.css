@@ -3362,13 +3362,18 @@
   padding: 7px;
   box-shadow: 0 8px 24px rgba(29, 47, 58, 0.1);
   backdrop-filter: blur(12px);
+  box-sizing: border-box;
+  flex-direction: row;
 }
 
 .workspaceFileTrigger,
-.workspaceToggle,
-.workspaceRename {
+.workspaceLegendToggle,
+.workspaceRename,
+.workspaceUndo, .workspaceUndoMenu, .workspaceRedo, .workspaceRedoMenu {
   display: inline-flex;
   min-height: 36px;
+  box-sizing: border-box;
+  height: 36px;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--line-soft);
@@ -3378,6 +3383,7 @@
   font: inherit;
   text-decoration: none;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .workspaceFileTrigger {
@@ -3389,12 +3395,13 @@
   widht: 30px;
 }
 
-.workspaceToggle {
+.workspaceLegendToggle {
   flex: 0 0 auto;
   gap: 6px;
-  padding: 0 10px;
+  padding: 0 6px;
   font-size: 11px;
   font-weight: 750;
+  min-width: 24px
 }
 
 .workspaceFile {
@@ -3425,6 +3432,28 @@
 .workspaceTitle span {
   color: var(--muted);
   font-size: 9px;
+}
+
+.workspaceHeader > .workspaceFile,
+.workspaceHeader > .workspaceRename,
+.workspaceHeader > .workspaceToggle,
+.workspaceHeader > .workspaceUndoRedo {
+  flex: 0 0 auto;
+}
+
+.workspaceHeader > .workspaceTitle {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.workspaceTitle > strong,
+.workspaceTitle > span {
+  display: block;
+  overflow: hidden;
+  min-width: 20ch;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .fileMenu {
@@ -3501,16 +3530,9 @@
 }
 
 .workspaceSaveStatus {
-  flex: 0 0 auto;
-  display: inline-flex;
-  min-height: 36px;
-  align-items: center;
-  padding: 0 4px;
   color: var(--muted);
   font-size: 10px;
   font-weight: 750;
-  white-space: nowrap;
-  border-left: 1px solid var(--line-soft);
 }
 
 .workspaceSaveStatus[data-save-status='saving'] {
@@ -3537,16 +3559,179 @@
   pointer-events: none;
 }
 
-.workspaceFileTrigger:hover,
-.workspaceFileTrigger:focus-visible,
-.workspaceToggle:hover,
-.workspaceToggle:focus-visible,
+.workspaceFileTrigger:hover, .workspaceFileTrigger:focus-visible,
+.workspaceLegendToggle:hover, .workspaceLegendToggle:focus-visible,
 .workspaceFileTriggerOpen,
-.workspaceToggleActive,
-.workspaceRename:hover {
+.workspaceLegendToggleActive,
+.workspaceRename:hover, .workspaceRename:focus-visible,
+.workspaceUndo:hover, .workspaceUndoMenu:hover, .workspaceRedo:hover, .workspaceRedoMenu:hover,
+.workspaceUndo:focus-visible, .workspaceUndoMenu:focus-visible, .workspaceRedo:focus-visible, .workspaceRedoMenu:focus-visible {
   border-color: var(--accent);
   background: var(--accent-soft);
   outline: none;
+}
+
+.workspaceUndo:disabled, .workspaceUndoMenu:disabled, .workspaceRedo:disabled, .workspaceRedoMenu:disabled {
+  cursor: not-allowed;
+  opacity: 0.34;
+}
+
+.workspaceUndo, .workspaceUndoMenu, .workspaceRedo, .workspaceRedoMenu {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.workspaceUndo, .workspaceRedo {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-left: 2px;
+  position: relative;
+}
+
+.workspaceUndoMenu, .workspaceRedoMenu {
+  width: 16px;
+  padding-left: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.workspaceUndoRedo {
+  display: inline-flex;
+  flex-direction: row nowrap;
+  align-items: center;
+  gap: 0;
+  flex: 0 0 auto;
+  width: max-content;
+}
+
+.workspaceUndoRedo .historyWrapper {
+  position: relative;
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.workspaceUndoRedo .workspaceUndo,
+.workspaceUndoRedo .workspaceRedo {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 36px;
+
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.workspaceUndoRedo .workspaceUndoMenu,
+.workspaceUndoRedo .workspaceRedoMenu {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 20px;
+
+  width: 20px;
+  min-width: 20px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.workspaceUndoRedo .workspaceRedo {
+  margin-left: 6px;
+}
+
+.historyMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: -36px;
+  z-index: 50;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(600px, calc(100vw - 32px));
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid #d7e0dc;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 35, 32, 0.16);
+}
+
+.historyMenuSection {
+  padding: 6px 8px 4px;
+  color: #667571;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.historyMenuItem {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #1d2f3a;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.historyMenuItem:hover {
+  background: #eef4f1;
+}
+
+.historyMenuItemCurrent {
+  color: #667571;
+  cursor: default;
+}
+
+.historyMenuItemCurrent:hover {
+  background: transparent;
+}
+
+.historyMenuDirection {
+  color: #667571;
+}
+
+.historyMenuLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyMenuTime {
+  color: #667571;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.historyMenuEmpty {
+  padding: 10px;
+  color: #667571;
+  font-size: 12px;
+  text-align: center;
 }
 
 .editShell .legendRail {
@@ -4088,6 +4273,13 @@
     grid-template-columns: 190px minmax(0, 1fr) 246px;
   }
 
+  .historyMenu {
+    left: auto;
+    right: 0px;
+    min-width: 180px;
+    max-width: min(280px, calc(100vw - 32px));
+  }
+
   .toolRail,
   .inspector,
   .legendRail,
@@ -4103,6 +4295,21 @@
 }
 
 @media (max-width: 760px) {
+ .workspaceHeader > .workspaceToggle {
+    box-sizing: border-box;
+    flex: 0 0 36px;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .workspaceToggleLabel {
+    display: none;
+  }
+
   .editorShell {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(620px, 1fr) auto auto;
@@ -4201,6 +4408,10 @@
     font-size: 8px;
   }
 
+  .workspaceUndo, .workspaceRedo {
+    width: 24px
+  }
+
   .workspaceSaveStatus {
     padding-inline: 2px;
   }
@@ -4269,7 +4480,11 @@
     padding-inline: 3px 6px;
   }
 
-  .workspaceToggle {
+  .workspaceUndo, .workspaceRedo {
+    width: 16px
+  }
+
+  .workspaceLegendToggle {
     padding-inline: 8px;
   }
 }
