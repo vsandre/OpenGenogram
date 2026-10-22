@@ -515,7 +515,7 @@ export const useGenogramStore = create<GenogramStore>((set) => ({
         selectedAnnotationIds: [],
         activePanel: created.length > 0 ? 'person' : null,
       },
-      `Duplicate person${source.name ? ` ${source.name}` : ''}`,
+      `Duplicate ${chosen.size === 1 ? 'person' : `${chosen.size} persons`}`,
     ));
     return created;
   },

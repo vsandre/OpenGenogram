@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  applyNodeChanges,
   Background,
   Controls,
   Handle,
@@ -349,12 +348,20 @@ function AnnotationNode({ id, data, selected }: NodeProps<AnnotationFlowNode>) {
   const annotationColor = annotation.kind === 'note' || !annotation.color || annotation.color === '#1d2f3a' ? '#000000' : annotation.color;
   const editingInsideAnnotation = annotation.kind !== 'secret' && annotationActions?.editingId === annotation.id;
   const textInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const [draftAnnotationId, setDraftAnnotationId] = useState(annotation.id);
   const [draftText, setDraftText] = useState(annotation.text);
-  useEffect(() => {
-    if (!editingInsideAnnotation) {
-      setDraftText(annotation.text);
-    }
-  }, [annotation.id, annotation.text, editingInsideAnnotation]);
+  const [lastSyncedText, setLastSyncedText] = useState(annotation.text);
+  if (draftAnnotationId !== annotation.id) {
+    setDraftAnnotationId(annotation.id);
+    setDraftText(annotation.text);
+    setLastSyncedText(annotation.text);
+  } else if (
+    !editingInsideAnnotation &&
+    lastSyncedText !== annotation.text
+  ) {
+    setDraftText(annotation.text);
+    setLastSyncedText(annotation.text);
+  }
   const commitText = (text: string) => {
     const current = useGenogramStore
         .getState()
@@ -1021,26 +1028,35 @@ function AnnotationFloatingEditor({ annotation }: { annotation: CanvasAnnotation
   const noteBackgroundColors = ['#f4efe4', '#dcebe5', '#f3e7e9', '#f6e6bd'];
   const colors = annotation.kind === 'note' ? noteBackgroundColors : textColors;
   const selectedColor = annotation.kind === 'note' ? (annotation.backgroundColor ?? '#f4efe4') : annotationColor;
+  const [draftAnnotationId, setDraftAnnotationId] = useState(annotation.id);
   const [draftText, setDraftText] = useState(annotation.text);
   const [draftNotes, setDraftNotes] = useState(annotation.notes ?? '');
-  const editingTextRef = useRef(false);
-  const editingNotesRef = useRef(false);
-  useEffect(() => {
-    editingTextRef.current = false;
-    editingNotesRef.current = false;
+  const [lastSynced, setLastSynced] = useState({
+    text: annotation.text,
+    notes: annotation.notes ?? '',
+  });
+const [isEditingText, setIsEditingText] = useState(false);
+const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const nextSynced = {
+    text: annotation.text,
+    notes: annotation.notes ?? '',
+  };
+  if (draftAnnotationId !== annotation.id) {
+    setDraftAnnotationId(annotation.id);
     setDraftText(annotation.text);
     setDraftNotes(annotation.notes ?? '');
-  }, [annotation.id]);
-  useEffect(() => {
-    if (!editingTextRef.current) {
-      setDraftText(annotation.text);
+    setLastSynced(nextSynced);
+    setIsEditingText(false);
+    setIsEditingNotes(false);
+  } else {
+    const textChanged = lastSynced.text !== nextSynced.text;
+    const notesChanged = lastSynced.notes !== nextSynced.notes;
+    if (textChanged || notesChanged) {
+      setLastSynced(nextSynced);
+      if (textChanged && !isEditingText) { setDraftText(annotation.text) }
+      if (notesChanged && !isEditingNotes) { setDraftNotes(annotation.notes ?? '') }
     }
-  }, [annotation.text]);
-  useEffect(() => {
-    if (!editingNotesRef.current) {
-      setDraftNotes(annotation.notes ?? '');
-    }
-  }, [annotation.notes]);
+  }
   const commitField = (field: 'text' | 'notes', value: string) => {
     const current = useGenogramStore
       .getState()
@@ -1052,14 +1068,12 @@ function AnnotationFloatingEditor({ annotation }: { annotation: CanvasAnnotation
   };
   if (annotation.kind === 'secret') return <div className={styles.secretFloatingEditor} aria-label="Secret properties">
     <label><span>Label</span><input value={draftText} 
-          onFocus={() => {
-            editingTextRef.current = true;
-          }}
+          onFocus={() => setIsEditingText(true)}
           onChange={(event) => {
             setDraftText(event.currentTarget.value);
           }}
           onBlur={(event) => {
-            editingTextRef.current = false;
+            setIsEditingText(false);
             commitField('text', event.currentTarget.value);
           }}
           onKeyDown={(event) => {
@@ -1073,12 +1087,12 @@ function AnnotationFloatingEditor({ annotation }: { annotation: CanvasAnnotation
       <textarea 
         rows={3}
         value={draftNotes}
-        onFocus={() => { editingNotesRef.current = true }}
+        onFocus={() => setIsEditingNotes(true)}
         onChange={(event) => {
           setDraftNotes(event.currentTarget.value);
         }}
         onBlur={(event) => {
-          editingNotesRef.current = false;
+          setIsEditingNotes(false);
           commitField('notes', event.currentTarget.value);
         }}
         onKeyDown={(event) => {
@@ -2033,10 +2047,6 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
     if (mode !== 'edit') return;
     endNodeDrag();
   }, [endNodeDrag, mode]);
-
-  useEffect(() => {
-    setNodeMeasurements({});
-  }, [project.id]);
 
   useEffect(() => {
     if (mode !== 'edit') return;
