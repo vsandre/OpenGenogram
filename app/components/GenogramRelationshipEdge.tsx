@@ -336,6 +336,7 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
   if (kind === 'child-donor') dash = '3 3';
   if (kind === 'dashed' || kind === 'separation-dashed') dash = '4 8';
   if (kind === 'sparse-dotted') dash = '1 10';
+  if (kind === 'sparse-dotted-rape') { dash = '1 10'; extras = crossMark(midpoint, source, target) };
   if (definition.category === 'emotional') main = polyline(renderedEmotionalPoints);
   if (kind === 'double') { main = offsetPolyline(renderedEmotionalPoints, -4); extras = [offsetPolyline(renderedEmotionalPoints, 4)]; }
   if (kind === 'triple') { main = polyline(renderedEmotionalPoints); extras = [offsetPolyline(renderedEmotionalPoints, -6), offsetPolyline(renderedEmotionalPoints, 6)]; }

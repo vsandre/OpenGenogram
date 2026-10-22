@@ -564,6 +564,7 @@ function LegendLine({ kind, label, color = '#203432', type }: { kind: Relationsh
       {(kind === 'child-surrogate' || kind === 'child-donor') && <><line {...p} strokeDasharray={kind === 'child-surrogate' ? '5 5' : '3 3'} x1="4" y1="9" x2="52" y2="9" /><rect x="22" y="2" width="12" height="14" rx="3" fill="#fff" stroke="currentColor" strokeWidth="1" /><text x="28" y="12" fill="currentColor" fontSize="7" fontWeight="800" textAnchor="middle">{kind === 'child-surrogate' ? 'S' : type === 'sperm-donor-child' ? 'SD' : type === 'egg-donor-child' ? 'ED' : 'D'}</text></>}
       {kind === 'unknown' && <><line {...p} strokeDasharray="2 5" x1="4" y1="9" x2="52" y2="9" /><circle cx="28" cy="9" r="4" fill="white" stroke="#203432" strokeWidth="1.2" /></>}
       {kind === 'sparse-dotted' && <line {...p} strokeDasharray="1 8" x1="4" y1="9" x2="52" y2="9" />}
+      {kind === 'sparse-dotted-rape' && <><line {...p} strokeDasharray="1 8" x1="4" y1="9" x2="52" y2="9" /><line {...p} x1="24" y1="5" x2="32" y2="13" /><line {...p} x1="32" y1="5" x2="24" y2="13" /></>}
       {kind === 'affair-separation' && <><line {...p} strokeDasharray="4 4" x1="4" y1="9" x2="52" y2="9" /><line {...p} x1="25" y1="3" x2="32" y2="15" /></>}
       {kind === 'affair-divorce' && <><line {...p} strokeDasharray="4 4" x1="4" y1="9" x2="52" y2="9" /><line {...p} x1="22" y1="3" x2="29" y2="15" /><line {...p} x1="29" y1="3" x2="36" y2="15" /></>}
       {kind === 'affair-married' && <><line {...p} strokeDasharray="4 4" x1="4" y1="6" x2="52" y2="6" /><line {...p} x1="4" y1="13" x2="52" y2="13" /></>}

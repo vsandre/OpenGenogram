@@ -224,7 +224,7 @@ export type RelationshipCategory = 'partner' | 'child' | 'emotional';
 export type RelationshipLineKind =
   | 'single' | 'long-dashed' | 'dotted' | 'separation' | 'divorce'
   | 'separation-dashed' | 'annulment' | 'widowed' | 'affair-separation'
-  | 'affair-divorce' | 'affair-married' | 'sparse-dotted' | 'unknown'
+  | 'affair-divorce' | 'affair-married' | 'sparse-dotted' | 'sparse-dotted-rape' | 'unknown'
   | 'double' | 'triple' | 'dashed' | 'zigzag' | 'fused-conflict'
   | 'cutoff' | 'focused' | 'abuse'
   | 'child-solid' | 'child-dashed' | 'child-dotted' | 'child-step' | 'child-surrogate' | 'child-donor'
@@ -261,7 +261,7 @@ export const RELATIONSHIP_DEFINITIONS: Record<RelationshipType, RelationshipType
   'affair-divorce': { label: 'Affair / divorce', category: 'partner', directed: false, lineKind: 'affair-divorce' },
   'affair-married': { label: 'Affair / married', category: 'partner', directed: false, lineKind: 'affair-married' },
   'one-night-stand': { label: 'One-night stand', category: 'partner', directed: false, lineKind: 'sparse-dotted' },
-  rape: { label: 'Rape', category: 'partner', directed: false, lineKind: 'widowed' },
+  rape: { label: 'Rape', category: 'partner', directed: false, lineKind: 'sparse-dotted-rape' },
   'biological-child': { label: 'Biological child', category: 'child', directed: true, lineKind: 'child-solid' },
   'adopted-child': { label: 'Adopted child', category: 'child', directed: true, lineKind: 'child-dashed' },
   'foster-child': { label: 'Foster child', category: 'child', directed: true, lineKind: 'child-dotted' },
