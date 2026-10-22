@@ -227,7 +227,7 @@ export type RelationshipLineKind =
   | 'affair-divorce' | 'affair-married' | 'sparse-dotted' | 'sparse-dotted-rape' | 'unknown'
   | 'double' | 'triple' | 'dashed' | 'zigzag' | 'fused-conflict'
   | 'cutoff' | 'focused' | 'abuse'
-  | 'child-solid' | 'child-dashed' | 'child-dotted' | 'child-step' | 'child-surrogate' | 'child-donor'
+  | 'child-solid' | 'child-dashed' | 'child-dotted' | 'child-step' | 'child-surrogate' | 'child-donor' | 'child-spermdonor' | 'child-eggdonor'
   | 'twin-fraternal' | 'twin-identical' | 'sibling';
 
 export interface RelationshipTypeDefinition {
@@ -267,8 +267,8 @@ export const RELATIONSHIP_DEFINITIONS: Record<RelationshipType, RelationshipType
   'foster-child': { label: 'Foster child', category: 'child', directed: true, lineKind: 'child-dotted' },
   'step-child': { label: 'Step child', category: 'child', directed: true, lineKind: 'child-step' },
   'surrogate-child': { label: 'Surrogate', category: 'child', directed: true, lineKind: 'child-surrogate' },
-  'sperm-donor-child': { label: 'Sperm donor', category: 'child', directed: true, lineKind: 'child-donor' },
-  'egg-donor-child': { label: 'Egg donor', category: 'child', directed: true, lineKind: 'child-donor' },
+  'sperm-donor-child': { label: 'Sperm donor', category: 'child', directed: true, lineKind: 'child-spermdonor' },
+  'egg-donor-child': { label: 'Egg donor', category: 'child', directed: true, lineKind: 'child-eggdonor' },
   'fraternal-twins': { label: 'Fraternal twins', category: 'child', directed: false, lineKind: 'twin-fraternal' },
   'identical-twins': { label: 'Identical twins', category: 'child', directed: false, lineKind: 'twin-identical' },
   sibling: { label: 'Sibling', category: 'child', directed: false, lineKind: 'sibling' },

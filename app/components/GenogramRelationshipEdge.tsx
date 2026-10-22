@@ -326,7 +326,7 @@ export function GenogramRelationshipEdge(props: EdgeProps<RelationshipFlowEdge>)
   let patternExtras: Array<{ path: string; color?: string; dash?: string }> = [];
   let dash: string | undefined;
 
-  if (kind === 'child-solid' || kind === 'child-dashed' || kind === 'child-dotted' || kind === 'child-step' || kind === 'child-surrogate' || kind === 'child-donor') main = childPath(source, target);
+  if (kind === 'child-solid' || kind === 'child-dashed' || kind === 'child-dotted' || kind === 'child-step' || kind === 'child-surrogate' || kind === 'child-donor' || kind === 'child-spermdonor' || kind === 'child-eggdonor') main = childPath(source, target);
   if (sibling) main = sibling.path;
   if (kind === 'child-dashed' || kind === 'long-dashed') dash = '8 6';
   if (kind === 'child-dotted' || kind === 'dotted' || kind === 'affair-separation' || kind === 'affair-divorce' || kind === 'affair-married') dash = '2 6';
