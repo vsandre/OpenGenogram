@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  applyNodeChanges,
   Background,
   Controls,
   Handle,
@@ -347,6 +348,24 @@ function AnnotationNode({ id, data, selected }: NodeProps<AnnotationFlowNode>) {
   const fontFamily = annotation.fontFamily === 'serif' ? 'Georgia, serif' : annotation.fontFamily === 'mono' ? 'ui-monospace, SFMono-Regular, monospace' : 'Inter, ui-sans-serif, system-ui, sans-serif';
   const annotationColor = annotation.kind === 'note' || !annotation.color || annotation.color === '#1d2f3a' ? '#000000' : annotation.color;
   const editingInsideAnnotation = annotation.kind !== 'secret' && annotationActions?.editingId === annotation.id;
+  const textInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const [draftText, setDraftText] = useState(annotation.text);
+  useEffect(() => {
+    if (!editingInsideAnnotation) {
+      setDraftText(annotation.text);
+    }
+  }, [annotation.id, annotation.text, editingInsideAnnotation]);
+  const commitText = (text: string) => {
+    const current = useGenogramStore
+        .getState()
+        .project.annotations.find((item) => item.id === annotation.id);
+      if (!current || current.text === text) return;
+      updateAnnotation(annotation.id, { text });
+  };
+  const [resizePreview, setResizePreview] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   return (
     <div
       className={`${styles.annotationNode} ${styles[`annotation${annotation.kind[0].toUpperCase()}${annotation.kind.slice(1)}`]} ${selected ? styles.annotationNodeSelected : ''}`}
@@ -361,6 +380,16 @@ function AnnotationNode({ id, data, selected }: NodeProps<AnnotationFlowNode>) {
         textDecoration: annotation.underline ? 'underline' : 'none',
       }}
     >
+      {annotation.kind === 'note' && resizePreview && (
+        <div
+          className={styles.annotationResizePreview}
+          style={{
+            width: resizePreview.width + 1,
+            height: resizePreview.height + 1,
+          }}
+          aria-hidden="true"
+        />
+      )}
       {annotation.kind === 'note' && selected && <NodeResizeControl
         className={styles.annotationResizeHandle}
         nodeId={id}
@@ -369,7 +398,9 @@ function AnnotationNode({ id, data, selected }: NodeProps<AnnotationFlowNode>) {
         minHeight={80}
         maxWidth={480}
         maxHeight={360}
-        onResizeEnd={(_, { width, height }) => updateAnnotation(annotation.id, { width: Math.round(width), height: Math.round(height) })}
+        onResizeStart={(_, { width, height }) => { setResizePreview({ width, height })}}
+        onResize={(_, { width, height }) => { setResizePreview({ width, height })}}
+        onResizeEnd={(_, { width, height }) => { setResizePreview(null); updateAnnotation(annotation.id, { width: Math.round(width), height: Math.round(height) })}}
       ><span aria-hidden="true" /></NodeResizeControl>}
       {selected && annotation.kind === 'note' && annotationLinkActions?.enabled && (
         <button
@@ -413,23 +444,33 @@ function AnnotationNode({ id, data, selected }: NodeProps<AnnotationFlowNode>) {
       <Handle id="center-source" className={`${styles.handleGhost} ${styles.annotationLinkSourceHandle}`} type="source" position={Position.Top} />
       {annotation.kind === 'secret' && <span className={styles.secretTriangle} aria-hidden="true"><Triangle className={styles.familySecretIcon} size={42} strokeWidth={1.8} /></span>}
       {editingInsideAnnotation ? <>
-        {annotation.kind === 'text' && <span className={styles.annotationTextMeasure} aria-hidden="true">{annotation.text || '\u00a0'}</span>}
+        {annotation.kind === 'text' && <span className={styles.annotationTextMeasure} aria-hidden="true">{`${draftText}\u00a0`}</span>}
         <textarea
-          className={`nodrag nopan ${styles.annotationNodeInput} ${annotation.kind === 'text' ? styles.annotationTextInput : ''}`}
+          ref={textInputRef}
+          className={`nodrag nopan ${annotation.kind === 'note' ? 'nowheel' : ''} ${styles.annotationNodeInput} ${annotation.kind === 'text' ? styles.annotationTextInput : ''}`}
           aria-label={`Edit ${annotation.kind}`}
           autoFocus
-          value={annotation.text}
-          onChange={(event) => updateAnnotation(annotation.id, { text: event.target.value })}
-          onBlur={() => annotationActions.finishEditing()}
+          value={draftText}
+          onPointerDown={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
+          onDoubleClick={(event) => event.stopPropagation()}
+          onChange={(event) => {
+            setDraftText(event.currentTarget.value);
+          }}
+          onBlur={(event) => {
+            commitText(event.currentTarget.value);
+            annotationActions?.finishEditing();
+          }}
           onKeyDown={(event) => {
             if (event.key === 'Escape') {
               event.preventDefault();
               event.stopPropagation();
-              annotationActions.finishEditing();
+              event.currentTarget.blur();
             }
           }}
         />
-      </> : <span>{annotation.kind === 'secret' && annotation.hidden ? 'Hidden secret' : annotation.text}</span>}
+      </> : <span className={annotation.kind === 'note' ? `nowheel ${styles.annotationNoteContent}` : undefined } style={ annotation.kind === 'note' ? ({ '--note-visible-lines': Math.max(1, Math.floor(((annotation.height ?? 116) - 22 - 2) / ((annotation.fontSize ?? 12) * 1.45)))} as CSSProperties): undefined}>{annotation.kind === 'secret' && annotation.hidden ? 'Hidden secret' : annotation.text}</span>}
     </div>
   );
 }
@@ -980,9 +1021,74 @@ function AnnotationFloatingEditor({ annotation }: { annotation: CanvasAnnotation
   const noteBackgroundColors = ['#f4efe4', '#dcebe5', '#f3e7e9', '#f6e6bd'];
   const colors = annotation.kind === 'note' ? noteBackgroundColors : textColors;
   const selectedColor = annotation.kind === 'note' ? (annotation.backgroundColor ?? '#f4efe4') : annotationColor;
+  const [draftText, setDraftText] = useState(annotation.text);
+  const [draftNotes, setDraftNotes] = useState(annotation.notes ?? '');
+  const editingTextRef = useRef(false);
+  const editingNotesRef = useRef(false);
+  useEffect(() => {
+    editingTextRef.current = false;
+    editingNotesRef.current = false;
+    setDraftText(annotation.text);
+    setDraftNotes(annotation.notes ?? '');
+  }, [annotation.id]);
+  useEffect(() => {
+    if (!editingTextRef.current) {
+      setDraftText(annotation.text);
+    }
+  }, [annotation.text]);
+  useEffect(() => {
+    if (!editingNotesRef.current) {
+      setDraftNotes(annotation.notes ?? '');
+    }
+  }, [annotation.notes]);
+  const commitField = (field: 'text' | 'notes', value: string) => {
+    const current = useGenogramStore
+      .getState()
+      .project.annotations.find((item) => item.id === annotation.id);
+    if (!current || (current[field] ?? '') === value) return;
+    updateAnnotation(annotation.id, {
+      [field]: value,
+    });
+  };
   if (annotation.kind === 'secret') return <div className={styles.secretFloatingEditor} aria-label="Secret properties">
-    <label><span>Label</span><input value={annotation.text} onChange={(event) => updateAnnotation(annotation.id, { text: event.target.value })} /></label>
-    <label><span>Notes</span><textarea rows={3} value={annotation.notes ?? ''} onChange={(event) => updateAnnotation(annotation.id, { notes: event.target.value })} /></label>
+    <label><span>Label</span><input value={draftText} 
+          onFocus={() => {
+            editingTextRef.current = true;
+          }}
+          onChange={(event) => {
+            setDraftText(event.currentTarget.value);
+          }}
+          onBlur={(event) => {
+            editingTextRef.current = false;
+            commitField('text', event.currentTarget.value);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              event.stopPropagation();
+              event.currentTarget.blur();
+            }
+          }} /></label>
+    <label><span>Notes</span>
+      <textarea 
+        rows={3}
+        value={draftNotes}
+        onFocus={() => { editingNotesRef.current = true }}
+        onChange={(event) => {
+          setDraftNotes(event.currentTarget.value);
+        }}
+        onBlur={(event) => {
+          editingNotesRef.current = false;
+          commitField('notes', event.currentTarget.value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.blur();
+          }
+        }} />
+    </label>
     <button className={styles.annotationDeleteAction} type="button" aria-label={`Delete ${annotation.kind}`} onClick={() => deleteAnnotations([annotation.id])}><Trash2 size={15} /></button>
   </div>;
   return <div className={styles.annotationFloatingEditor} aria-label={`${annotation.kind === 'note' ? 'Note' : 'Text'} properties`}>
@@ -1053,9 +1159,9 @@ function pointHitsPersonSymbol(person: Person, position: { x: number; y: number 
   return true;
 }
 
-function annotationCanvasSize(annotation: CanvasAnnotation | CanvasAnnotationKind) {
+function annotationCanvasSize(annotation: CanvasAnnotation | CanvasAnnotationKind, measured?: { width: number; height: number }) {
   const kind = typeof annotation === 'string' ? annotation : annotation.kind;
-  if (kind === 'text') return { width: 180, height: 48 };
+  if (kind === 'text') return {  width: measured?.width ?? 180, height: measured?.height ?? 48 };
   if (kind === 'secret') return { width: 120, height: 96 };
   return typeof annotation === 'string'
     ? { width: 190, height: 116 }
@@ -1203,7 +1309,8 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
     setFileMenuOpen(false);
     if (returnFocus) fileTriggerRef.current?.focus();
   }, []);
-  const nodes = useMemo(() => {
+  const [nodeMeasurements, setNodeMeasurements] = useState<Record<string, { width: number; height: number }> >({});
+  const baseNodes = useMemo(() => {
     let flowNodes = projectToFlowNodes(project, mode === 'edit' ? ui.selectedPersonIds : [], mode === 'edit' ? ui.selectedHouseholdIds : [], mode === 'edit' ? ui.selectedAnnotationIds : []);
     if (!canvasViewContext.visibility.backgrounds) flowNodes = flowNodes.filter((node) => node.type !== 'household');
     if (mode === 'edit' && annotationConnectionSourceId) return flowNodes.map((node) => {
@@ -1237,6 +1344,16 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
       };
     });
   }, [annotationConnectionSourceId, annotationConnectionTargetId, canvasViewContext.visibility.backgrounds, connectionType, mode, project, relationshipMode, relationshipSourceId, relationshipTargetId, ui.selectedAnnotationIds, ui.selectedHouseholdIds, ui.selectedPersonIds]);
+  const nodes = useMemo<FlowNode[]>(
+    () =>
+      baseNodes.map((node) => {
+        const measured = nodeMeasurements[node.id];
+        return measured
+          ? { ...node, measured }
+          : node;
+      }),
+    [baseNodes, nodeMeasurements],
+  );
   const edges = useMemo(() => projectToFlowEdges(project, mode === 'edit' ? ui.selectedRelationshipIds : [], mode === 'edit' ? selectedAnnotationLink?.id ?? null : null), [mode, project, selectedAnnotationLink?.id, ui.selectedRelationshipIds]);
   const selectedPerson = project.people.find((person) => person.id === ui.selectedPersonIds[0]);
   const selectedRelationship = project.relationships.find((relationship) => relationship.id === ui.selectedRelationshipIds[0]);
@@ -1282,7 +1399,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
     if (!selectedAnnotation || ui.selectedAnnotationIds.length !== 1) return null;
     const position = project.canvas.positions[selectedAnnotation.id];
     if (!position) return null;
-    const size = annotationCanvasSize(selectedAnnotation);
+    const size = annotationCanvasSize(selectedAnnotation, nodeMeasurements[selectedAnnotation.id]);
     const { x, y, zoom } = project.canvas.viewport;
     const centerX = (position.x + size.width / 2) * zoom + x;
     const bottom = (position.y + size.height) * zoom + y + 12;
@@ -1290,7 +1407,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
       left: `clamp(178px, ${centerX}px, calc(100% - 178px))`,
       top: `clamp(104px, ${bottom}px, calc(100% - 210px))`,
     } as CSSProperties;
-  }, [project.canvas.positions, project.canvas.viewport, selectedAnnotation, ui.selectedAnnotationIds.length]);
+  }, [nodeMeasurements, project.canvas.positions, project.canvas.viewport, selectedAnnotation, ui.selectedAnnotationIds.length]);
   const showInspector = !ui.dragSnapshot && Boolean(
     (ui.activePanel === 'person' && selectedPerson)
       || (ui.activePanel === 'household' && selectedHousehold)
@@ -1772,6 +1889,33 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
   }, [addAnnotationLink, mode, setActivePanel, setSelection, showFeedback]);
 
   const onNodesChange = useCallback<OnNodesChange<FlowNode>>((changes: NodeChange<FlowNode>[]) => {
+    const dimensionChanges = changes.filter(
+      (change) => change.type === 'dimensions',
+    );
+    if (dimensionChanges.length > 0) {
+      setNodeMeasurements((current) => {
+        let next = current;
+        for (const change of dimensionChanges) {
+          const dimensions = change.dimensions;
+          if (!dimensions) continue;
+          const previous = next[change.id];
+          if (
+            previous?.width === dimensions.width &&
+            previous?.height === dimensions.height
+          ) {
+            continue;
+          }
+          if (next === current) {
+            next = { ...current };
+          }
+          next[change.id] = {
+            width: dimensions.width,
+            height: dimensions.height,
+          };
+        }
+        return next;
+      });
+    }
     if (mode !== 'edit') return;
     const positions: Record<string, { x: number; y: number }> = {};
     const removedPeople: string[] = [];
@@ -1889,6 +2033,10 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
     if (mode !== 'edit') return;
     endNodeDrag();
   }, [endNodeDrag, mode]);
+
+  useEffect(() => {
+    setNodeMeasurements({});
+  }, [project.id]);
 
   useEffect(() => {
     if (mode !== 'edit') return;
@@ -2166,7 +2314,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
       </div>
       {mode === 'preview' && <aside className={styles.previewLegendRail} aria-label="Preview legend area"><Legend project={project} /><p className={styles.previewLegendNote}>Your new canvas starts here. Open it to rename people, add family members, and build the map.</p></aside>}
       {mode === 'edit' && showInspector && <CanvasViewContext.Provider value={canvasViewContext}><aside className={styles.inspector} aria-label="Edit panel">{selectedAnnotationLink ? <AnnotationLinkInspector sourceId={selectedAnnotationLink.sourceId} targetId={selectedAnnotationLink.targetId} onClose={() => setSelectedAnnotationLink(null)} /> : ui.activePanel === 'person' ? <PersonInspector person={selectedPerson} /> : ui.activePanel === 'household' ? <HouseholdInspector household={selectedHousehold} project={project} /> : selectedRelationship ? <RelationshipInspector relationship={selectedRelationship} /> : null}</aside></CanvasViewContext.Provider>}
-      {mode === 'edit' && !connectionModeActive && !ui.dragSnapshot && selectedAnnotation && ui.selectedAnnotationIds.length === 1 && annotationEditorPosition && <div className={styles.annotationEditorAnchor} style={annotationEditorPosition}><AnnotationFloatingEditor annotation={selectedAnnotation} /></div>}
+      {mode === 'edit' && !connectionModeActive && !ui.dragSnapshot && selectedAnnotation && ui.selectedAnnotationIds.length === 1 && annotationEditorPosition && <div className={styles.annotationEditorAnchor} style={annotationEditorPosition}><AnnotationFloatingEditor key={ui.selectedAnnotationIds} annotation={selectedAnnotation} /></div>}
       {mode === 'edit' && !relationshipMode && !ui.dragSnapshot && selectedSymbolCount > 1 && <div
         className={`${styles.selectionActionBar} ${selectionActionPosition ? styles.selectionActionBarAnchored : ''}`}
         style={selectionActionPosition ?? undefined}

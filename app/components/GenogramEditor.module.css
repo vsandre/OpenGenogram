@@ -978,6 +978,26 @@
   box-sizing: border-box;
   background: #f4efe4;
   box-shadow: 0 7px 18px rgba(92, 74, 45, 0.1);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.annotationNoteContent{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--note-visible-lines, 4);
+  flex: 1 1 0;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 0;
+  line-height: 1.45;
+  max-height: calc( var(--note-visible-lines, 4) * 1.45em  );
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow: hidden;
 }
 
 .annotationResizeHandle {
@@ -999,6 +1019,18 @@
   height: 7px;
   border-right: 1px solid var(--accent);
   border-bottom: 1px solid var(--accent);
+}
+
+.annotationResizePreview {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  z-index: 60;
+  box-sizing: border-box;
+  border: 2px dashed var(--accent);
+  border-radius: inherit;
+  background: transparent;
+  pointer-events: none;
 }
 
 .annotationLinkActionButton {
@@ -1133,14 +1165,18 @@
 
 .annotationText {
   position: relative;
-  min-width: 180px;
-  min-height: 48px;
+  width: max-content;
+  min-width: 0;
+  max-width: none;
+  min-height: 0;
   align-items: center;
   background: #fff;
   font-size: 18px;
   font-weight: 750;
   letter-spacing: -0.02em;
   box-shadow: 0 0 0 4px #fff;
+  white-space: pre;
+  overflow-wrap: normal;
 }
 
 .annotationTextMeasure {
@@ -1153,6 +1189,19 @@
   width: calc(100% - 24px);
   height: calc(100% - 22px);
   box-sizing: border-box;
+}
+
+.annotationText .annotationTextInput {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  resize: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: inherit;
+  overflow: hidden;
 }
 
 .annotationEditorAnchor {
