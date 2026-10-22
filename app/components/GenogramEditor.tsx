@@ -2138,10 +2138,11 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
           const stored = localStorage.getItem(`thumbnail-${project.id}`);
           if (stored) {
             const parsed = thumbnailCacheSchema.safeParse(JSON.parse(stored));
-            const generatedAt = parsed.data.generatedAt.getTime();
-            const now = Date.now();
-            
-            if (now - generatedAt < THUMBNAIL_MAX_AGE_MS) return;
+            if (parsed.data) {
+              const generatedAt = parsed.data.generatedAt.getTime();
+              const now = Date.now();
+              if (now - generatedAt < THUMBNAIL_MAX_AGE_MS) return;
+            }
           } 
           const webpDataUrl = await exportImage('thumbnail');
           if (webpDataUrl) {
@@ -2324,7 +2325,7 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
       </div>
       {mode === 'preview' && <aside className={styles.previewLegendRail} aria-label="Preview legend area"><Legend project={project} /><p className={styles.previewLegendNote}>Your new canvas starts here. Open it to rename people, add family members, and build the map.</p></aside>}
       {mode === 'edit' && showInspector && <CanvasViewContext.Provider value={canvasViewContext}><aside className={styles.inspector} aria-label="Edit panel">{selectedAnnotationLink ? <AnnotationLinkInspector sourceId={selectedAnnotationLink.sourceId} targetId={selectedAnnotationLink.targetId} onClose={() => setSelectedAnnotationLink(null)} /> : ui.activePanel === 'person' ? <PersonInspector person={selectedPerson} /> : ui.activePanel === 'household' ? <HouseholdInspector household={selectedHousehold} project={project} /> : selectedRelationship ? <RelationshipInspector relationship={selectedRelationship} /> : null}</aside></CanvasViewContext.Provider>}
-      {mode === 'edit' && !connectionModeActive && !ui.dragSnapshot && selectedAnnotation && ui.selectedAnnotationIds.length === 1 && annotationEditorPosition && <div className={styles.annotationEditorAnchor} style={annotationEditorPosition}><AnnotationFloatingEditor key={ui.selectedAnnotationIds} annotation={selectedAnnotation} /></div>}
+      {mode === 'edit' && !connectionModeActive && !ui.dragSnapshot && selectedAnnotation && ui.selectedAnnotationIds.length === 1 && annotationEditorPosition && <div className={styles.annotationEditorAnchor} style={annotationEditorPosition}><AnnotationFloatingEditor key={ui.selectedAnnotationIds[0]} annotation={selectedAnnotation} /></div>}
       {mode === 'edit' && !relationshipMode && !ui.dragSnapshot && selectedSymbolCount > 1 && <div
         className={`${styles.selectionActionBar} ${selectionActionPosition ? styles.selectionActionBarAnchored : ''}`}
         style={selectionActionPosition ?? undefined}
