@@ -376,7 +376,6 @@ function ProfileBadge({ x, y, label, Icon, iconCount = 1, }: { x: number; y: num
   const badgeHeight = count === 1 ? badgeWidth : count * iconSize + (count - 1) * iconOffset + 8;
   const badgeX = x - badgeWidth / 2;
   const badgeY = y - badgeHeight + badgeWidth / 2;
-  const stackHeight = count * iconSize + (count - 1) * iconOffset;
   const firstIconY = y - iconSize/2;
   const isEuroStack = Icon === CircleEuro;
   return (
