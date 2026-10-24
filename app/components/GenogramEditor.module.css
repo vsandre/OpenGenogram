@@ -439,6 +439,84 @@
   transform: translateX(-50%);
 }
 
+.socialClassCoins,
+.profileBadgeIcons {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.socialClassPresetList > button.socialClassPresetButton {
+  --social-class-coin-fill: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+}
+
+.socialClassPresetList > button.socialClassPresetButton.profilePresetActive {
+  --social-class-coin-fill: #dcebe6;
+}
+
+.socialClassPresetList
+  > button.socialClassPresetButton
+  > .socialClassDot {
+  flex: 0 0 auto;
+}
+
+.socialClassPresetList
+  > button.socialClassPresetButton
+  > .socialClassPresetText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.socialClassPresetList
+  > button.socialClassPresetButton
+  > .socialClassCoins {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  flex: 0 0 auto;
+  width: auto;
+  margin-left: auto;
+  color: inherit;
+  isolation: isolate;
+}
+
+.socialClassCoins > .socialClassCoin {
+  position: relative;
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.socialClassCoins > .socialClassCoin + .socialClassCoin {
+  margin-left: -11px;
+}
+
+.socialClassCoin > svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.socialClassCoin > .socialClassCoinOverlay {
+  position: absolute;
+  inset: 0;
+  fill: none;
+}
+
 .editShell .reactFlow :global(.genogram-connection-source),
 .editShell .reactFlow :global(.genogram-connection-target),
 .editShell .reactFlow :global(.genogram-connection-target-active) {

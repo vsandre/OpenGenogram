@@ -34,6 +34,22 @@ export interface CulturalHeritageLayer {
   label: string;
 }
 
+export const socialClassPresets = [
+  { value: 'Poverty', label: 'Poverty', description: 'Low income / unemployed' },
+  { value: 'Working class', label: 'Working class', description: 'Blue-collar / manual labor' },
+  { value: 'Middle class', label: 'Middle class', description: 'White-collar / technical' },
+  { value: 'Upper-middle class', label: 'Upper-middle class', description: 'Professionals / management' },
+  { value: 'Upper class', label: 'Upper class', description: 'Affluent / aristocratic' },
+] as const;
+export type SocialClassValue = (typeof socialClassPresets)[number]['value'];
+
+export const getSocialClassLevel = (socialClass: string): number => {
+  const index = socialClassPresets.findIndex(
+    (preset) => preset.value === socialClass,
+  );
+  return index === -1 ? 0 : index + 1;
+};
+
 export const SYMBOL_KIND_LABELS: Record<SymbolKind, string> = {
   person: 'Person',
   pregnancy: 'Pregnancy',

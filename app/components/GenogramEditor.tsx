@@ -21,7 +21,7 @@ import {
   type Viewport as FlowViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Redo2, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, Undo2, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeftRight, Baby, Bold, BookOpen, BoxSelect, BriefcaseBusiness, CalendarDays, ChevronDown, Circle, CircleEuro, CircleQuestionMark, CircleSlash2, Coins, Copy, Download, Pencil, Eye, EyeOff, FolderOpen, GitBranch, Globe2, GraduationCap, Group, Hand, Heart, House, ImageDown, Italic, Layers, Link2, MapPin, MessageSquare, Minus, MousePointer2, Palette, Plus, Redo2, Sparkles, Star, StickyNote, Tags, Trash2, Triangle, Type, Underline, Undo2, UserRound, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { toCanvas } from 'html-to-image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -49,6 +49,8 @@ import {
   PERSON_DISPLAY_SIZES,
   RELATIONSHIP_CATEGORY_LABELS,
   RELATIONSHIP_DEFINITIONS,
+  socialClassPresets,
+  getSocialClassLevel,
   SYMBOL_KINDS,
   SYMBOL_KIND_LABELS,
   type Gender,
@@ -141,13 +143,6 @@ const religionPresets = [
   { label: 'Mormon' }, { label: "Jehovah's Witness" }, { label: 'Jewish' },
   { label: 'Islam' }, { label: 'Buddhist' }, { label: 'Hindu' },
   { label: 'Sikh' }, { label: 'Spiritual' }, { label: 'None' }, { label: 'Other' },
-] as const;
-const socialClassPresets = [
-  { label: 'Upper class', description: 'Affluent / aristocratic' },
-  { label: 'Upper-middle class', description: 'Professionals / management' },
-  { label: 'Middle class', description: 'White-collar / technical' },
-  { label: 'Working class', description: 'Blue-collar / manual labor' },
-  { label: 'Poverty', description: 'Low income / unemployed' },
 ] as const;
 const sexualOrientationOptions = ['Heterosexual', 'Gay', 'Lesbian', 'Bisexual', 'Pansexual', 'Asexual', 'Queer', 'Questioning', 'Unknown', 'Other', 'Prefer not to say'] as const;
 const educationPresets = [
@@ -622,6 +617,47 @@ function PersonInspectorSection({ id, title, icon: Icon, tone, open, onToggle, v
     </section>
   );
 }
+function SocialClassCoins({ level }: { level: number }) {
+  const count = Math.max(0, Math.min(5, Math.trunc(level)));
+  return (
+    <span className={styles.socialClassCoins} aria-hidden="true">
+      {count === 0 ? (
+        <CircleQuestionMark size={16} strokeWidth={2.1} />
+      ) : (
+        Array.from({ length: count }, (_, index) => (
+          <span
+            key={index}
+            className={styles.socialClassCoin}
+            style={{ zIndex: index }}
+          >
+            <Circle
+              size={16}
+              strokeWidth={2.1}
+              fill="var(--social-class-coin-fill)"
+            />
+
+            {index === count - 1 && (
+              <CircleEuro
+                className={styles.socialClassCoinOverlay}
+                size={16}
+                strokeWidth={2.1}
+                fill="none"
+              />
+            )}
+            {count === 1 && (
+              <CircleSlash2
+                className={styles.socialClassCoinOverlay}
+                size={16}
+                strokeWidth={2.1}
+                fill="none"
+              />
+            )}
+          </span>
+        ))
+      )}
+    </span>
+  );
+}
 
 function HeritagePatternSwatch({ pattern }: { pattern: CulturalHeritagePattern }) {
   if (pattern === 'dots') return <svg viewBox="0 0 30 30" aria-hidden="true"><g fill="currentColor">{[6, 15, 24].flatMap((x) => [6, 15, 24].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.2" />))}</g></svg>;
@@ -879,7 +915,7 @@ function PersonInspector({ person }: { person: Person | undefined }) {
         <div className={styles.religionPresetGrid}>{religionPresets.map((option) => <button className={profile.religion === option.label ? styles.profilePresetActive : ''} type="button" key={option.label} aria-pressed={profile.religion === option.label} onClick={() => updateProfile({ religion: profile.religion === option.label ? '' : option.label })}><ReligionIcon religion={option.label} /><span>{option.label}</span></button>)}</div>
       </PersonInspectorSection>
       <PersonInspectorSection {...sectionProps('social')} title="Social class" icon={Coins} tone="#4f857c" visible={viewSettings.visibility.social} onVisibleChange={(visible) => setCanvasViewVisibility('social', visible)}>
-        <div className={styles.socialClassPresetList}>{socialClassPresets.map((option) => <button className={profile.socialClass === option.label ? styles.profilePresetActive : ''} type="button" key={option.label} aria-pressed={profile.socialClass === option.label} onClick={() => updateProfile({ socialClass: profile.socialClass === option.label ? '' : option.label })}><span className={styles.socialClassDot} /><span><strong>{option.label}</strong><small>{option.description}</small></span></button>)}</div>
+        <div className={styles.socialClassPresetList}>{[...socialClassPresets].reverse().map((option) => <button className={[styles.socialClassPresetButton, profile.socialClass === option.value ? styles.profilePresetActive : ''].filter(Boolean).join(' ')} type="button" key={option.value} aria-pressed={profile.socialClass === option.value} onClick={() => updateProfile({ socialClass: profile.socialClass === option.value ? '' : option.value })}><span className={styles.socialClassDot} /><span className={styles.socialClassPresetText} ><strong>{option.label}</strong><small>{option.description}</small></span> <SocialClassCoins level={getSocialClassLevel(option.value)}/></button>)}</div>
       </PersonInspectorSection>
       <PersonInspectorSection {...sectionProps('education')} title="Education" icon={GraduationCap} tone="#47758b" visible={viewSettings.visibility.education} onVisibleChange={(visible) => setCanvasViewVisibility('education', visible)}>
         <div className={styles.educationPresetGrid}>{educationPresets.map((option) => <button className={profile.education === option.label ? styles.profilePresetActive : ''} type="button" key={option.label} aria-pressed={profile.education === option.label} onClick={() => updateProfile({ education: profile.education === option.label ? '' : option.label })}><span>{option.code}</span><strong>{option.label}</strong></button>)}</div>

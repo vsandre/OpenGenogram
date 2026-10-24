@@ -1,9 +1,11 @@
 import { useId } from 'react';
-import { Coins, GraduationCap, MapPin, type LucideIcon } from 'lucide-react';
+import { Circle, CircleEuro, CircleQuestionMark, CircleSlash2, GraduationCap, MapPin, type LucideIcon } from 'lucide-react';
 import { DynamicFlag } from "@sankyu/react-circle-flags";
 
 import {
   createDefaultCanvasViewVisibility,
+  socialClassPresets,
+  getSocialClassLevel,
   SYMBOL_KIND_LABELS,
   type CanvasViewVisibility,
   type CulturalHeritagePattern,
@@ -364,11 +366,82 @@ export function ReligionIcon({ religion, size = 18, x, y, color = 'currentColor'
   return <svg x={x} y={y} width={size} height={size} viewBox="0 0 24 24" color={color} aria-hidden="true">{mark}</svg>;
 }
 
-function ProfileBadge({ x, y, label, Icon }: { x: number; y: number; label: string; Icon: LucideIcon }) {
+function ProfileBadge({ x, y, label, Icon, iconCount = 1, }: { x: number; y: number; label: string; Icon: LucideIcon; iconCount?: number; }) {
+  const count = Math.max(1, Math.min(5, iconCount));
+  const iconSize = 14.3;
+  const iconOffset = -0.65 * iconSize;
+  const badgeWidth = 21;
+  const badgeHeight = count === 1 ? badgeWidth : count * iconSize + (count - 1) * iconOffset + 8;
+  const badgeX = x - badgeWidth / 2;
+  const badgeY = y - badgeHeight + badgeWidth / 2;
+  const stackHeight = count * iconSize + (count - 1) * iconOffset;
+  const firstIconY = y - iconSize/2;
+  const isEuroStack = Icon === CircleEuro;
   return (
     <g aria-label={label} data-profile-badge={label}>
-      <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
-      <Icon x={x - 7.15} y={y - 7.15} width="14.3" height="14.3" color={BADGE_INK} strokeWidth={2.1} aria-hidden="true" />
+      <title>{label}</title>
+      <rect
+        x={badgeX}
+        y={badgeY}
+        width={badgeWidth}
+        height={badgeHeight}
+        rx={badgeWidth/2}
+        ry={badgeWidth/2}
+        fill={PAPER}
+        stroke="#d7e3df"
+        strokeWidth="1.4"
+        vectorEffect="scaling-stroke"
+      />
+
+      {isEuroStack
+        ? Array.from({ length: count }, (_, index) => (
+            <Circle
+              key={index}
+              x={x - iconSize / 2}
+              y={firstIconY - index * (iconSize + iconOffset)}
+              width={iconSize}
+              height={iconSize}
+              fill={PAPER}
+              color={BADGE_INK}
+              strokeWidth={2.1}
+              aria-hidden="true"
+            />
+          ))
+        : Array.from({ length: count }, (_, index) => (
+            <Icon
+              key={index}
+              x={x - iconSize / 2}
+              y={firstIconY - index * (iconSize + iconOffset)}
+              width={iconSize}
+              height={iconSize}
+              color={BADGE_INK}
+              strokeWidth={2.1}
+              aria-hidden="true"
+            />
+          ))}
+
+      {isEuroStack && (
+        <CircleEuro
+          x={x - iconSize / 2}
+          y={firstIconY - (count - 1) * (iconSize + iconOffset)}
+          width={iconSize}
+          height={iconSize}
+          color={BADGE_INK}
+          strokeWidth={2.1}
+          aria-hidden="true"
+        />
+      )}
+      {isEuroStack && count===1 && (
+        <CircleSlash2
+          x={x - iconSize / 2}
+          y={firstIconY - (count - 1) * (iconSize + iconOffset)}
+          width={iconSize}
+          height={iconSize}
+          color={BADGE_INK}
+          strokeWidth={2.1}
+          aria-hidden="true"
+        />
+      )}
     </g>
   );
 }
@@ -426,6 +499,11 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
   const showStillbirthMark = isStillbirth;
   const sexualOrientation = person.symbolKind === 'person' ? profile?.sexualOrientation?.trim() ?? '' : '';
   const sexualOrientationMark = renderSexualOrientationMark(sexualOrientation);
+
+  const socialClassPreset = socialClass ? socialClassPresets.find((preset) => preset.value === socialClass) : undefined;
+  const socialClassLabel = socialClassPreset?.label ?? 'unknown';
+  const SocialClassIcon = socialClassPreset ? CircleEuro : CircleQuestionMark;
+  const socialClassLevel = getSocialClassLevel(socialClass ?? '');
 
   return (
     <svg
@@ -525,7 +603,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
       )}
       {person.symbolKind === 'person' && religion && <ReligionBadge x={24} y={28} religion={religion} />}
       {person.symbolKind === 'person' && location && (countryCode ? <CountryFlagBadge x={88} y={28} label={`Location: ${location}`} countryCode={countryCode} /> : <ProfileBadge x={88} y={28} label={`Location: ${location}`} Icon={MapPin} />)}
-      {person.symbolKind === 'person' && socialClass && <ProfileBadge x={24} y={88} label={`Social class: ${socialClass}`} Icon={Coins} />}
+      {person.symbolKind === 'person' && socialClass && <ProfileBadge x={24} y={88} label={`Social class: ${socialClassLabel}`} Icon={SocialClassIcon} iconCount={socialClassLevel} />}
       {person.symbolKind === 'person' && education && <ProfileBadge x={88} y={88} label={`Education: ${education}`} Icon={GraduationCap} />}
     </svg>
   );
