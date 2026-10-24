@@ -13,7 +13,7 @@ export const PERSON_DISPLAY_SIZES = ['small', 'medium', 'large'] as const;
 export type PersonDisplaySize = (typeof PERSON_DISPLAY_SIZES)[number];
 
 export const PERSON_LABEL_KEYS = [
-  'name', 'birthYear', 'age', 'gender', 'orientation', 'heritage', 'religion', 'socialClass',
+  'name', 'birthYear', 'age', 'gender', 'orientation', 'childless', 'heritage', 'religion', 'socialClass',
   'occupation', 'school', 'education', 'location', 'birthPlace', 'medical', 'custom', 'notes',
 ] as const;
 export type PersonLabelKey = (typeof PERSON_LABEL_KEYS)[number];

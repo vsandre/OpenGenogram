@@ -17,10 +17,12 @@ import {
 export interface PersonSymbolProps {
   person: Person;
   size?: number;
-  showAnnotations?: boolean;
+  showAge?: boolean;
   showProfileBadges?: boolean;
   viewVisibility?: Partial<CanvasViewVisibility>;
   className?: string;
+  showBirthDeathYear?: boolean;
+  showChildless?: boolean;
 }
 
 const INK = 'var(--symbol-ink, #1d2f3a)';
@@ -449,6 +451,7 @@ function ProfileBadge({ x, y, label, Icon, iconCount = 1, }: { x: number; y: num
 function ReligionBadge({ x, y, religion }: { x: number; y: number; religion: string }) {
   return (
     <g aria-label={`Religion: ${religion}`} data-profile-badge={`Religion: ${religion}`}>
+      <title>{`Religion: ${religion}`}</title>
       <circle cx={x} cy={y} r="10.5" fill={PAPER} stroke="#d7e3df" strokeWidth="1.4" vectorEffect="scaling-stroke" />
       <ReligionIcon religion={religion} x={x - 7.15} y={y - 7.15} size={14.3} color={BADGE_INK} />
     </g>
@@ -464,7 +467,7 @@ function CountryFlagBadge({ x, y, label, countryCode }: { x: number; y: number; 
   );
 }
 
-export function PersonSymbol({ person, size = 82, showAnnotations = false, showProfileBadges = false, viewVisibility, className }: PersonSymbolProps) {
+export function PersonSymbol({ person, size = 82, showAge = false, showProfileBadges = false, viewVisibility, className, showBirthDeathYear = false, showChildless = false }: PersonSymbolProps) {
   const clipId = `person-symbol-clip-${useId().replace(/:/g, '')}`;
   const kind = personShapeKind(person);
   const isStillbirth = person.symbolKind === 'stillbirth';
@@ -492,7 +495,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
   const symbolFill = person.visualSettings?.showColor !== false && person.visualSettings?.color
     ? person.visualSettings.color
     : PAPER;
-  const age = showAnnotations ? getDerivedAge(person) : null;
+  const age = showAge ? getDerivedAge(person) : null;
   const symbolLabel = SYMBOL_KIND_LABELS[person.symbolKind];
   const name = person.name || symbolLabel;
   const showDeceasedMark = person.symbolKind === 'person' && person.deceased;
@@ -567,7 +570,7 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
         </g>
       )}
       {person.isIndexPerson && renderIndexOutline(kind, isStillbirth)}
-      {person.symbolKind === 'person' && person.explicitlyChildless && (
+      {(showChildless && person.explicitlyChildless) && (
         <g aria-label="Explicitly childless marker" stroke={INK} strokeWidth="2.6" strokeLinecap="round" vectorEffect="scaling-stroke">
           <line x1="56" y1={person.isIndexPerson? (person.gender === 'unspecified' || person.gender === 'other')? 94  : 92 : 88} x2="56" y2="100" />
           <line x1="36" y1="102.5" x2="76" y2="102.5" stroke={PAPER}/>
@@ -594,8 +597,13 @@ export function PersonSymbol({ person, size = 82, showAnnotations = false, showP
           <line x1="73" y1="41" x2="39" y2="75" />
         </g>
       )}
-      {showAnnotations && (
-        <g className="person-symbol-annotations" fill={INK} fontFamily="inherit" fontWeight="500">
+      {showAge && (
+        <g className="person-symbol-age" fill={INK} fontFamily="inherit" fontWeight="500">
+          {age !== null && <text x="56" y="66" textAnchor="middle" fontSize="25" fontWeight="800" fill={hasVisualFill ? PAPER : INK} stroke={hasVisualFill ? INK : PAPER} strokeWidth="3" paintOrder="stroke">{age}</text>}
+        </g>
+      )}
+      {showBirthDeathYear && (
+        <g className="person-symbol-birthdeathyear" fill={INK} fontFamily="inherit" fontWeight="500">
           {age !== null && <text x="56" y="66" textAnchor="middle" fontSize="25" fontWeight="800" fill={hasVisualFill ? PAPER : INK} stroke={hasVisualFill ? INK : PAPER} strokeWidth="3" paintOrder="stroke">{age}</text>}
           {person.birthYear !== null && <text x="26" y="15" textAnchor="middle" fontSize="15" fontWeight="10" stroke={INK} strokeWidth="1.4" paintOrder="stroke">{person.birthYear}</text>}
           {person.deathYear !== null && <text x="86" y="15" textAnchor="middle" fontSize="15" fontWeight="10" stroke={INK} strokeWidth="1.4" paintOrder="stroke">{person.deathYear}</text>}

@@ -154,13 +154,14 @@ const educationPresets = [
 ] as const;
 const personLabelOptions: Array<{ key: PersonLabelKey; label: string }> = [
   { key: 'name', label: 'Name' },
-  { key: 'birthYear', label: 'Birth year' },
+  { key: 'birthYear', label: 'Birth/death years' },
   { key: 'age', label: 'Age' },
   { key: 'gender', label: 'Gender' },
   { key: 'orientation', label: 'Orientation' },
+  { key: 'childless', label: 'Childess Marker' },  
   { key: 'heritage', label: 'Heritage' },
   { key: 'religion', label: 'Religion' },
-  { key: 'socialClass', label: 'Class' },
+  { key: 'socialClass', label: 'Social Class' },
   { key: 'occupation', label: 'Occupation' },
   { key: 'school', label: 'School' },
   { key: 'education', label: 'Education' },
@@ -305,7 +306,7 @@ function PersonNode({ id, data, selected }: NodeProps<PersonFlowNode>) {
       <Handle id="top-source" className={`${styles.handleGhost} ${styles.symbolTopHandle}`} type="source" position={Position.Top} />
       <Handle id="left-target" className={`${styles.handleGhost} ${styles.symbolLeftHandle}`} type="target" position={Position.Left} />
       <Handle id="left-source" className={`${styles.handleGhost} ${styles.symbolLeftHandle}`} type="source" position={Position.Left} />
-      <PersonSymbol person={person} size={symbolSize} showAnnotations={labelSettings.visibility.age} showProfileBadges viewVisibility={viewSettings.visibility} className={styles.personSymbol} />
+      <PersonSymbol person={person} size={symbolSize} showAge={labelSettings.visibility.age} showBirthDeathYear={labelSettings.visibility.birthYear} showChildless={labelSettings.visibility.childless} showProfileBadges viewVisibility={viewSettings.visibility} className={styles.personSymbol} />
       {data.connectionCue && <div className={styles.connectionTargetCue} aria-hidden="true"><span className={styles.connectionTargetLabel}>{data.connectionLabel}</span><span className={styles.connectionTargetDot} /></div>}
       {visualSettings.hidden && <span className={styles.hiddenPersonBadge}><EyeOff size={11} aria-hidden="true" />Hidden</span>}
       {showPrimaryDetails && <div className={`${styles.personPrimaryDetails} ${labelSettings.wrapLongText ? styles.personPrimaryDetailsWrap : ''} ${person.explicitlyChildless ? styles.personPrimaryDetailsChildless : ''}`}>
@@ -805,7 +806,7 @@ function PersonInspector({ person }: { person: Person | undefined }) {
     <section className={styles.inspectorContent} aria-label="Edit person">
       <div className={styles.inspectorHeading}><div><p className={styles.kicker}>Selected symbol</p><h3>Person details</h3></div><button className={styles.iconButton} type="button" onClick={() => { setSelection([]); setActivePanel(null); }} aria-label="Close person editor">×</button></div>
       <div className={styles.personInspectorSummary}>
-        <div className={styles.personInspectorSymbol}><PersonSymbol person={person} size={64} showAnnotations viewVisibility={viewSettings.visibility} /></div>
+        <div className={styles.personInspectorSymbol}><PersonSymbol person={person} size={64} showAge showBirthDeathYear showProfileBadges showChildless viewVisibility={viewSettings.visibility} /></div>
         <div className={styles.personInspectorSummaryFields}>
           <label className={styles.summaryNameField}><span>Name</span><input value={person.name} onChange={(event) => updatePerson(person.id, { name: event.target.value })} /></label>
         </div>
