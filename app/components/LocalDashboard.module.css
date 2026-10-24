@@ -84,13 +84,6 @@
   cursor: pointer;
 }
 
-.copyright strong a {
-  min-height: 20px;
-  padding: 0 7px;
-  border: 1px solid #9cbdb5;
-  gap: 2px;
-}
-
 .primaryButton,
 .openButton {
   border: 1px solid #285653;
@@ -192,6 +185,13 @@
 
 .copyright a {
   color: #285653;
+}
+
+.copyright strong a {
+  min-height: 20px;
+  padding: 0 7px;
+  border: 1px solid #9cbdb5;
+  gap: 2px;
 }
 
 .copyright strong img {

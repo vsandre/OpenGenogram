@@ -99,6 +99,8 @@ import { GenogramRelationshipEdge } from './GenogramRelationshipEdge';
 import styles from './GenogramEditor.module.css';
 import { PersonSymbol, ReligionIcon } from './PersonSymbol';
 
+import packageJson from '../../package.json';
+const APP_VERSION = packageJson.version;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export type GenogramEditorMode = 'preview' | 'edit';
@@ -2233,6 +2235,8 @@ function GenogramCanvas({ mode, initialProject }: Required<Pick<GenogramEditorPr
                 <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); downloadProjectFile(); }}><Download size={16} aria-hidden="true" /><span>Save local copy</span></button>
                 <div className={styles.fileMenuSeparator} role="separator" />
                 <button className={styles.fileMenuItem} type="button" role="menuitem" onClick={() => { closeFileMenu(); void exportImage('png'); }} disabled={exportingImage}><ImageDown size={16} aria-hidden="true" /><span>{exportingImage ? 'Exporting…' : 'Export PNG (no watermark)'}</span></button>
+                <div className={styles.fileMenuSeparator} role="separator" />
+                <p className={styles.copyright}><strong><a href="https://github.com/vsandre/OpenGenogram" target="_blank"><img src={basePath+"/icon.svg"} alt="Logo" />OpenGenogram {APP_VERSION}</a></strong></p>
               </div>
             )}
           </div>

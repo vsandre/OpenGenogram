@@ -328,7 +328,7 @@ export default function LocalDashboard() {
 
       <section className={styles.copyright} aria-labelledby="dashboard-copyright">
         <div>
-          <p><strong><a href="https://github.com/vsandre/OpenGenogram"><img src={basePath+"/icon.svg"} alt="Logo" />OpenGenogram {APP_VERSION}</a></strong> is available under the <a href="https://github.com/vsandre/OpenGenogram/blob/dev/LICENSE">MIT License</a>. Used libaries can be found <a href="https://github.com/vsandre/OpenGenogram/blob/dev/THIRD_PARTY_LICENSES.md">here</a>. This product is derived from <a href="https://github.com/Brewnut-98/genogram-canvas">Genogram Canvas</a>.</p>
+          <p><strong><a href="https://github.com/vsandre/OpenGenogram" target="_blank"><img src={basePath+"/icon.svg"} alt="Logo" />OpenGenogram {APP_VERSION}</a></strong> is available under the <a href="https://github.com/vsandre/OpenGenogram/blob/dev/LICENSE">MIT License</a>. Used libaries can be found <a href="https://github.com/vsandre/OpenGenogram/blob/dev/THIRD_PARTY_LICENSES.md">here</a>. This product is derived from <a href="https://github.com/Brewnut-98/genogram-canvas">Genogram Canvas</a>.</p>
         </div>
       </section>
     </main>

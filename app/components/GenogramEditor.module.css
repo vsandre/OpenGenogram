@@ -1,3 +1,44 @@
+.copyright {
+  color: #637775;
+  font-size: 11px;
+  text-align: center;
+}
+
+.copyright a {
+  color: #285653;
+}
+
+.copyright strong a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 15px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 20px;
+  padding: 0 7px;
+  border: 1px solid #9cbdb5;
+  gap: 2px;
+}
+
+.copyright strong a:hover {
+  border-color: #9cbdb5;
+  background: #edf6f2;
+}
+
+.copyright strong a:focus-visible {
+  outline: 3px solid rgba(185, 103, 58, 0.28);
+  outline-offset: 2px;
+}
+
+.copyright strong img {
+  height: 12px;
+}
+
 .editorShell {
   --paper: #fbfdfa;
   --paper-muted: #f3f8f5;
